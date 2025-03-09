@@ -158,40 +158,40 @@
     {% endif %}
 
     <h3>Signatures</h3>
-    <p><strong>OIC Signature:</strong></p>
     {% if assessment.signature_oic %}
+      <p><strong>OIC Signature:</strong></p>
       <img src="data:image/png;base64,{{ assessment.signature_oic }}" alt="OIC Signature" class="signature">
     {% else %}
-      <div class="signature-pad-container">
-        <canvas id="oic_canvas" class="signature"></canvas>
-        <button id="oic_clear" type="button" class="no-print">Clear OIC Signature</button>
-      </div>
+      <p><strong>OIC Signature:</strong> Please sign below:</p>
+      <canvas id="oic_canvas" class="signature"></canvas>
+      <button id="oic_clear" type="button" class="no-print">Clear OIC Signature</button>
     {% endif %}
     
-    <p><strong>30 NCR Signature:</strong></p>
     {% if assessment.signature_ncr %}
+      <p><strong>30 NCR Signature:</strong></p>
       <img src="data:image/png;base64,{{ assessment.signature_ncr }}" alt="30 NCR Signature" class="signature">
     {% else %}
-      <div class="signature-pad-container">
-        <canvas id="ncr_canvas" class="signature"></canvas>
-        <button id="ncr_clear" type="button" class="no-print">Clear 30 NCR Signature</button>
-      </div>
+      <p><strong>30 NCR Signature:</strong> Please sign below:</p>
+      <canvas id="ncr_canvas" class="signature"></canvas>
+      <button id="ncr_clear" type="button" class="no-print">Clear 30 NCR Signature</button>
     {% endif %}
 
     {% if not (assessment.signature_oic and assessment.signature_ncr) %}
       <form id="signature_form" method="post" action="/save_signatures/{{ assessment.id }}" class="no-print">
         <input type="hidden" name="oic_signature" id="oic_signature">
         <input type="hidden" name="ncr_signature" id="ncr_signature">
-        <button type="submit">Submit Signatures</button>
+        <button type="submit">Save Signatures</button>
       </form>
     {% endif %}
 
+    <!-- Print button -->
     <button onclick="window.print()" class="no-print">Print Report</button>
   </div>
 
-  <!-- Include Signature Pad library -->
+  <!-- Signature Pad library -->
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
   <script>
+    // Initialize signature pads if signatures are not already saved
     {% if not assessment.signature_oic %}
       var oicCanvas = document.getElementById('oic_canvas');
       var oicSignaturePad = new SignaturePad(oicCanvas);
@@ -207,25 +207,24 @@
       });
     {% endif %}
 
-    var signatureForm = document.getElementById('signature_form');
-    if (signatureForm) {
-      signatureForm.addEventListener('submit', function(e) {
-        {% if not assessment.signature_oic %}
-          if (oicSignaturePad.isEmpty()) {
-            alert("Please provide an OIC signature.");
-            e.preventDefault();
-            return false;
-          }
-          document.getElementById('oic_signature').value = oicSignaturePad.toDataURL();
-        {% endif %}
-        {% if not assessment.signature_ncr %}
-          if (ncrSignaturePad.isEmpty()) {
-            alert("Please provide a 30 NCR signature.");
-            e.preventDefault();
-            return false;
-          }
-          document.getElementById('ncr_signature').value = ncrSignaturePad.toDataURL();
-        {% endif %}
+    // On signature form submission, capture the signature data as base64 strings
+    document.getElementById('signature_form') && document.getElementById('signature_form').addEventListener('submit', function(e) {
+      {% if not assessment.signature_oic %}
+        if (oicSignaturePad.isEmpty()) {
+          alert("Please provide an OIC signature.");
+          e.preventDefault();
+          return false;
+        }
+        document.getElementById('oic_signature').value = oicSignaturePad.toDataURL();
+      {% endif %}
+      {% if not assessment.signature_ncr %}
+        if (ncrSignaturePad.isEmpty()) {
+          alert("Please provide a 30 NCR signature.");
+          e.preventDefault();
+          return false;
+        }
+        document.getElementById('ncr_signature').value = ncrSignaturePad.toDataURL();
+      {% endif %}
       });
     }
   </script>
