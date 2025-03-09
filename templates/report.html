@@ -4,63 +4,100 @@
 <head>
   <meta charset="UTF-8">
   <title>CQI Final Report</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary-color: #007bff;
+      --bg-color: #f4f4f4;
+      --container-bg: #ffffff;
+      --border-color: #ccc;
+      --border-radius: 5px;
+      --font-color: #333;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--bg-color);
+      margin: 0;
+      padding: 20px;
+      color: var(--font-color);
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--container-bg);
+      padding: 30px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      border-radius: var(--border-radius);
+    }
+    h2, h3 {
+      color: var(--font-color);
+      margin-bottom: 15px;
+    }
+    p {
+      margin: 10px 0;
+      line-height: 1.5;
+    }
+    .signature {
+      border: 1px solid var(--border-color);
+      width: 300px;
+      height: 70px;
+      display: block;
+      margin-bottom: 20px;
+      object-fit: contain;
+      border-radius: var(--border-radius);
+    }
     @media print {
       .page-break {
         page-break-before: always;
       }
     }
-    .signature {
-      border: 1px solid #000;
-      width: 300px;
-      height: 70px;
-      display: block;
-      margin-bottom: 20px;
-    }
   </style>
 </head>
 <body onload="window.print()">
-  <h2>Construction Quality Inspection Report</h2>
+  <div class="container">
+    <h2>Construction Quality Inspection Report</h2>
 
-  <h3>Project Information</h3>
-  <p><strong>Project Name:</strong> {{ assessment.project_name }}</p>
-  <p><strong>Battalion:</strong> {{ assessment.battalion }}</p>
-  <p><strong>OIC:</strong> {{ assessment.oic_name }}</p>
-  <p><strong>AOIC:</strong> {{ assessment.aoic_name }}</p>
-  <p><strong>Start Date:</strong> {{ assessment.start_date }}</p>
-  <p><strong>Planned Start:</strong> {{ assessment.planned_start }}</p>
-  <p><strong>Planned Completion:</strong> {{ assessment.planned_completion }}</p>
-  <p><strong>Actual Completion:</strong> {{ assessment.actual_completion }}</p>
+    <h3>Project Information</h3>
+    <p><strong>Project Name:</strong> {{ assessment.project_name }}</p>
+    <p><strong>Battalion:</strong> {{ assessment.battalion }}</p>
+    <p><strong>OIC:</strong> {{ assessment.oic_name }}</p>
+    <p><strong>AOIC:</strong> {{ assessment.aoic_name }}</p>
+    <p><strong>Start Date:</strong> {{ assessment.start_date }}</p>
+    <p><strong>Planned Start:</strong> {{ assessment.planned_start }}</p>
+    <p><strong>Planned Completion:</strong> {{ assessment.planned_completion }}</p>
+    <p><strong>Actual Completion:</strong> {{ assessment.actual_completion }}</p>
 
-  <h3>Final Score</h3>
-  {% if assessment.final_score is not none %}
-    <p><strong>Score:</strong> {{ assessment.final_score }} out of 171</p>
-    <p><strong>Percentage:</strong> {{ assessment.final_percentage }}%</p>
-  {% else %}
-    <p>No final score computed yet.</p>
-  {% endif %}
+    <h3>Final Score</h3>
+    {% if assessment.final_score is not none %}
+      <p><strong>Score:</strong> {{ assessment.final_score }} out of 171</p>
+      <p><strong>Percentage:</strong> {{ assessment.final_percentage }}%</p>
+    {% else %}
+      <p>No final score computed yet.</p>
+    {% endif %}
 
-  <h3>Signatures</h3>
-  <p>OIC Signature:</p>
-  {% if assessment.signature_oic %}
-    <img src="data:image/png;base64,{{ assessment.signature_oic }}" class="signature">
-  {% else %}
-    <p>No OIC signature</p>
-  {% endif %}
+    <h3>Signatures</h3>
+    <p><strong>OIC Signature:</strong></p>
+    {% if assessment.signature_oic %}
+      <img src="data:image/png;base64,{{ assessment.signature_oic }}" alt="OIC Signature" class="signature">
+    {% else %}
+      <p>No OIC signature</p>
+    {% endif %}
+    
+    <p><strong>30 NCR Signature:</strong></p>
+    {% if assessment.signature_ncr %}
+      <img src="data:image/png;base64,{{ assessment.signature_ncr }}" alt="30 NCR Signature" class="signature">
+    {% else %}
+      <p>No 30 NCR signature</p>
+    {% endif %}
 
-  <p>30 NCR Signature:</p>
-  {% if assessment.signature_ncr %}
-    <img src="data:image/png;base64,{{ assessment.signature_ncr }}" class="signature">
-  {% else %}
-    <p>No 30 NCR signature</p>
-  {% endif %}
-
-  <div class="page-break"></div>
-  <h3>Comments</h3>
-  <p>
-    Detailed item-by-item comments can be displayed here if you choose to persist them.
-    Currently, individual item comments are stored with the assessment record.
-  </p>
-
+    <div class="page-break"></div>
+    <h3>Comments</h3>
+    <p>
+      Detailed item-by-item comments are stored with the assessment record.
+      <!-- Optionally, you can list out individual comments for each item if desired. -->
+    </p>
+  </div>
 </body>
 </html>
