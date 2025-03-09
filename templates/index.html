@@ -44,6 +44,32 @@
       border: 1px solid #eee;
       border-radius: var(--border-radius);
     }
+    .number-input {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.number-input button {
+  background-color: var(--primary-color);
+  border: none;
+  color: #fff;
+  width: 30px;
+  height: 30px;
+  font-size: 1.2em;
+  cursor: pointer;
+  border-radius: var(--border-radius);
+}
+
+.number-input input {
+  text-align: center;
+  width: 80px;
+  margin: 0 5px;
+  padding: 5px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+}
+
     label {
       font-weight: 500;
       display: block;
@@ -174,22 +200,41 @@
       </div>
 
       <!-- Item 4 – Project Schedule (Dynamic Calculation) -->
-      <div class="item-section">
-        <h3>Item 4 – Project Schedule</h3>
-        <p>Is the unit achieving the given tasking? (Exact = 16 pts; Within deviation = 12 pts; Outside deviation = 4 pts; Not monitored = 0 pts)</p>
-        <label>Total Project Mandays:</label>
-        <input type="number" id="total_md" name="total_md" value="1000" step="1">
-        <label>Planned Work-in-Place (%):</label>
-        <input type="number" id="planned_wip" name="planned_wip" value="100" step="1">
-        <label>Actual Work-in-Place (%):</label>
-        <input type="number" id="actual_wip" name="actual_wip" value="100" step="1">
-        <p id="item4_score_display">Calculated Score for Item 4: 16</p>
-        <input type="hidden" id="item4_score" name="item4_score" value="16">
-        <div id="item4_comment_div" style="display:none;">
-          <label>Comment (if not perfect):</label>
-          <textarea id="comment_item4" name="comment_item4">{{ form_data.comment_item4 if form_data and form_data.comment_item4 is defined else '' }}</textarea>
-        </div>
-      </div>
+      <!-- Item 4 – Project Schedule (with custom spinner buttons) -->
+<div class="item-section">
+  <h3>Item 4 – Project Schedule</h3>
+  <p>Is the unit achieving the given tasking? (Exact = 16 pts; Within deviation = 12 pts; Outside deviation = 4 pts; Not monitored = 0 pts)</p>
+  
+  <label>Total Project Mandays:</label>
+  <div class="number-input">
+    <button type="button" onclick="decrement('total_md')">–</button>
+    <input type="number" id="total_md" name="total_md" value="1000" step="1" oninput="calculateItem4Score()">
+    <button type="button" onclick="increment('total_md')">+</button>
+  </div>
+  
+  <label>Planned Work-in-Place (%):</label>
+  <div class="number-input">
+    <button type="button" onclick="decrement('planned_wip')">–</button>
+    <input type="number" id="planned_wip" name="planned_wip" value="100" step="1" oninput="calculateItem4Score()">
+    <button type="button" onclick="increment('planned_wip')">+</button>
+  </div>
+  
+  <label>Actual Work-in-Place (%):</label>
+  <div class="number-input">
+    <button type="button" onclick="decrement('actual_wip')">–</button>
+    <input type="number" id="actual_wip" name="actual_wip" value="100" step="1" oninput="calculateItem4Score()">
+    <button type="button" onclick="increment('actual_wip')">+</button>
+  </div>
+  
+  <p id="item4_score_display">Calculated Score for Item 4: 16</p>
+  <input type="hidden" id="item4_score" name="item4_score" value="16">
+  
+  <div id="item4_comment_div" style="display:none;">
+    <label>Comment (if not perfect):</label>
+    <textarea id="comment_item4" name="comment_item4">{{ form_data.comment_item4 if form_data and form_data.comment_item4 is defined else '' }}</textarea>
+  </div>
+</div>
+
 
       <!-- Item 5 – Project Management -->
       <div class="item-section">
@@ -703,6 +748,19 @@
           document.getElementById("comment_item4").value = "";
       }
     }
+    function increment(id) {
+  var input = document.getElementById(id);
+  input.value = parseInt(input.value) + 1;
+  calculateItem4Score();
+}
+
+function decrement(id) {
+  var input = document.getElementById(id);
+  // Prevent the value from going negative.
+  input.value = Math.max(parseInt(input.value) - 1, 0);
+  calculateItem4Score();
+}
+
     document.getElementById("total_md").addEventListener("input", calculateItem4Score);
     document.getElementById("planned_wip").addEventListener("input", calculateItem4Score);
     document.getElementById("actual_wip").addEventListener("input", calculateItem4Score);
