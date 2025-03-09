@@ -126,7 +126,6 @@
     <p><strong>Start Date:</strong> {{ assessment.start_date }}</p>
     <p><strong>Planned Start:</strong> {{ assessment.planned_start }}</p>
     <p><strong>Planned Completion:</strong> {{ assessment.planned_completion }}</p>
-    <p><strong>Actual Completion:</strong> {{ assessment.actual_completion }}</p>
 
     <h3>Final Score</h3>
     {% if assessment.final_score is not none %}
@@ -171,7 +170,6 @@
       </ul>
     {% endif %}
     
-    <h3>Signatures</h3>
     <div class="signature-row">
 <div class="signature-col">
   <p><strong>OIC Signature:</strong></p>
