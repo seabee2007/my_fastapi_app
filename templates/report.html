@@ -1,4 +1,3 @@
-<!-- templates/report.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -49,10 +48,12 @@
       padding: 8px;
       border: 1px solid #eee;
       border-radius: var(--border-radius);
+      /* Ensure long text wraps in print */
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
     .signature {
       border: 1px solid var(--border-color);
-      /* CSS sizing for layout */
       width: 300px;
       height: 70px;
       display: block;
@@ -67,11 +68,33 @@
       margin-top: 30px;
     }
     @media print {
-      .no-print {
-        display: none;
+      /* Remove interactive elements and unnecessary styling for print */
+      .no-print, button {
+        display: none !important;
+      }
+      /* Adjust layout for print */
+      body, .container {
+        width: 100%;
+        margin: 0;
+        padding: 10px;
+        box-shadow: none;
+        font-size: 16pt; /* Increase font size for readability */
+      }
+      /* Ensure the signature area and list items display nicely */
+      li {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
       }
       .page-break {
         page-break-before: always;
+      }
+    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+      button, p, li {
+        font-size: 0.9em;
       }
     }
     button {
@@ -88,14 +111,6 @@
     }
     button:hover {
       background-color: #0056b3;
-    }
-    @media (max-width: 600px) {
-      .container {
-        padding: 20px;
-      }
-      button, p, li {
-        font-size: 0.9em;
-      }
     }
   </style>
 </head>
@@ -155,36 +170,32 @@
         {% if assessment.comment_item29 %}<li>Item 29: {{ assessment.comment_item29 }}</li>{% endif %}
       </ul>
     {% endif %}
-  </div>
- 
     
     <h3>Signatures</h3>
     <div class="signature-row">
       <div class="signature-col">
-    <p><strong>OIC Signature:</strong></p>
-    {% if assessment.signature_oic %}
-      <img src="data:image/png;base64,{{ assessment.signature_oic }}" alt="OIC Signature" class="signature">
-    {% else %}
-      <p>Please sign below:</p>
-      <!-- Set canvas intrinsic dimensions -->
-      <canvas id="oic_canvas" class="signature" width="300" height="70"></canvas>
-      <button id="oic_clear" type="button" class="no-print">Clear OIC Signature</button>
-    {% endif %}
-        </div>
+        <p><strong>OIC Signature:</strong></p>
+        {% if assessment.signature_oic %}
+          <img src="data:image/png;base64,{{ assessment.signature_oic }}" alt="OIC Signature" class="signature">
+        {% else %}
+          <p>Please sign below:</p>
+          <canvas id="oic_canvas" class="signature" width="300" height="70"></canvas>
+          <button id="oic_clear" type="button" class="no-print">Clear OIC Signature</button>
+        {% endif %}
+      </div>
       <div class="signature-col">
         <p><strong>30 NCR Signature:</strong></p>
-    {% if assessment.signature_ncr %}
-      <img src="data:image/png;base64,{{ assessment.signature_ncr }}" alt="30 NCR Signature" class="signature">
-    {% else %}
-      <p>Please sign below:</p>
-      <!-- Set canvas intrinsic dimensions -->
-      <canvas id="ncr_canvas" class="signature" width="300" height="70"></canvas>
-      <button id="ncr_clear" type="button" class="no-print">Clear 30 NCR Signature</button>
-    {% endif %}
-      
+        {% if assessment.signature_ncr %}
+          <img src="data:image/png;base64,{{ assessment.signature_ncr }}" alt="30 NCR Signature" class="signature">
+        {% else %}
+          <p>Please sign below:</p>
+          <canvas id="ncr_canvas" class="signature" width="300" height="70"></canvas>
+          <button id="ncr_clear" type="button" class="no-print">Clear 30 NCR Signature</button>
+        {% endif %}
+      </div>
+    </div>
     <button onclick="window.print()" class="no-print">Print Report</button>
   </div>
-      </div>
 
   <!-- Include Signature Pad library -->
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
@@ -203,28 +214,6 @@
         ncrSignaturePad.clear();
       });
     {% endif %}
-
-    var signatureForm = document.getElementById('signature_form');
-    if (signatureForm) {
-      signatureForm.addEventListener('submit', function(e) {
-        {% if not assessment.signature_oic %}
-          if (oicSignaturePad.isEmpty()) {
-            alert("Please provide an OIC signature.");
-            e.preventDefault();
-            return false;
-          }
-          document.getElementById('oic_signature').value = oicSignaturePad.toDataURL();
-        {% endif %}
-        {% if not assessment.signature_ncr %}
-          if (ncrSignaturePad.isEmpty()) {
-            alert("Please provide a 30 NCR signature.");
-            e.preventDefault();
-            return false;
-          }
-          document.getElementById('ncr_signature').value = ncrSignaturePad.toDataURL();
-        {% endif %}
-      });
-    }
   </script>
 </body>
 </html>
