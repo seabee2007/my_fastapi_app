@@ -177,13 +177,7 @@
       <button id="ncr_clear" type="button" class="no-print">Clear 30 NCR Signature</button>
     {% endif %}
 
-    {% if not (assessment.signature_oic and assessment.signature_ncr) %}
-      <form id="signature_form" method="post" action="/save_signatures/{{ assessment.id }}" class="no-print">
-        <input type="hidden" name="oic_signature" id="oic_signature">
-        <input type="hidden" name="ncr_signature" id="ncr_signature">
-        <button type="submit">Save Signatures</button>
-      </form>
-    {% endif %}
+
 
     <button onclick="window.print()" class="no-print">Print Report</button>
   </div>
