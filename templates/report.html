@@ -52,15 +52,23 @@
     }
     .signature {
       border: 1px solid var(--border-color);
-      /* CSS sizing for layout */
       width: 300px;
       height: 70px;
       display: block;
-      margin: 0 auto 20px;
+      margin: 0 auto 10px;
       border-radius: var(--border-radius);
+      object-fit: contain;
     }
-    .signature-pad-container {
+    .signature-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
       margin-bottom: 20px;
+    }
+    .signature-col {
+      flex: 1;
+      min-width: 300px;
+      margin: 10px;
       text-align: center;
     }
     .page-break {
@@ -95,6 +103,13 @@
       }
       button, p, li {
         font-size: 0.9em;
+      }
+      .signature-col {
+        min-width: 100%;
+      }
+      .signature {
+        width: 100%;
+        height: auto;
       }
     }
   </style>
@@ -157,25 +172,28 @@
     {% endif %}
 
     <h3>Signatures</h3>
-    <p><strong>OIC Signature:</strong></p>
-    {% if assessment.signature_oic %}
-      <img src="data:image/png;base64,{{ assessment.signature_oic }}" alt="OIC Signature" class="signature">
-    {% else %}
-      <p>Please sign below:</p>
-      <!-- Set canvas intrinsic dimensions -->
-      <canvas id="oic_canvas" class="signature" width="300" height="70"></canvas>
-      <button id="oic_clear" type="button" class="no-print">Clear OIC Signature</button>
-    {% endif %}
-    
-    <p><strong>30 NCR Signature:</strong></p>
-    {% if assessment.signature_ncr %}
-      <img src="data:image/png;base64,{{ assessment.signature_ncr }}" alt="30 NCR Signature" class="signature">
-    {% else %}
-      <p>Please sign below:</p>
-      <!-- Set canvas intrinsic dimensions -->
-      <canvas id="ncr_canvas" class="signature" width="300" height="70"></canvas>
-      <button id="ncr_clear" type="button" class="no-print">Clear 30 NCR Signature</button>
-    {% endif %}
+    <div class="signature-row">
+      <div class="signature-col">
+        <p><strong>OIC: {{ assessment.oic_name }}</strong></p>
+        {% if assessment.signature_oic %}
+          <img src="data:image/png;base64,{{ assessment.signature_oic }}" alt="OIC Signature" class="signature">
+        {% else %}
+          <canvas id="oic_canvas" class="signature" width="300" height="70"></canvas>
+          <button id="oic_clear" type="button" class="no-print">Clear OIC Signature</button>
+        {% endif %}
+        <p><strong>Date:</strong> __________</p>
+      </div>
+      <div class="signature-col">
+        <p><strong>AOIC: {{ assessment.aoic_name }}</strong></p>
+        {% if assessment.signature_ncr %}
+          <img src="data:image/png;base64,{{ assessment.signature_ncr }}" alt="AOIC Signature" class="signature">
+        {% else %}
+          <canvas id="ncr_canvas" class="signature" width="300" height="70"></canvas>
+          <button id="ncr_clear" type="button" class="no-print">Clear AOIC Signature</button>
+        {% endif %}
+        <p><strong>Date:</strong> __________</p>
+      </div>
+    </div>
 
     {% if not (assessment.signature_oic and assessment.signature_ncr) %}
       <form id="signature_form" method="post" action="/save_signatures/{{ assessment.id }}" class="no-print">
@@ -219,7 +237,7 @@
         {% endif %}
         {% if not assessment.signature_ncr %}
           if (ncrSignaturePad.isEmpty()) {
-            alert("Please provide a 30 NCR signature.");
+            alert("Please provide an AOIC signature.");
             e.preventDefault();
             return false;
           }
