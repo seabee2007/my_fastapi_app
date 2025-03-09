@@ -1,11 +1,11 @@
 <!-- templates/report.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>CQI Final Report</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Google Font -->
+  <!-- Google Font for modern look -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -33,6 +33,7 @@
     }
     h2, h3 {
       margin-bottom: 15px;
+      text-align: center;
     }
     p {
       margin: 10px 0;
@@ -54,12 +55,13 @@
       width: 300px;
       height: 70px;
       display: block;
-      margin-bottom: 20px;
+      margin: 0 auto 20px;
       object-fit: contain;
       border-radius: var(--border-radius);
     }
     .signature-pad-container {
       margin-bottom: 20px;
+      text-align: center;
     }
     .page-break {
       margin-top: 30px;
@@ -81,10 +83,19 @@
       cursor: pointer;
       font-size: 1em;
       transition: background-color 0.3s ease;
-      margin: 10px 0;
+      display: block;
+      margin: 20px auto;
     }
     button:hover {
       background-color: #0056b3;
+    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+      button, p, li {
+        font-size: 0.9em;
+      }
     }
   </style>
 </head>
@@ -110,7 +121,7 @@
       <p>No final score computed yet.</p>
     {% endif %}
 
-    <!-- Comments: Display only if final score is less than 171 -->
+    <!-- Conditionally display comments if the final score is below maximum -->
     {% if assessment.final_score is not none and assessment.final_score < 171 %}
       <h3>Comments</h3>
       <ul>
@@ -147,7 +158,6 @@
     {% endif %}
 
     <h3>Signatures</h3>
-    <!-- OIC Signature -->
     <p><strong>OIC Signature:</strong></p>
     {% if assessment.signature_oic %}
       <img src="data:image/png;base64,{{ assessment.signature_oic }}" alt="OIC Signature" class="signature">
@@ -157,8 +167,7 @@
         <button id="oic_clear" type="button">Clear OIC Signature</button>
       </div>
     {% endif %}
-
-    <!-- 30 NCR Signature -->
+    
     <p><strong>30 NCR Signature:</strong></p>
     {% if assessment.signature_ncr %}
       <img src="data:image/png;base64,{{ assessment.signature_ncr }}" alt="30 NCR Signature" class="signature">
@@ -170,7 +179,6 @@
     {% endif %}
 
     {% if not (assessment.signature_oic and assessment.signature_ncr) %}
-      <!-- Form to submit signatures -->
       <form id="signature_form" method="post" action="/save_signatures/{{ assessment.id }}" class="no-print">
         <input type="hidden" name="oic_signature" id="oic_signature">
         <input type="hidden" name="ncr_signature" id="ncr_signature">
@@ -184,7 +192,6 @@
   <!-- Include Signature Pad library -->
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
   <script>
-    // Initialize OIC signature pad if signature is missing.
     {% if not assessment.signature_oic %}
       var oicCanvas = document.getElementById('oic_canvas');
       var oicSignaturePad = new SignaturePad(oicCanvas);
@@ -192,8 +199,6 @@
         oicSignaturePad.clear();
       });
     {% endif %}
-
-    // Initialize NCR signature pad if signature is missing.
     {% if not assessment.signature_ncr %}
       var ncrCanvas = document.getElementById('ncr_canvas');
       var ncrSignaturePad = new SignaturePad(ncrCanvas);
@@ -202,7 +207,6 @@
       });
     {% endif %}
 
-    // On submission of the signature form, capture the signatures as base64 strings.
     var signatureForm = document.getElementById('signature_form');
     if (signatureForm) {
       signatureForm.addEventListener('submit', function(e) {
