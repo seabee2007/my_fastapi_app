@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>CQI Assessment Tool</title>
+  <title>CQI Assessment Tool with Parallax</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Google Font for a modern look -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -22,12 +22,39 @@
       font-family: 'Roboto', sans-serif;
       background-color: var(--bg-color);
       margin: 0;
-      padding: 20px;
+      padding: 0;
       color: var(--font-color);
     }
+    /* Parallax section */
+    .parallax {
+      background-image: url("YOUR_PARALLAX_IMAGE.jpg"); /* Replace with your image */
+      background-attachment: fixed;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      min-height: 300px;
+      width: 100%;
+    }
+    .parallax-overlay {
+      background: rgba(0,0,0,0.3);
+      color: #fff;
+      text-align: center;
+      padding-top: 100px;
+      padding-bottom: 100px;
+    }
+    .parallax-overlay h1 {
+      font-size: 2em;
+      margin-bottom: 0.5em;
+    }
+    .parallax-overlay p {
+      font-size: 1.2em;
+      margin: 0;
+    }
+
+    /* Main container for the form */
     .container {
       max-width: var(--max-container-width);
-      margin: 0 auto;
+      margin: 20px auto;
       background: var(--container-bg);
       padding: 30px;
       box-shadow: 0 0 15px rgba(0,0,0,0.1);
@@ -82,8 +109,11 @@
       background-color: var(--primary-color-hover);
     }
     @media (max-width: 600px) {
-      .container {
-        padding: 20px;
+      .parallax-overlay h1 {
+        font-size: 1.5em;
+      }
+      .parallax-overlay p {
+        font-size: 1em;
       }
       input, select, textarea, button {
         font-size: 0.9em;
@@ -92,9 +122,19 @@
   </style>
 </head>
 <body>
+
+  <!-- Parallax Section -->
+  <div class="parallax">
+    <div class="parallax-overlay">
+      <h1>Modern Technology</h1>
+      <p>Experience the Future of Construction Quality Inspection</p>
+    </div>
+  </div>
+
+  <!-- Main container with form -->
   <div class="container">
     <h1>CQI Assessment Tool</h1>
-    
+
     <!-- Display validation errors if any -->
     {% if errors %}
       <div style="color: red; margin-bottom: 20px;">
@@ -143,40 +183,40 @@
       </div>
 
       <h2>Assessment Inputs</h2>
-      <!-- Item 1 – Self Assessment -->
+      <!-- Item 1 -->
       <div class="item-section">
         <h3>Item 1 – Self Assessment</h3>
-        <p>Has the unit completed an initial self-assessment CQI checklist? (Yes = 2 pts, No = 0 pts)</p>
-        <input type="radio" name="item1" value="Yes" {% if form_data and form_data.item1=='Yes' %}checked{% endif %}> Yes
-        <input type="radio" name="item1" value="No" {% if not form_data or form_data.item1!='Yes' %}checked{% endif %}> No
+        <p>Has the unit completed an initial self-assessment CQI checklist? (Yes=2, No=0)</p>
+        <input type="radio" name="item1" value="Yes" {% if form_data and form_data.item1=='Yes' %}checked{% endif %}>Yes
+        <input type="radio" name="item1" value="No" {% if not form_data or form_data.item1!='Yes' %}checked{% endif %}>No<br>
         <label>Comment:</label>
         <textarea name="comment_item1">{{ form_data.comment_item1 if form_data and form_data.comment_item1 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 2 – Self Assessment Submission -->
+      <!-- Item 2 -->
       <div class="item-section">
         <h3>Item 2 – Self Assessment Submission</h3>
-        <p>Were the self-assessment results submitted to 30 NCR SharePoint at least 7 days prior to inspection? (Yes = 2 pts, No = 0 pts)</p>
-        <input type="radio" name="item2" value="Yes" {% if form_data and form_data.item2=='Yes' %}checked{% endif %}> Yes
-        <input type="radio" name="item2" value="No" {% if not form_data or form_data.item2!='Yes' %}checked{% endif %}> No
+        <p>Submission done 7 days prior? (Yes=2, No=0)</p>
+        <input type="radio" name="item2" value="Yes" {% if form_data and form_data.item2=='Yes' %}checked{% endif %}>Yes
+        <input type="radio" name="item2" value="No" {% if not form_data or form_data.item2!='Yes' %}checked{% endif %}>No<br>
         <label>Comment:</label>
         <textarea name="comment_item2">{{ form_data.comment_item2 if form_data and form_data.comment_item2 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 3 – Notice to Proceed (NTP) -->
+      <!-- Item 3 -->
       <div class="item-section">
         <h3>Item 3 – Notice to Proceed (NTP)</h3>
-        <p>Has a project confirmation/turnover brief been conducted with 30 NCR resulting in receiving a NTP? (Yes = 4 pts, No = 0 pts)</p>
-        <input type="radio" name="item3" value="Yes" {% if form_data and form_data.item3=='Yes' %}checked{% endif %}> Yes
-        <input type="radio" name="item3" value="No" {% if not form_data or form_data.item3!='Yes' %}checked{% endif %}> No
+        <p>Has a project confirmation/turnover brief been conducted with 30 NCR resulting in receiving a NTP? (Yes=4, No=0)</p>
+        <input type="radio" name="item3" value="Yes" {% if form_data and form_data.item3=='Yes' %}checked{% endif %}>Yes
+        <input type="radio" name="item3" value="No" {% if not form_data or form_data.item3!='Yes' %}checked{% endif %}>No<br>
         <label>Comment:</label>
         <textarea name="comment_item3">{{ form_data.comment_item3 if form_data and form_data.comment_item3 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 4 – Project Schedule (Dynamic Calculation) -->
+      <!-- Item 4 – Project Schedule (dynamic) -->
       <div class="item-section">
         <h3>Item 4 – Project Schedule</h3>
-        <p>Is the unit achieving the given tasking? (Exact = 16 pts; Within deviation = 12 pts; Outside deviation = 4 pts; Not monitored = 0 pts)</p>
+        <p>Is the unit achieving the given tasking? (Exact=16, Within deviation=12, Outside deviation=4, Not monitored=0)</p>
         <label>Total Project Mandays:</label>
         <input type="number" id="total_md" name="total_md" value="1000" step="1">
         <label>Planned Work-in-Place (%):</label>
@@ -191,20 +231,20 @@
         </div>
       </div>
 
-      <!-- Item 5 – Project Management -->
+      <!-- Item 5 -->
       <div class="item-section">
         <h3>Item 5 – Project Management</h3>
-        <p>Is a project management tool/CPM being utilized? (Yes = 2 pts, No = 0 pts)</p>
-        <input type="radio" name="item5" value="Yes" {% if form_data and form_data.item5=='Yes' %}checked{% endif %}> Yes
-        <input type="radio" name="item5" value="No" {% if not form_data or form_data.item5!='Yes' %}checked{% endif %}> No
+        <p>Is a project management tool/CPM being utilized? (Yes=2, No=0)</p>
+        <input type="radio" name="item5" value="Yes" {% if form_data and form_data.item5=='Yes' %}checked{% endif %}>Yes
+        <input type="radio" name="item5" value="No" {% if not form_data or form_data.item5!='Yes' %}checked{% endif %}>No<br>
         <label>Comment:</label>
         <textarea name="comment_item5">{{ form_data.comment_item5 if form_data and form_data.comment_item5 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 6 – QA for 30 NCR Detail Sites -->
+      <!-- Item 6 -->
       <div class="item-section">
         <h3>Item 6 – QA for 30 NCR Detail Sites</h3>
-        <p>QA involvement: (4 pts = Zero discrepancies; 3 pts = Acceptable; 2 pts = Multiple discrepancies; 0 pts = No QA involvement)</p>
+        <p>(4=Zero discrepancies; 3=Acceptable; 2=Multiple discrepancies; 0=No QA involvement)</p>
         <select name="item6">
           <option value="4" {% if form_data and form_data.item6=='4' %}selected{% endif %}>4</option>
           <option value="3" {% if form_data and form_data.item6=='3' %}selected{% endif %}>3</option>
@@ -215,10 +255,10 @@
         <textarea name="comment_item6">{{ form_data.comment_item6 if form_data and form_data.comment_item6 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 7 & 8 – FAR/RFI -->
+      <!-- Item 7 & 8 -->
       <div class="item-section">
-        <h3>Item 7 &amp; 8 – FAR/RFI</h3>
-        <p>Inspect FAR/RFI log for continuity. (4 pts = 100% logged; 3 pts = Acceptable; 2 pts = Missing; 0 pts = Not tracked)</p>
+        <h3>Item 7 & 8 – FAR/RFI</h3>
+        <p>Inspect FAR/RFI log for continuity. (4=100% logged; 3=Acceptable; 2=Missing; 0=Not tracked)</p>
         <select name="item78">
           <option value="4" {% if form_data and form_data.item78=='4' %}selected{% endif %}>4</option>
           <option value="3" {% if form_data and form_data.item78=='3' %}selected{% endif %}>3</option>
@@ -226,13 +266,13 @@
           <option value="0" {% if form_data and form_data.item78=='0' %}selected{% endif %}>0</option>
         </select>
         <label>Comment:</label>
-        <textarea name="comment_item78">{{ form_data.comment_item78 if form_data and form_data.comment_item78 is defined else '' }}</textarea>
+        <textarea name="comment_item78">{{ form_data.comment_item78 if form_data and form_data.item78 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 9 – DFOW Sheet -->
+      <!-- Item 9 -->
       <div class="item-section">
         <h3>Item 9 – DFOW Sheet</h3>
-        <p>Ensure the DFOW sheet is accurate and updated. (4 pts = Accurate; 3 pts = Acceptable; 2 pts = Incorrect; 0 pts = Blank)</p>
+        <p>(4=Accurate; 3=Acceptable; 2=Incorrect; 0=Blank)</p>
         <select name="item9">
           <option value="4" {% if form_data and form_data.item9=='4' %}selected{% endif %}>4</option>
           <option value="3" {% if form_data and form_data.item9=='3' %}selected{% endif %}>3</option>
@@ -243,33 +283,33 @@
         <textarea name="comment_item9">{{ form_data.comment_item9 if form_data and form_data.comment_item9 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 10 – Turnover Projects -->
+      <!-- Item 10 -->
       <div class="item-section">
         <h3>Item 10 – Turnover Projects</h3>
-        <p>Review turnover memorandum. (4 pts = Validated discrepancies with rework plan; 0 pts = No documentation)</p>
+        <p>(4=Validated discrepancies w/ rework plan; 0=No documentation; N/A=No turnover needed)</p>
         <select name="item10">
           <option value="4" {% if form_data and form_data.item10=='4' %}selected{% endif %}>4</option>
           <option value="0" {% if form_data and form_data.item10=='0' %}selected{% endif %}>0</option>
           <option value="N/A" {% if form_data and form_data.item10=='N/A' %}selected{% endif %}>N/A</option>
         </select>
         <label>Comment:</label>
-        <textarea name="comment_item10">{{ form_data.comment_item10 if form_data and form_data.comment_item10 is defined else '' }}</textarea>
+        <textarea name="comment_item10">{{ form_data.comment_item10 if form_data and form_data.item10 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 11 – Funds Provided -->
+      <!-- Item 11 -->
       <div class="item-section">
         <h3>Item 11 – Funds Provided</h3>
-        <p>Are project funds tracked? (4 pts = Monitored; 0 pts = Not monitored)</p>
-        <input type="radio" name="item11" value="Yes" {% if form_data and form_data.item11=='Yes' %}checked{% endif %}> Yes
-        <input type="radio" name="item11" value="No" {% if not form_data or form_data.item11!='Yes' %}checked{% endif %}> No
+        <p>(4=Monitored; 0=Not monitored)</p>
+        <input type="radio" name="item11" value="Yes" {% if form_data and form_data.item11=='Yes' %}checked{% endif %}>Yes
+        <input type="radio" name="item11" value="No" {% if not form_data or form_data.item11!='Yes' %}checked{% endif %}>No<br>
         <label>Comment:</label>
-        <textarea name="comment_item11">{{ form_data.comment_item11 if form_data and form_data.comment_item11 is defined else '' }}</textarea>
+        <textarea name="comment_item11">{{ form_data.comment_item11 if form_data and form_data.item11 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 12 – Estimate at Completion Cost (EAC) -->
+      <!-- Item 12 -->
       <div class="item-section">
         <h3>Item 12 – Estimate at Completion Cost (EAC)</h3>
-        <p>EAC accuracy. (4 pts = Accurate; 3 pts = Acceptable; 2 pts = Low accuracy; 0 pts = ≤59% accuracy)</p>
+        <p>(4=Accurate; 3=Acceptable; 2=Low accuracy; 0=≤59% accuracy)</p>
         <select name="item12">
           <option value="4" {% if form_data and form_data.item12=='4' %}selected{% endif %}>4</option>
           <option value="3" {% if form_data and form_data.item12=='3' %}selected{% endif %}>3</option>
@@ -277,13 +317,13 @@
           <option value="0" {% if form_data and form_data.item12=='0' %}selected{% endif %}>0</option>
         </select>
         <label>Comment:</label>
-        <textarea name="comment_item12">{{ form_data.comment_item12 if form_data and form_data.comment_item12 is defined else '' }}</textarea>
+        <textarea name="comment_item12">{{ form_data.comment_item12 if form_data and form_data.item12 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 13 – Current Expenditures -->
+      <!-- Item 13 -->
       <div class="item-section">
         <h3>Item 13 – Current Expenditures</h3>
-        <p>Verify current expenditures. (4 pts = Accurate; 3 pts = Acceptable; 2 pts = Discrepancies; 0 pts = ≤59% accuracy)</p>
+        <p>(4=Accurate; 3=Acceptable; 2=Discrepancies; 0=≤59% accuracy)</p>
         <select name="item13">
           <option value="4" {% if form_data and form_data.item13=='4' %}selected{% endif %}>4</option>
           <option value="3" {% if form_data and form_data.item13=='3' %}selected{% endif %}>3</option>
@@ -291,13 +331,13 @@
           <option value="0" {% if form_data and form_data.item13=='0' %}selected{% endif %}>0</option>
         </select>
         <label>Comment:</label>
-        <textarea name="comment_item13">{{ form_data.comment_item13 if form_data and form_data.comment_item13 is defined else '' }}</textarea>
+        <textarea name="comment_item13">{{ form_data.comment_item13 if form_data and form_data.item13 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 14 – Project Material Status Report (PMSR) -->
+      <!-- Item 14 -->
       <div class="item-section">
         <h3>Item 14 – Project Material Status Report (PMSR)</h3>
-        <p>Inspect PMSR. (10 pts = 100% valid; 8 pts = Acceptable; 4 pts = Discrepancies; 2/0 pts otherwise)</p>
+        <p>(10=100% valid; 8=Acceptable; 4=Discrepancies; 2/0 otherwise)</p>
         <select name="item14">
           <option value="10" {% if form_data and form_data.item14=='10' %}selected{% endif %}>10</option>
           <option value="8" {% if form_data and form_data.item14=='8' %}selected{% endif %}>8</option>
@@ -306,23 +346,23 @@
           <option value="0" {% if form_data and form_data.item14=='0' %}selected{% endif %}>0</option>
         </select>
         <label>Comment:</label>
-        <textarea name="comment_item14">{{ form_data.comment_item14 if form_data and form_data.comment_item14 is defined else '' }}</textarea>
+        <textarea name="comment_item14">{{ form_data.comment_item14 if form_data and form_data.item14 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 15 – Report Submission -->
+      <!-- Item 15 -->
       <div class="item-section">
         <h3>Item 15 – Report Submission</h3>
-        <p>Are PMSR and EAC reports routed monthly? (2 pts = Yes; 0 pts = No)</p>
-        <input type="radio" name="item15" value="Yes" {% if form_data and form_data.item15=='Yes' %}checked{% endif %}> Yes
-        <input type="radio" name="item15" value="No" {% if not form_data or form_data.item15!='Yes' %}checked{% endif %}> No
+        <p>Are PMSR and EAC reports routed monthly? (2=Yes; 0=No)</p>
+        <input type="radio" name="item15" value="Yes" {% if form_data and form_data.item15=='Yes' %}checked{% endif %}>Yes
+        <input type="radio" name="item15" value="No" {% if not form_data or form_data.item15!='Yes' %}checked{% endif %}>No<br>
         <label>Comment:</label>
-        <textarea name="comment_item15">{{ form_data.comment_item15 if form_data and form_data.comment_item15 is defined else '' }}</textarea>
+        <textarea name="comment_item15">{{ form_data.comment_item15 if form_data and form_data.item15 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 16 – Materials On-Hand -->
+      <!-- Item 16 -->
       <div class="item-section">
         <h3>Item 16 – Materials On-Hand</h3>
-        <p>Materials on-hand verification. (10 pts = Organized; 8 pts = Minor issues; 4 pts = Multiple issues; 0 pts = Unsatisfactory)</p>
+        <p>(10=Organized; 8=Minor issues; 4=Multiple issues; 0=Unsatisfactory)</p>
         <select name="item16">
           <option value="10" {% if form_data and form_data.item16=='10' %}selected{% endif %}>10</option>
           <option value="8" {% if form_data and form_data.item16=='8' %}selected{% endif %}>8</option>
@@ -330,33 +370,33 @@
           <option value="0" {% if form_data and form_data.item16=='0' %}selected{% endif %}>0</option>
         </select>
         <label>Comment:</label>
-        <textarea name="comment_item16">{{ form_data.comment_item16 if form_data and form_data.comment_item16 is defined else '' }}</textarea>
+        <textarea name="comment_item16">{{ form_data.comment_item16 if form_data and form_data.item16 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 17 – DD Form 200 -->
+      <!-- Item 17 -->
       <div class="item-section">
         <h3>Item 17 – DD Form 200</h3>
-        <p>DD Form 200 status. (2 pts = Correct; 0 pts = Not maintained)</p>
-        <input type="radio" name="item17" value="Yes" {% if form_data and form_data.item17=='Yes' %}checked{% endif %}> Yes
-        <input type="radio" name="item17" value="No" {% if not form_data or form_data.item17!='Yes' %}checked{% endif %}> No
+        <p>(2=Correct; 0=Not maintained)</p>
+        <input type="radio" name="item17" value="Yes" {% if form_data and form_data.item17=='Yes' %}checked{% endif %}>Yes
+        <input type="radio" name="item17" value="No" {% if not form_data or form_data.item17!='Yes' %}checked{% endif %}>No<br>
         <label>Comment:</label>
-        <textarea name="comment_item17">{{ form_data.comment_item17 if form_data and form_data.comment_item17 is defined else '' }}</textarea>
+        <textarea name="comment_item17">{{ form_data.comment_item17 if form_data and form_data.item17 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 18 – Borrowed Material Tickler File -->
+      <!-- Item 18 -->
       <div class="item-section">
         <h3>Item 18 – Borrowed Material Tickler File</h3>
-        <p>Borrow log verification. (2 pts = Valid; 0 pts = Not managed)</p>
-        <input type="radio" name="item18" value="Yes" {% if form_data and form_data.item18=='Yes' %}checked{% endif %}> Yes
-        <input type="radio" name="item18" value="No" {% if not form_data or form_data.item18!='Yes' %}checked{% endif %}> No
+        <p>(2=Valid; 0=Not managed)</p>
+        <input type="radio" name="item18" value="Yes" {% if form_data and form_data.item18=='Yes' %}checked{% endif %}>Yes
+        <input type="radio" name="item18" value="No" {% if not form_data or form_data.item18!='Yes' %}checked{% endif %}>No<br>
         <label>Comment:</label>
-        <textarea name="comment_item18">{{ form_data.comment_item18 if form_data and form_data.comment_item18 is defined else '' }}</textarea>
+        <textarea name="comment_item18">{{ form_data.comment_item18 if form_data and form_data.item18 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 19 – Project Brief -->
+      <!-- Item 19 -->
       <div class="item-section">
         <h3>Item 19 – Project Brief</h3>
-        <p>Project brief quality. (5 pts = Detailed; 3 pts = Acceptable; 2/0 pts otherwise)</p>
+        <p>(5=Detailed; 3=Acceptable; 2/0 otherwise)</p>
         <select name="item19">
           <option value="5" {% if form_data and form_data.item19=='5' %}selected{% endif %}>5</option>
           <option value="3" {% if form_data and form_data.item19=='3' %}selected{% endif %}>3</option>
@@ -364,13 +404,13 @@
           <option value="0" {% if form_data and form_data.item19=='0' %}selected{% endif %}>0</option>
         </select>
         <label>Comment:</label>
-        <textarea name="comment_item19">{{ form_data.comment_item19 if form_data and form_data.comment_item19 is defined else '' }}</textarea>
+        <textarea name="comment_item19">{{ form_data.comment_item19 if form_data and form_data.item19 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 20 – Calculate Manday Capability -->
+      <!-- Item 20 -->
       <div class="item-section">
         <h3>Item 20 – Calculate Manday Capability</h3>
-        <p>Crew composition &amp; MD capability. (6 pts = Matches; 4/2/0 pts otherwise)</p>
+        <p>(6=Matches; 4/2/0 otherwise)</p>
         <select name="item20">
           <option value="6" {% if form_data and form_data.item20=='6' %}selected{% endif %}>6</option>
           <option value="4" {% if form_data and form_data.item20=='4' %}selected{% endif %}>4</option>
@@ -378,13 +418,13 @@
           <option value="0" {% if form_data and form_data.item20=='0' %}selected{% endif %}>0</option>
         </select>
         <label>Comment:</label>
-        <textarea name="comment_item20">{{ form_data.comment_item20 if form_data and form_data.comment_item20 is defined else '' }}</textarea>
+        <textarea name="comment_item20">{{ form_data.comment_item20 if form_data and form_data.item20 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 21 – Equipment -->
+      <!-- Item 21 -->
       <div class="item-section">
         <h3>Item 21 – Equipment</h3>
-        <p>Equipment adequacy. (6 pts = All onsite; 4 pts = Acceptable; 2/0 pts otherwise)</p>
+        <p>(6=All onsite; 4=Acceptable; 2/0 otherwise)</p>
         <select name="item21">
           <option value="6" {% if form_data and form_data.item21=='6' %}selected{% endif %}>6</option>
           <option value="4" {% if form_data and form_data.item21=='4' %}selected{% endif %}>4</option>
@@ -392,13 +432,13 @@
           <option value="0" {% if form_data and form_data.item21=='0' %}selected{% endif %}>0</option>
         </select>
         <label>Comment:</label>
-        <textarea name="comment_item21">{{ form_data.comment_item21 if form_data and form_data.comment_item21 is defined else '' }}</textarea>
+        <textarea name="comment_item21">{{ form_data.comment_item21 if form_data and form_data.item21 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 22 – CASS Spot Check -->
+      <!-- Item 22 -->
       <div class="item-section">
         <h3>Item 22 – CASS Spot Check</h3>
-        <p>CASS review. (12 pts = 100% compliant; 8/4/0 pts otherwise)</p>
+        <p>(12=100% compliant; 8/4/0 otherwise)</p>
         <select name="item22">
           <option value="12" {% if form_data and form_data.item22=='12' %}selected{% endif %}>12</option>
           <option value="8" {% if form_data and form_data.item22=='8' %}selected{% endif %}>8</option>
@@ -406,40 +446,40 @@
           <option value="0" {% if form_data and form_data.item22=='0' %}selected{% endif %}>0</option>
         </select>
         <label>Comment:</label>
-        <textarea name="comment_item22">{{ form_data.comment_item22 if form_data and form_data.comment_item22 is defined else '' }}</textarea>
+        <textarea name="comment_item22">{{ form_data.comment_item22 if form_data and form_data.item22 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 23 – Designation Letters -->
+      <!-- Item 23 -->
       <div class="item-section">
         <h3>Item 23 – Designation Letters</h3>
-        <p>Designation letters status. (5 pts = Current; 3 pts = Not up-to-date; 0 pts = Missing)</p>
+        <p>(5=Current; 3=Not up-to-date; 0=Missing)</p>
         <select name="item23">
           <option value="5" {% if form_data and form_data.item23=='5' %}selected{% endif %}>5</option>
           <option value="3" {% if form_data and form_data.item23=='3' %}selected{% endif %}>3</option>
           <option value="0" {% if form_data and form_data.item23=='0' %}selected{% endif %}>0</option>
         </select>
         <label>Comment:</label>
-        <textarea name="comment_item23">{{ form_data.comment_item23 if form_data and form_data.comment_item23 is defined else '' }}</textarea>
+        <textarea name="comment_item23">{{ form_data.comment_item23 if form_data and form_data.item23 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 24 – Job Box Review -->
+      <!-- Item 24 -->
       <div class="item-section">
         <h3>Item 24 – Job Box Review</h3>
-        <p>Review jobsite board items. (20 pts maximum; deductions apply)</p>
+        <p>(20 pts max; deductions apply)</p>
         <select name="item24">
           <option value="20" {% if form_data and form_data.item24=='20' %}selected{% endif %}>20</option>
           <option value="0" {% if form_data and form_data.item24=='0' %}selected{% endif %}>0</option>
-        </select>
+        </select><br>
         <label>Deduction:</label>
         <input type="number" name="deduction24" value="{{ form_data.deduction24 if form_data and form_data.deduction24 is defined else '0' }}" min="0" max="20">
         <label>Comment:</label>
-        <textarea name="comment_item24">{{ form_data.comment_item24 if form_data and form_data.comment_item24 is defined else '' }}</textarea>
+        <textarea name="comment_item24">{{ form_data.comment_item24 if form_data and form_data.item24 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 25 – Review QC Package -->
+      <!-- Item 25 -->
       <div class="item-section">
         <h3>Item 25 – Review QC Package</h3>
-        <p>QC package review. (8 pts = Comprehensive; 6/4/0 pts otherwise)</p>
+        <p>(8=Comprehensive; 6/4/0 otherwise)</p>
         <select name="item25">
           <option value="8" {% if form_data and form_data.item25=='8' %}selected{% endif %}>8</option>
           <option value="6" {% if form_data and form_data.item25=='6' %}selected{% endif %}>6</option>
@@ -447,26 +487,26 @@
           <option value="0" {% if form_data and form_data.item25=='0' %}selected{% endif %}>0</option>
         </select>
         <label>Comment:</label>
-        <textarea name="comment_item25">{{ form_data.comment_item25 if form_data and form_data.comment_item25 is defined else '' }}</textarea>
+        <textarea name="comment_item25">{{ form_data.comment_item25 if form_data and form_data.item25 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 26 – Submittals -->
+      <!-- Item 26 -->
       <div class="item-section">
         <h3>Item 26 – Submittals</h3>
-        <p>Material submittals. (4 pts = Current; 2 pts = Not current; 0 pts = Not submitted)</p>
+        <p>(4=Current; 2=Not current; 0=Not submitted)</p>
         <select name="item26">
           <option value="4" {% if form_data and form_data.item26=='4' %}selected{% endif %}>4</option>
           <option value="2" {% if form_data and form_data.item26=='2' %}selected{% endif %}>2</option>
           <option value="0" {% if form_data and form_data.item26=='0' %}selected{% endif %}>0</option>
         </select>
         <label>Comment:</label>
-        <textarea name="comment_item26">{{ form_data.comment_item26 if form_data and form_data.comment_item26 is defined else '' }}</textarea>
+        <textarea name="comment_item26">{{ form_data.comment_item26 if form_data and form_data.item26 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 27a – QC Inspection Plan -->
+      <!-- Item 27a -->
       <div class="item-section">
         <h3>Item 27a – QC Inspection Plan</h3>
-        <p>QC Inspection Plan. (10 pts = 100% quantifiable; 7/3/0 pts otherwise)</p>
+        <p>(10=100% quantifiable; 7/3/0 otherwise)</p>
         <select name="item27a">
           <option value="10" {% if form_data and form_data.item27a=='10' %}selected{% endif %}>10</option>
           <option value="8" {% if form_data and form_data.item27a=='8' %}selected{% endif %}>8</option>
@@ -474,43 +514,46 @@
           <option value="0" {% if form_data and form_data.item27a=='0' %}selected{% endif %}>0</option>
         </select>
         <label>Comment:</label>
-        <textarea name="comment_item27a">{{ form_data.comment_item27a if form_data and form_data.comment_item27a is defined else '' }}</textarea>
+        <textarea name="comment_item27a">{{ form_data.comment_item27a if form_data and form_data.item27a is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 27b – QC Inspection -->
+      <!-- Item 27b -->
       <div class="item-section">
         <h3>Item 27b – QC Inspection</h3>
-        <p>On-site QC inspection. (5 pts = No discrepancies; 0 pts otherwise)</p>
+        <p>(5=No discrepancies; 0 otherwise)</p>
         <select name="item27b">
           <option value="5" {% if form_data and form_data.item27b=='5' %}selected{% endif %}>5</option>
           <option value="0" {% if form_data and form_data.item27b=='0' %}selected{% endif %}>0</option>
         </select>
         <label>Comment:</label>
-        <textarea name="comment_item27b">{{ form_data.comment_item27b if form_data and form_data.comment_item27b is defined else '' }}</textarea>
+        <textarea name="comment_item27b">{{ form_data.comment_item27b if form_data and form_data.item27b is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 28 – Job Box Review (QC) -->
+      <!-- Item 28 -->
       <div class="item-section">
         <h3>Item 28 – Job Box Review (QC)</h3>
-        <p>Review QC plan and daily QC reports. (5 pts = Up-to-date; deductions apply)</p>
+        <p>(5 pts=Up-to-date; deductions apply)</p>
+        <label>Deduction:</label>
         <input type="number" name="deduction28" value="{{ form_data.deduction28 if form_data and form_data.deduction28 is defined else '0' }}" min="0" max="5">
         <label>Comment:</label>
-        <textarea name="comment_item28">{{ form_data.comment_item28 if form_data and form_data.comment_item28 is defined else '' }}</textarea>
+        <textarea name="comment_item28">{{ form_data.comment_item28 if form_data and form_data.item28 is defined else '' }}</textarea>
       </div>
 
-      <!-- Item 29 – Job Box Review (Safety) -->
+      <!-- Item 29 -->
       <div class="item-section">
         <h3>Item 29 – Job Box Review (Safety)</h3>
-        <p>Review safety plan, daily safety reports, and emergency contacts. (5 pts = Up-to-date; deductions apply)</p>
+        <p>(5 pts=Up-to-date; deductions apply)</p>
+        <label>Deduction:</label>
         <input type="number" name="deduction29" value="{{ form_data.deduction29 if form_data and form_data.deduction29 is defined else '0' }}" min="0" max="5">
         <label>Comment:</label>
-        <textarea name="comment_item29">{{ form_data.comment_item29 if form_data and form_data.comment_item29 is defined else '' }}</textarea>
+        <textarea name="comment_item29">{{ form_data.comment_item29 if form_data and form_data.item29 is defined else '' }}</textarea>
       </div>
 
       <button type="submit">Calculate Final Score</button>
     </form>
   </div>
 
+  <!-- JS for Item 4 dynamic calculation -->
   <script>
     function calculateItem4Score() {
       var total_md = parseFloat(document.getElementById("total_md").value) || 0;
@@ -518,28 +561,28 @@
       var actual_wip = parseFloat(document.getElementById("actual_wip").value) || 0;
       var allowed;
       if (total_md < 1000) {
-          allowed = 10;
+        allowed = 10;
       } else if (total_md < 2000) {
-          allowed = 5;
+        allowed = 5;
       } else {
-          allowed = 2.5;
+        allowed = 2.5;
       }
       var diff = Math.abs(actual_wip - planned_wip);
       var score;
       if (diff === 0) {
-          score = 16;
+        score = 16;
       } else if (diff <= allowed) {
-          score = 12;
+        score = 12;
       } else {
-          score = 4;
+        score = 4;
       }
       document.getElementById("item4_score_display").innerText = "Calculated Score for Item 4: " + score;
       document.getElementById("item4_score").value = score;
       if (score !== 16) {
-          document.getElementById("item4_comment_div").style.display = "block";
+        document.getElementById("item4_comment_div").style.display = "block";
       } else {
-          document.getElementById("item4_comment_div").style.display = "none";
-          document.getElementById("comment_item4").value = "";
+        document.getElementById("item4_comment_div").style.display = "none";
+        document.getElementById("comment_item4").value = "";
       }
     }
     document.getElementById("total_md").addEventListener("input", calculateItem4Score);
