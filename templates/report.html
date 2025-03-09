@@ -118,6 +118,8 @@
   <div class="container">
     <h2>Construction Quality Inspection Report</h2>
 
+    <p><strong>Date of Inspection:</strong> <span id="inspection_date"></span></p>
+
     <h3>Project Information</h3>
     <p><strong>Project Name:</strong> {{ assessment.project_name }}</p>
     <p><strong>Battalion:</strong> {{ assessment.battalion }}</p>
@@ -199,6 +201,12 @@
     <button onclick="window.print()" class="no-print">Print Report</button>
   </div>
 
+  <script>
+    // Format the current date as "DD MMM YYYY"
+    var options = { day: '2-digit', month: 'short', year: 'numeric' };
+    var inspectionDate = new Date().toLocaleDateString('en-US', options);
+    document.getElementById('inspection_date').innerText = inspectionDate;
+  </script>
   <!-- Include Signature Pad library -->
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
   <script>
