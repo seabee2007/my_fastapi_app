@@ -58,6 +58,9 @@
       object-fit: contain;
       border-radius: var(--border-radius);
     }
+    .signature-pad-container {
+      margin-bottom: 20px;
+    }
     .page-break {
       margin-top: 30px;
     }
@@ -107,59 +110,120 @@
       <p>No final score computed yet.</p>
     {% endif %}
 
-    <!-- Comments section: only show if final score is less than maximum -->
+    <!-- Comments: Display only if final score is less than 171 -->
     {% if assessment.final_score is not none and assessment.final_score < 171 %}
       <h3>Comments</h3>
       <ul>
-        {% if assessment.comment_item1 %}<li>Item 1 Comment: {{ assessment.comment_item1 }}</li>{% endif %}
-        {% if assessment.comment_item2 %}<li>Item 2 Comment: {{ assessment.comment_item2 }}</li>{% endif %}
-        {% if assessment.comment_item3 %}<li>Item 3 Comment: {{ assessment.comment_item3 }}</li>{% endif %}
-        {% if assessment.comment_item4 %}<li>Item 4 Comment: {{ assessment.comment_item4 }}</li>{% endif %}
-        {% if assessment.comment_item5 %}<li>Item 5 Comment: {{ assessment.comment_item5 }}</li>{% endif %}
-        {% if assessment.comment_item6 %}<li>Item 6 Comment: {{ assessment.comment_item6 }}</li>{% endif %}
-        {% if assessment.comment_item7 %}<li>Item 7 Comment: {{ assessment.comment_item7 }}</li>{% endif %}
-        {% if assessment.comment_item8 %}<li>Item 8 Comment: {{ assessment.comment_item8 }}</li>{% endif %}
-        {% if assessment.comment_item9 %}<li>Item 9 Comment: {{ assessment.comment_item9 }}</li>{% endif %}
-        {% if assessment.comment_item10 %}<li>Item 10 Comment: {{ assessment.comment_item10 }}</li>{% endif %}
-        {% if assessment.comment_item11 %}<li>Item 11 Comment: {{ assessment.comment_item11 }}</li>{% endif %}
-        {% if assessment.comment_item12 %}<li>Item 12 Comment: {{ assessment.comment_item12 }}</li>{% endif %}
-        {% if assessment.comment_item13 %}<li>Item 13 Comment: {{ assessment.comment_item13 }}</li>{% endif %}
-        {% if assessment.comment_item14 %}<li>Item 14 Comment: {{ assessment.comment_item14 }}</li>{% endif %}
-        {% if assessment.comment_item15 %}<li>Item 15 Comment: {{ assessment.comment_item15 }}</li>{% endif %}
-        {% if assessment.comment_item16 %}<li>Item 16 Comment: {{ assessment.comment_item16 }}</li>{% endif %}
-        {% if assessment.comment_item17 %}<li>Item 17 Comment: {{ assessment.comment_item17 }}</li>{% endif %}
-        {% if assessment.comment_item18 %}<li>Item 18 Comment: {{ assessment.comment_item18 }}</li>{% endif %}
-        {% if assessment.comment_item19 %}<li>Item 19 Comment: {{ assessment.comment_item19 }}</li>{% endif %}
-        {% if assessment.comment_item20 %}<li>Item 20 Comment: {{ assessment.comment_item20 }}</li>{% endif %}
-        {% if assessment.comment_item21 %}<li>Item 21 Comment: {{ assessment.comment_item21 }}</li>{% endif %}
-        {% if assessment.comment_item22 %}<li>Item 22 Comment: {{ assessment.comment_item22 }}</li>{% endif %}
-        {% if assessment.comment_item23 %}<li>Item 23 Comment: {{ assessment.comment_item23 }}</li>{% endif %}
-        {% if assessment.comment_item24 %}<li>Item 24 Comment: {{ assessment.comment_item24 }}</li>{% endif %}
-        {% if assessment.comment_item25 %}<li>Item 25 Comment: {{ assessment.comment_item25 }}</li>{% endif %}
-        {% if assessment.comment_item26 %}<li>Item 26 Comment: {{ assessment.comment_item26 }}</li>{% endif %}
-        {% if assessment.comment_item27a %}<li>Item 27a Comment: {{ assessment.comment_item27a }}</li>{% endif %}
-        {% if assessment.comment_item27b %}<li>Item 27b Comment: {{ assessment.comment_item27b }}</li>{% endif %}
-        {% if assessment.comment_item28 %}<li>Item 28 Comment: {{ assessment.comment_item28 }}</li>{% endif %}
-        {% if assessment.comment_item29 %}<li>Item 29 Comment: {{ assessment.comment_item29 }}</li>{% endif %}
+        {% if assessment.comment_item1 %}<li>Item 1: {{ assessment.comment_item1 }}</li>{% endif %}
+        {% if assessment.comment_item2 %}<li>Item 2: {{ assessment.comment_item2 }}</li>{% endif %}
+        {% if assessment.comment_item3 %}<li>Item 3: {{ assessment.comment_item3 }}</li>{% endif %}
+        {% if assessment.comment_item4 %}<li>Item 4: {{ assessment.comment_item4 }}</li>{% endif %}
+        {% if assessment.comment_item5 %}<li>Item 5: {{ assessment.comment_item5 }}</li>{% endif %}
+        {% if assessment.comment_item6 %}<li>Item 6: {{ assessment.comment_item6 }}</li>{% endif %}
+        {% if assessment.comment_item78 %}<li>Items 7 &amp; 8: {{ assessment.comment_item78 }}</li>{% endif %}
+        {% if assessment.comment_item9 %}<li>Item 9: {{ assessment.comment_item9 }}</li>{% endif %}
+        {% if assessment.comment_item10 %}<li>Item 10: {{ assessment.comment_item10 }}</li>{% endif %}
+        {% if assessment.comment_item11 %}<li>Item 11: {{ assessment.comment_item11 }}</li>{% endif %}
+        {% if assessment.comment_item12 %}<li>Item 12: {{ assessment.comment_item12 }}</li>{% endif %}
+        {% if assessment.comment_item13 %}<li>Item 13: {{ assessment.comment_item13 }}</li>{% endif %}
+        {% if assessment.comment_item14 %}<li>Item 14: {{ assessment.comment_item14 }}</li>{% endif %}
+        {% if assessment.comment_item15 %}<li>Item 15: {{ assessment.comment_item15 }}</li>{% endif %}
+        {% if assessment.comment_item16 %}<li>Item 16: {{ assessment.comment_item16 }}</li>{% endif %}
+        {% if assessment.comment_item17 %}<li>Item 17: {{ assessment.comment_item17 }}</li>{% endif %}
+        {% if assessment.comment_item18 %}<li>Item 18: {{ assessment.comment_item18 }}</li>{% endif %}
+        {% if assessment.comment_item19 %}<li>Item 19: {{ assessment.comment_item19 }}</li>{% endif %}
+        {% if assessment.comment_item20 %}<li>Item 20: {{ assessment.comment_item20 }}</li>{% endif %}
+        {% if assessment.comment_item21 %}<li>Item 21: {{ assessment.comment_item21 }}</li>{% endif %}
+        {% if assessment.comment_item22 %}<li>Item 22: {{ assessment.comment_item22 }}</li>{% endif %}
+        {% if assessment.comment_item23 %}<li>Item 23: {{ assessment.comment_item23 }}</li>{% endif %}
+        {% if assessment.comment_item24 %}<li>Item 24: {{ assessment.comment_item24 }}</li>{% endif %}
+        {% if assessment.comment_item25 %}<li>Item 25: {{ assessment.comment_item25 }}</li>{% endif %}
+        {% if assessment.comment_item26 %}<li>Item 26: {{ assessment.comment_item26 }}</li>{% endif %}
+        {% if assessment.comment_item27a %}<li>Item 27a: {{ assessment.comment_item27a }}</li>{% endif %}
+        {% if assessment.comment_item27b %}<li>Item 27b: {{ assessment.comment_item27b }}</li>{% endif %}
+        {% if assessment.comment_item28 %}<li>Item 28: {{ assessment.comment_item28 }}</li>{% endif %}
+        {% if assessment.comment_item29 %}<li>Item 29: {{ assessment.comment_item29 }}</li>{% endif %}
       </ul>
     {% endif %}
 
     <h3>Signatures</h3>
+    <!-- OIC Signature -->
     <p><strong>OIC Signature:</strong></p>
     {% if assessment.signature_oic %}
       <img src="data:image/png;base64,{{ assessment.signature_oic }}" alt="OIC Signature" class="signature">
     {% else %}
-      <p>No OIC signature available.</p>
+      <div class="signature-pad-container no-print">
+        <canvas id="oic_canvas" class="signature"></canvas>
+        <button id="oic_clear" type="button">Clear OIC Signature</button>
+      </div>
     {% endif %}
-    
+
+    <!-- 30 NCR Signature -->
     <p><strong>30 NCR Signature:</strong></p>
     {% if assessment.signature_ncr %}
       <img src="data:image/png;base64,{{ assessment.signature_ncr }}" alt="30 NCR Signature" class="signature">
     {% else %}
-      <p>No 30 NCR signature available.</p>
+      <div class="signature-pad-container no-print">
+        <canvas id="ncr_canvas" class="signature"></canvas>
+        <button id="ncr_clear" type="button">Clear 30 NCR Signature</button>
+      </div>
+    {% endif %}
+
+    {% if not (assessment.signature_oic and assessment.signature_ncr) %}
+      <!-- Form to submit signatures -->
+      <form id="signature_form" method="post" action="/save_signatures/{{ assessment.id }}" class="no-print">
+        <input type="hidden" name="oic_signature" id="oic_signature">
+        <input type="hidden" name="ncr_signature" id="ncr_signature">
+        <button type="submit">Submit Signatures</button>
+      </form>
     {% endif %}
 
     <button onclick="window.print()" class="no-print">Print Report</button>
   </div>
+
+  <!-- Include Signature Pad library -->
+  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+  <script>
+    // Initialize OIC signature pad if signature is missing.
+    {% if not assessment.signature_oic %}
+      var oicCanvas = document.getElementById('oic_canvas');
+      var oicSignaturePad = new SignaturePad(oicCanvas);
+      document.getElementById('oic_clear').addEventListener('click', function() {
+        oicSignaturePad.clear();
+      });
+    {% endif %}
+
+    // Initialize NCR signature pad if signature is missing.
+    {% if not assessment.signature_ncr %}
+      var ncrCanvas = document.getElementById('ncr_canvas');
+      var ncrSignaturePad = new SignaturePad(ncrCanvas);
+      document.getElementById('ncr_clear').addEventListener('click', function() {
+        ncrSignaturePad.clear();
+      });
+    {% endif %}
+
+    // On submission of the signature form, capture the signatures as base64 strings.
+    var signatureForm = document.getElementById('signature_form');
+    if (signatureForm) {
+      signatureForm.addEventListener('submit', function(e) {
+        {% if not assessment.signature_oic %}
+          if (oicSignaturePad.isEmpty()) {
+            alert("Please provide an OIC signature.");
+            e.preventDefault();
+            return false;
+          }
+          document.getElementById('oic_signature').value = oicSignaturePad.toDataURL();
+        {% endif %}
+        {% if not assessment.signature_ncr %}
+          if (ncrSignaturePad.isEmpty()) {
+            alert("Please provide a 30 NCR signature.");
+            e.preventDefault();
+            return false;
+          }
+          document.getElementById('ncr_signature').value = ncrSignaturePad.toDataURL();
+        {% endif %}
+      });
+    }
+  </script>
 </body>
 </html>
