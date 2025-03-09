@@ -511,6 +511,118 @@
     </form>
   </div>
 
+
+<!-- Modal Calculator Icon -->
+<div id="calc-icon" class="calc-icon">🖩</div>
+
+<!-- Modal Calculator Structure -->
+<div id="calc-modal" class="calc-modal">
+  <div class="calc-content">
+    <span id="calc-close" class="calc-close">&times;</span>
+    <h2>Calculator</h2>
+    <input type="text" id="calc-input" placeholder="Enter expression" style="width:100%; padding:10px; margin-bottom:10px; font-size:1em;">
+    <button id="calc-evaluate" style="width:100%; padding:10px; font-size:1em;">Calculate</button>
+    <p id="calc-result" style="text-align:center; font-size:1.2em; margin-top:10px;"></p>
+  </div>
+</div>
+
+<!-- Modal Calculator Styles -->
+<style>
+  .calc-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--primary-color, #007bff);
+    color: #fff;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  }
+  .calc-modal {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+  }
+  .calc-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 400px;
+    border-radius: var(--border-radius, 5px);
+    text-align: center;
+  }
+  .calc-close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .calc-close:hover,
+  .calc-close:focus {
+    color: black;
+    text-decoration: none;
+  }
+</style>
+
+<!-- Modal Calculator Script -->
+<script>
+  // Get elements
+  var calcModal = document.getElementById("calc-modal");
+  var calcIcon = document.getElementById("calc-icon");
+  var calcClose = document.getElementById("calc-close");
+  var calcInput = document.getElementById("calc-input");
+  var calcEvaluate = document.getElementById("calc-evaluate");
+  var calcResult = document.getElementById("calc-result");
+
+  // When the icon is clicked, open the modal
+  calcIcon.onclick = function() {
+    calcModal.style.display = "block";
+  };
+
+  // When the close button is clicked, close the modal
+  calcClose.onclick = function() {
+    calcModal.style.display = "none";
+    calcResult.textContent = "";
+    calcInput.value = "";
+  };
+
+  // When the evaluate button is clicked, calculate the result
+  calcEvaluate.onclick = function() {
+    try {
+      // Using eval for simplicity (use caution in production)
+      var result = eval(calcInput.value);
+      calcResult.textContent = "Result: " + result;
+    } catch (error) {
+      calcResult.textContent = "Error: Invalid expression";
+    }
+  };
+
+  // Close the modal if the user clicks outside of the content area
+  window.onclick = function(event) {
+    if (event.target == calcModal) {
+      calcModal.style.display = "none";
+      calcResult.textContent = "";
+      calcInput.value = "";
+    }
+  };
+</script>
+
+
+  
   <script>
     function calculateItem4Score() {
       var total_md = parseFloat(document.getElementById("total_md").value) || 0;
