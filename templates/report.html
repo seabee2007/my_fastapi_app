@@ -52,11 +52,11 @@
     }
     .signature {
       border: 1px solid var(--border-color);
+      /* CSS sizing for layout */
       width: 300px;
       height: 70px;
       display: block;
       margin: 0 auto 20px;
-      object-fit: contain;
       border-radius: var(--border-radius);
     }
     .signature-pad-container {
@@ -121,7 +121,6 @@
       <p>No final score computed yet.</p>
     {% endif %}
 
-    <!-- Conditionally display comments if the final score is below maximum -->
     {% if assessment.final_score is not none and assessment.final_score < 171 %}
       <h3>Comments</h3>
       <ul>
@@ -158,21 +157,23 @@
     {% endif %}
 
     <h3>Signatures</h3>
+    <p><strong>OIC Signature:</strong></p>
     {% if assessment.signature_oic %}
-      <p><strong>OIC Signature:</strong></p>
       <img src="data:image/png;base64,{{ assessment.signature_oic }}" alt="OIC Signature" class="signature">
     {% else %}
-      <p><strong>OIC Signature:</strong> Please sign below:</p>
-      <canvas id="oic_canvas" class="signature"></canvas>
+      <p>Please sign below:</p>
+      <!-- Set canvas intrinsic dimensions -->
+      <canvas id="oic_canvas" class="signature" width="300" height="70"></canvas>
       <button id="oic_clear" type="button" class="no-print">Clear OIC Signature</button>
     {% endif %}
     
+    <p><strong>30 NCR Signature:</strong></p>
     {% if assessment.signature_ncr %}
-      <p><strong>30 NCR Signature:</strong></p>
       <img src="data:image/png;base64,{{ assessment.signature_ncr }}" alt="30 NCR Signature" class="signature">
     {% else %}
-      <p><strong>30 NCR Signature:</strong> Please sign below:</p>
-      <canvas id="ncr_canvas" class="signature"></canvas>
+      <p>Please sign below:</p>
+      <!-- Set canvas intrinsic dimensions -->
+      <canvas id="ncr_canvas" class="signature" width="300" height="70"></canvas>
       <button id="ncr_clear" type="button" class="no-print">Clear 30 NCR Signature</button>
     {% endif %}
 
@@ -184,14 +185,12 @@
       </form>
     {% endif %}
 
-    <!-- Print button -->
     <button onclick="window.print()" class="no-print">Print Report</button>
   </div>
 
-  <!-- Signature Pad library -->
+  <!-- Include Signature Pad library -->
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
   <script>
-    // Initialize signature pads if signatures are not already saved
     {% if not assessment.signature_oic %}
       var oicCanvas = document.getElementById('oic_canvas');
       var oicSignaturePad = new SignaturePad(oicCanvas);
@@ -207,24 +206,25 @@
       });
     {% endif %}
 
-    // On signature form submission, capture the signature data as base64 strings
-    document.getElementById('signature_form') && document.getElementById('signature_form').addEventListener('submit', function(e) {
-      {% if not assessment.signature_oic %}
-        if (oicSignaturePad.isEmpty()) {
-          alert("Please provide an OIC signature.");
-          e.preventDefault();
-          return false;
-        }
-        document.getElementById('oic_signature').value = oicSignaturePad.toDataURL();
-      {% endif %}
-      {% if not assessment.signature_ncr %}
-        if (ncrSignaturePad.isEmpty()) {
-          alert("Please provide a 30 NCR signature.");
-          e.preventDefault();
-          return false;
-        }
-        document.getElementById('ncr_signature').value = ncrSignaturePad.toDataURL();
-      {% endif %}
+    var signatureForm = document.getElementById('signature_form');
+    if (signatureForm) {
+      signatureForm.addEventListener('submit', function(e) {
+        {% if not assessment.signature_oic %}
+          if (oicSignaturePad.isEmpty()) {
+            alert("Please provide an OIC signature.");
+            e.preventDefault();
+            return false;
+          }
+          document.getElementById('oic_signature').value = oicSignaturePad.toDataURL();
+        {% endif %}
+        {% if not assessment.signature_ncr %}
+          if (ncrSignaturePad.isEmpty()) {
+            alert("Please provide a 30 NCR signature.");
+            e.preventDefault();
+            return false;
+          }
+          document.getElementById('ncr_signature').value = ncrSignaturePad.toDataURL();
+        {% endif %}
       });
     }
   </script>
