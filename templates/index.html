@@ -139,10 +139,18 @@
         <label>Project Name:</label>
         <input type="text" name="project_name" value="{{ form_data.project_name if form_data and form_data.project_name is defined else '' }}">
       </div>
-      <div class="item-section">
-        <label>Battalion:</label>
-        <input type="text" name="battalion" value="{{ form_data.battalion if form_data and form_data.battalion is defined else '' }}">
-      </div>
+<div class="item-section">
+  <label>Battalion:</label>
+  <select name="battalion">
+    <option value="NMCB ONE">NMCB ONE</option>
+    <option value="NMCB THREE">NMCB THREE</option>
+    <option value="NMCB FOUR">NMCB FOUR</option>
+    <option value="NMCB FIVE">NMCB FIVE</option>
+    <option value="NMCB ELEVEN">NMCB ELEVEN</option>
+    <option value="NMCB ONE THIRTY THREE">NMCB ONE THIRTY THREE</option>
+  </select>
+</div>
+
       <div class="item-section">
         <label>OIC:</label>
         <input type="text" name="oic_name" value="{{ form_data.oic_name if form_data and form_data.oic_name is defined else '' }}">
