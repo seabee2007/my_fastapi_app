@@ -28,11 +28,10 @@
       margin: 0 auto;
       background: var(--container-bg);
       padding: 30px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
       border-radius: var(--border-radius);
     }
     h2, h3 {
-      color: var(--font-color);
       margin-bottom: 15px;
     }
     p {
@@ -48,14 +47,34 @@
       object-fit: contain;
       border-radius: var(--border-radius);
     }
+    .page-break {
+      margin-top: 30px;
+    }
     @media print {
+      .no-print {
+        display: none;
+      }
       .page-break {
         page-break-before: always;
       }
     }
+    button {
+      background-color: var(--primary-color);
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-size: 1em;
+      transition: background-color 0.3s ease;
+      margin: 10px 0;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
   </style>
 </head>
-<body onload="window.print()">
+<body>
   <div class="container">
     <h2>Construction Quality Inspection Report</h2>
 
@@ -77,27 +96,83 @@
       <p>No final score computed yet.</p>
     {% endif %}
 
-    <h3>Signatures</h3>
-    <p><strong>OIC Signature:</strong></p>
-    {% if assessment.signature_oic %}
-      <img src="data:image/png;base64,{{ assessment.signature_oic }}" alt="OIC Signature" class="signature">
-    {% else %}
-      <p>No OIC signature</p>
-    {% endif %}
-    
-    <p><strong>30 NCR Signature:</strong></p>
-    {% if assessment.signature_ncr %}
-      <img src="data:image/png;base64,{{ assessment.signature_ncr }}" alt="30 NCR Signature" class="signature">
-    {% else %}
-      <p>No 30 NCR signature</p>
+    <!-- Comments section: Only display if final score is less than 171 -->
+    {% if assessment.final_score is not none and assessment.final_score < 171 %}
+      <h3>Comments</h3>
+      <p>
+        One or more items did not receive full points. Please review the item-specific comments in the assessment record.
+      </p>
     {% endif %}
 
-    <div class="page-break"></div>
-    <h3>Comments</h3>
-    <p>
-      Detailed item-by-item comments are stored with the assessment record.
-      <!-- Optionally, you can list out individual comments for each item if desired. -->
-    </p>
+    <h3>Signatures</h3>
+    {% if assessment.signature_oic %}
+      <p><strong>OIC Signature:</strong></p>
+      <img src="data:image/png;base64,{{ assessment.signature_oic }}" alt="OIC Signature" class="signature">
+    {% else %}
+      <p><strong>OIC Signature:</strong> Please sign below:</p>
+      <canvas id="oic_canvas" class="signature"></canvas>
+      <button id="oic_clear" type="button" class="no-print">Clear OIC Signature</button>
+    {% endif %}
+    
+    {% if assessment.signature_ncr %}
+      <p><strong>30 NCR Signature:</strong></p>
+      <img src="data:image/png;base64,{{ assessment.signature_ncr }}" alt="30 NCR Signature" class="signature">
+    {% else %}
+      <p><strong>30 NCR Signature:</strong> Please sign below:</p>
+      <canvas id="ncr_canvas" class="signature"></canvas>
+      <button id="ncr_clear" type="button" class="no-print">Clear 30 NCR Signature</button>
+    {% endif %}
+
+    {% if not (assessment.signature_oic and assessment.signature_ncr) %}
+      <form id="signature_form" method="post" action="/save_signatures/{{ assessment.id }}" class="no-print">
+        <input type="hidden" name="oic_signature" id="oic_signature">
+        <input type="hidden" name="ncr_signature" id="ncr_signature">
+        <button type="submit">Save Signatures</button>
+      </form>
+    {% endif %}
+
+    <!-- Print button -->
+    <button onclick="window.print()" class="no-print">Print Report</button>
   </div>
+
+  <!-- Signature Pad library -->
+  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+  <script>
+    // Initialize signature pads if signatures are not already saved
+    {% if not assessment.signature_oic %}
+      var oicCanvas = document.getElementById('oic_canvas');
+      var oicSignaturePad = new SignaturePad(oicCanvas);
+      document.getElementById('oic_clear').addEventListener('click', function() {
+        oicSignaturePad.clear();
+      });
+    {% endif %}
+    {% if not assessment.signature_ncr %}
+      var ncrCanvas = document.getElementById('ncr_canvas');
+      var ncrSignaturePad = new SignaturePad(ncrCanvas);
+      document.getElementById('ncr_clear').addEventListener('click', function() {
+        ncrSignaturePad.clear();
+      });
+    {% endif %}
+
+    // On signature form submission, capture the signature data as base64 strings
+    document.getElementById('signature_form') && document.getElementById('signature_form').addEventListener('submit', function(e) {
+      {% if not assessment.signature_oic %}
+        if (oicSignaturePad.isEmpty()) {
+          alert("Please provide an OIC signature.");
+          e.preventDefault();
+          return false;
+        }
+        document.getElementById('oic_signature').value = oicSignaturePad.toDataURL();
+      {% endif %}
+      {% if not assessment.signature_ncr %}
+        if (ncrSignaturePad.isEmpty()) {
+          alert("Please provide a 30 NCR signature.");
+          e.preventDefault();
+          return false;
+        }
+        document.getElementById('ncr_signature').value = ncrSignaturePad.toDataURL();
+      {% endif %}
+    });
+  </script>
 </body>
 </html>
