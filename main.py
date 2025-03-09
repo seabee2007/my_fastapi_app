@@ -6,6 +6,8 @@ from datetime import datetime
 from sqlalchemy import create_engine, Column, Integer, String, Float, Text, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
+from fastapi import FastAPI, Request
+from fastapi.staticfiles import StaticFiles
 
 # Database configuration using SQLite.
 DATABASE_URL = "sqlite:///./app.db"
@@ -61,6 +63,22 @@ class Assessment(Base):
     comment_item27b = Column(Text, nullable=True)
     comment_item28 = Column(Text, nullable=True)
     comment_item29 = Column(Text, nullable=True)
+
+
+app = FastAPI()
+
+# Serve static files from the "static" directory
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Set up templates directory
+templates = Jinja2Templates(directory="templates")
+
+@app.get("/")
+async def read_index(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+
+
 
 # Create the database tables.
 Base.metadata.create_all(bind=engine)
