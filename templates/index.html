@@ -565,396 +565,360 @@
   </div>
 
 
-<!-- PDF Reference Modal Trigger -->
-<div id="pdf-ref-icon" class="pdf-ref-icon">PDF</div>
+  <style>
+    /* ---------- PDF Modal Styles ---------- */
+    .pdf-ref-icon {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: var(--primary-color, #007bff);
+      color: #fff;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      line-height: 50px;
+      cursor: pointer;
+      z-index: 1000;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      transition: background 0.3s;
+    }
+    .pdf-ref-icon:hover {
+      background: #0056b3;
+    }
+    .pdf-ref-modal {
+      display: none;
+      position: fixed;
+      z-index: 1001;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+    .pdf-ref-content {
+      background-color: #fff;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 90%;
+      max-width: 800px;
+      border-radius: 5px;
+      text-align: center;
+    }
+    .pdf-ref-close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    .pdf-ref-close:hover,
+    .pdf-ref-close:focus {
+      color: black;
+      text-decoration: none;
+    }
 
+    /* ---------- Manday Modal Styles ---------- */
+    .manday-icon {
+      position: fixed;
+      bottom: 90px; /* Adjust to appear above the PDF icon */
+      right: 20px;
+      background: var(--primary-color, #007bff);
+      color: #fff;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      line-height: 50px;
+      cursor: pointer;
+      z-index: 1001;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      transition: background 0.3s;
+    }
+    .manday-icon:hover {
+      background: #0056b3;
+    }
+    .manday-modal {
+      display: none;
+      position: fixed;
+      z-index: 1002;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+    .manday-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 5px;
+      text-align: center;
+    }
+    .manday-close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    .manday-close:hover,
+    .manday-close:focus {
+      color: black;
+      text-decoration: none;
+    }
+    .manday-content input[type="number"] {
+      width: 90%;
+      padding: 5px;
+      margin: 5px 0 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1em;
+    }
+
+    /* ---------- Calculator Modal Styles ---------- */
+    .calc-icon {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--primary-color, #007bff);
+      color: #fff;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      line-height: 50px;
+      cursor: pointer;
+      z-index: 1000;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      transition: background 0.3s;
+    }
+    .calc-icon:hover {
+      background: #0056b3;
+    }
+    .calc-modal {
+      display: none;
+      position: fixed;
+      z-index: 1001;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+    .calc-content {
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 5px;
+      text-align: center;
+    }
+    .calc-close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    .calc-close:hover,
+    .calc-close:focus {
+      color: black;
+      text-decoration: none;
+    }
+    .calc-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .calc-btn {
+      padding: 15px;
+      font-size: 1.2em;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      background: #808080;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .calc-btn:hover {
+      background: #a0a0a0;
+    }
+    @media (max-width: 600px) {
+      .calc-content {
+        width: 80%;
+        margin: 20% auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ---------- PDF Modal ---------- -->
+  <!-- PDF Reference Modal Trigger -->
+  <div id="pdf-ref-icon" class="pdf-ref-icon">PDF</div>
   <!-- PDF Reference Modal Structure -->
   <div id="pdf-ref-modal" class="pdf-ref-modal">
     <div class="pdf-ref-content">
       <span id="pdf-ref-close" class="pdf-ref-close">&times;</span>
       <h2>PDF Reference Document</h2>
-      <!-- Adjust the src to point to your PDF file -->
       <iframe src="/static/pdf/NTRP.pdf" width="100%" height="500px" style="border: none;"></iframe>
     </div>
   </div>
 
-<style>
-  /* PDF Reference Icon (positioned as desired, for example, bottom left) */
-.pdf-ref-icon {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  background: var(--primary-color, #007bff);
-  color: #fff;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  text-align: center;
-  line-height: 50px;
-  cursor: pointer;
-  z-index: 1000;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
-}
+  <!-- ---------- Manday Modal ---------- -->
+  <!-- Manday Capability Modal Trigger -->
+  <div id="manday-icon" class="manday-icon">MC</div>
+  <!-- Manday Capability Modal Structure -->
+  <div id="manday-modal" class="manday-modal">
+    <div class="manday-content">
+      <span id="manday-close" class="manday-close">&times;</span>
+      <h2>Manday Capability Calculator</h2>
+      <p>Calculate MD Capability: MC = DL × WD × ME × AF</p>
+      <label for="dl_input">Direct Labor (DL):</label>
+      <input type="number" id="dl_input" placeholder="Enter DL" step="1" min="0">
+      
+      <label for="wd_input">Available Workdays (WD):</label>
+      <input type="number" id="wd_input" placeholder="Enter WD" step="1" min="0">
+      
+      <label for="me_input">Man-day Equivalent (ME):</label>
+      <input type="number" id="me_input" placeholder="Enter ME" step="0.1" min="0">
+      
+      <label for="af_input">Availability Factor (AF):</label>
+      <input type="number" id="af_input" placeholder="Enter AF (0-1)" step="0.01" min="0" max="1">
+      
+      <button id="manday-calc-button">Calculate MD Capability</button>
+      <p id="manday-result">Result: </p>
+    </div>
+  </div>
 
-/* PDF Reference Modal Overlay */
-.pdf-ref-modal {
-  display: none;
-  position: fixed;
-  z-index: 1001;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.4);
-}
+  <!-- ---------- Calculator Modal ---------- -->
+  <!-- Calculator Modal Trigger -->
+  <div id="calc-icon" class="calc-icon">🖩</div>
+  <!-- Calculator Modal Structure -->
+  <div id="calc-modal" class="calc-modal">
+    <div class="calc-content">
+      <span id="calc-close" class="calc-close">&times;</span>
+      <h2>Calculator</h2>
+      <input type="text" id="calc-display" placeholder="0" readonly style="width:100%; padding:10px; margin-bottom:10px; font-size:1em; text-align:right;">
+      <div class="calc-buttons">
+        <button class="calc-btn" data-value="7">7</button>
+        <button class="calc-btn" data-value="8">8</button>
+        <button class="calc-btn" data-value="9">9</button>
+        <button class="calc-btn" data-value="/">/</button>
+        <button class="calc-btn" data-value="4">4</button>
+        <button class="calc-btn" data-value="5">5</button>
+        <button class="calc-btn" data-value="6">6</button>
+        <button class="calc-btn" data-value="*">*</button>
+        <button class="calc-btn" data-value="1">1</button>
+        <button class="calc-btn" data-value="2">2</button>
+        <button class="calc-btn" data-value="3">3</button>
+        <button class="calc-btn" data-value="-">-</button>
+        <button class="calc-btn" data-value="0">0</button>
+        <button class="calc-btn" data-value=".">.</button>
+        <button class="calc-btn" data-value="%">%</button>
+        <button class="calc-btn" data-value="+">+</button>
+        <button class="calc-btn" id="calc-clear" style="grid-column: span 2;">C</button>
+        <button class="calc-btn" id="calc-equals" style="grid-column: span 2;">=</button>
+      </div>
+    </div>
+  </div>
 
-/* PDF Reference Modal Content */
-.pdf-ref-content {
-  background-color: #fff;
-  margin: 5% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 90%;
-  max-width: 800px;
-  border-radius: 5px;
-  text-align: center;
-}
-
-/* Close Button for the Modal */
-.pdf-ref-close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-}
-.pdf-ref-close:hover,
-.pdf-ref-close:focus {
-  color: black;
-  text-decoration: none;
-}
-<script>
-    // Get modal and trigger elements
-    var modal = document.getElementById("pdf-ref-modal");
+  <!-- ---------- JavaScript for Modals ---------- -->
+  <script>
+    /* ---------- PDF Modal ---------- */
+    var pdfModal = document.getElementById("pdf-ref-modal");
     var pdfIcon = document.getElementById("pdf-ref-icon");
-    var closeBtn = document.getElementById("pdf-ref-close");
+    var pdfClose = document.getElementById("pdf-ref-close");
 
-    // Open modal when the icon is clicked
     pdfIcon.addEventListener("click", function() {
-      modal.style.display = "block";
+      pdfModal.style.display = "block";
     });
-
-    // Close modal when the close button is clicked
-    closeBtn.addEventListener("click", function() {
-      modal.style.display = "none";
+    pdfClose.addEventListener("click", function() {
+      pdfModal.style.display = "none";
     });
-
-    // Optional: Close modal if user clicks outside the modal content
     window.addEventListener("click", function(event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
+      if (event.target == pdfModal) {
+        pdfModal.style.display = "none";
+      }
+    });
+
+    /* ---------- Manday Modal ---------- */
+    var mandayModal = document.getElementById("manday-modal");
+    var mandayIcon = document.getElementById("manday-icon");
+    var mandayClose = document.getElementById("manday-close");
+    var mandayCalcButton = document.getElementById("manday-calc-button");
+    var mandayResult = document.getElementById("manday-result");
+
+    mandayIcon.addEventListener("click", function() {
+      mandayModal.style.display = "block";
+    });
+    mandayClose.addEventListener("click", function() {
+      mandayModal.style.display = "none";
+    });
+    window.addEventListener("click", function(event) {
+      if (event.target == mandayModal) {
+        mandayModal.style.display = "none";
+      }
+    });
+    mandayCalcButton.addEventListener("click", function() {
+      var dl = parseFloat(document.getElementById("dl_input").value) || 0;
+      var wd = parseFloat(document.getElementById("wd_input").value) || 0;
+      var me = parseFloat(document.getElementById("me_input").value) || 0;
+      var af = parseFloat(document.getElementById("af_input").value) || 0;
+      var capability = dl * wd * me * af;
+      mandayResult.textContent = "Result: " + capability.toFixed(2) + " MDs";
+    });
+
+    /* ---------- Calculator Modal ---------- */
+    var calcModal = document.getElementById("calc-modal");
+    var calcIcon = document.getElementById("calc-icon");
+    var calcClose = document.getElementById("calc-close");
+    var calcDisplay = document.getElementById("calc-display");
+
+    calcIcon.addEventListener("click", function() {
+      calcModal.style.display = "block";
+    });
+    calcClose.addEventListener("click", function() {
+      calcModal.style.display = "none";
+      calcDisplay.value = "";
+    });
+    window.addEventListener("click", function(event) {
+      if (event.target == calcModal) {
+        calcModal.style.display = "none";
+        calcDisplay.value = "";
+      }
+    });
+    document.querySelectorAll(".calc-btn").forEach(function(button) {
+      button.addEventListener("click", function() {
+        if (this.id === "calc-clear" || this.id === "calc-equals") return;
+        var value = this.getAttribute("data-value");
+        calcDisplay.value += value;
+      });
+    });
+    document.getElementById("calc-clear").addEventListener("click", function() {
+      calcDisplay.value = "";
+    });
+    document.getElementById("calc-equals").addEventListener("click", function() {
+      try {
+        calcDisplay.value = eval(calcDisplay.value);
+      } catch (error) {
+        calcDisplay.value = "Error";
       }
     });
   </script>
-  
-
-  
-<!-- Manday Capability Modal Trigger (placed above the existing calculator modal) -->
-<div id="manday-icon" class="manday-icon">MC</div>
-
-<!-- Manday Capability Modal Structure -->
-<div id="manday-modal" class="manday-modal">
-  <div class="manday-content">
-    <span id="manday-close" class="manday-close">&times;</span>
-    <h2>Manday Capability Calculator</h2>
-    <p>Calculate MD Capability: MC = DL × WD × ME × AF</p>
-    <label for="dl_input">Direct Labor (DL):</label>
-    <input type="number" id="dl_input" placeholder="Enter DL" step="1" min="0">
-    
-    <label for="wd_input">Available Workdays (WD):</label>
-    <input type="number" id="wd_input" placeholder="Enter WD" step="1" min="0">
-    
-    <label for="me_input">Man-day Equivalent (ME):</label>
-    <input type="number" id="me_input" placeholder="Enter ME" step="0.1" min="0">
-    
-    <label for="af_input">Availability Factor (AF):</label>
-    <input type="number" id="af_input" placeholder="Enter AF (0-1)" step="0.01" min="0" max="1">
-    
-    <button id="manday-calc-button">Calculate MD Capability</button>
-    <p id="manday-result">Result: </p>
-  </div>
-</div>
-
-<style>
-.manday-icon {
-  position: fixed;
-  bottom: 90px; /* Adjust this value so it appears above your existing calculator modal */
-  right: 20px;
-  background: var(--primary-color, #007bff);
-  color: #fff;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  text-align: center;
-  line-height: 50px;
-  cursor: pointer;
-  z-index: 1001;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
-}
-
-/* Manday Modal Overlay */
-.manday-modal {
-  display: none;
-  position: fixed;
-  z-index: 1002;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.4);
-}
-
-/* Manday Modal Content */
-.manday-content {
-  background-color: #fff;
-  margin: 10% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 90%;
-  max-width: 400px;
-  border-radius: 5px;
-  text-align: center;
-}
-
-/* Close Button */
-.manday-close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-}
-.manday-close:hover,
-.manday-close:focus {
-  color: black;
-  text-decoration: none;
-}
-
-/* Input Field Styling */
-.manday-content input[type="number"] {
-  width: 90%;
-  padding: 5px;
-  margin: 5px 0 15px;
-  border: 1px solid var(--border-color, #ccc);
-  border-radius: 5px;
-  font-size: 1em;
-}
-</style>
-
-<script>
-  // Manday Modal Script
-var mandayModal = document.getElementById("manday-modal");
-var mandayIcon = document.getElementById("manday-icon");
-var mandayClose = document.getElementById("manday-close");
-var mandayCalcButton = document.getElementById("manday-calc-button");
-var mandayResult = document.getElementById("manday-result");
-
-// Open manday modal when icon is clicked
-mandayIcon.onclick = function() {
-  mandayModal.style.display = "block";
-};
-
-// Close modal when close button is clicked
-mandayClose.onclick = function() {
-  mandayModal.style.display = "none";
-};
-
-// Close modal if clicked outside the content area
-window.onclick = function(event) {
-  if (event.target == mandayModal) {
-    mandayModal.style.display = "none";
-  }
-};
-
-// Calculation logic for MD Capability
-mandayCalcButton.onclick = function() {
-  var dl = parseFloat(document.getElementById("dl_input").value) || 0;
-  var wd = parseFloat(document.getElementById("wd_input").value) || 0;
-  var me = parseFloat(document.getElementById("me_input").value) || 0;
-  var af = parseFloat(document.getElementById("af_input").value) || 0;
-  
-  var capability = dl * wd * me * af;
-  mandayResult.textContent = "Result: " + capability.toFixed(2) + " MDs";
-};
-</script>
-
-  
-
-<!-- Calculator Modal Trigger -->
-<div id="calc-icon" class="calc-icon">🖩</div>
-
-<!-- Calculator Modal Structure -->
-<div id="calc-modal" class="calc-modal">
-  <div class="calc-content">
-    <span id="calc-close" class="calc-close">&times;</span>
-    <h2>Calculator</h2>
-    <input type="text" id="calc-display" placeholder="0" readonly style="width:100%; padding:10px; margin-bottom:10px; font-size:1em; text-align:right;">
-    <div class="calc-buttons">
-      <button class="calc-btn" data-value="7">7</button>
-      <button class="calc-btn" data-value="8">8</button>
-      <button class="calc-btn" data-value="9">9</button>
-      <button class="calc-btn" data-value="/">/</button>
-
-      <button class="calc-btn" data-value="4">4</button>
-      <button class="calc-btn" data-value="5">5</button>
-      <button class="calc-btn" data-value="6">6</button>
-      <button class="calc-btn" data-value="*">*</button>
-
-      <button class="calc-btn" data-value="1">1</button>
-      <button class="calc-btn" data-value="2">2</button>
-      <button class="calc-btn" data-value="3">3</button>
-      <button class="calc-btn" data-value="-">-</button>
-
-      <button class="calc-btn" data-value="0">0</button>
-      <button class="calc-btn" data-value=".">.</button>
-      <button class="calc-btn" data-value="%">%</button>
-      <button class="calc-btn" data-value="+">+</button>
-
-      <button class="calc-btn" id="calc-clear" style="grid-column: span 2;">C</button>
-      <button class="calc-btn" id="calc-equals" style="grid-column: span 2;">=</button>
-    </div>
-  </div>
-</div>
-
-<!-- Calculator Modal Styles -->
-<style>
-  .calc-icon {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: var(--primary-color, #007bff);
-    color: #fff;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    text-align: center;
-    line-height: 50px;
-    cursor: pointer;
-    z-index: 1000;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-  }
-  .calc-modal {
-    display: none;
-    position: fixed;
-    z-index: 1001;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-  }
-  .calc-content {
-    background-color: #fff;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 90%;
-    max-width: 400px;
-    border-radius: 5px;
-    text-align: center;
-  }
-  .calc-close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  .calc-close:hover,
-  .calc-close:focus {
-    color: black;
-    text-decoration: none;
-  }
-  .calc-buttons {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-  }
-  .calc-btn {
-    padding: 15px;
-    font-size: 1.2em;
-    cursor: pointer;
-    border: 1px solid #ccc;
-    background: #808080;
-    border-radius: 5px;
-  }
-  .calc-btn:hover {
-    background: #e0e0e0;
-  }
-  /* Mobile view adjustments */
-  @media (max-width: 600px) {
-    .calc-content {
-      width: 80%;
-      margin: 20% auto;
-    }
-  }
-</style>
-
-<!-- Calculator Modal Script -->
-<script>
-  // Get modal elements
-  var calcModal = document.getElementById("calc-modal");
-  var calcIcon = document.getElementById("calc-icon");
-  var calcClose = document.getElementById("calc-close");
-  var calcDisplay = document.getElementById("calc-display");
-
-  // Open modal when icon is clicked
-  calcIcon.onclick = function() {
-    calcModal.style.display = "block";
-  };
-
-  // Close modal when close button is clicked
-  calcClose.onclick = function() {
-    calcModal.style.display = "none";
-    calcDisplay.value = "";
-  };
-
-  // Close modal if clicked outside the content area
-  window.onclick = function(event) {
-    if (event.target == calcModal) {
-      calcModal.style.display = "none";
-      calcDisplay.value = "";
-    }
-  };
-
-  // Button click handling for numbers and operators
-  document.querySelectorAll(".calc-btn").forEach(function(button) {
-    button.addEventListener("click", function() {
-      // Skip buttons that have specific functions (clear, equals)
-      if (this.id === "calc-clear" || this.id === "calc-equals") return;
-      var value = this.getAttribute("data-value");
-      calcDisplay.value += value;
-    });
-  });
-
-  // Clear button functionality
-  document.getElementById("calc-clear").onclick = function() {
-    calcDisplay.value = "";
-  };
-
-  // Equals button functionality
-  document.getElementById("calc-equals").onclick = function() {
-    try {
-      // Evaluate the expression; using eval for simplicity—ensure inputs are trusted!
-      calcDisplay.value = eval(calcDisplay.value);
-    } catch (error) {
-      calcDisplay.value = "Error";
-    }
-  };
-</script>
 
 
 
