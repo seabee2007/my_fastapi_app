@@ -1,0 +1,66 @@
+<!-- templates/report.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>CQI Final Report</title>
+  <style>
+    @media print {
+      .page-break {
+        page-break-before: always;
+      }
+    }
+    .signature {
+      border: 1px solid #000;
+      width: 300px;
+      height: 70px;
+      display: block;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body onload="window.print()">
+  <h2>Construction Quality Inspection Report</h2>
+
+  <h3>Project Information</h3>
+  <p><strong>Project Name:</strong> {{ assessment.project_name }}</p>
+  <p><strong>Battalion:</strong> {{ assessment.battalion }}</p>
+  <p><strong>OIC:</strong> {{ assessment.oic_name }}</p>
+  <p><strong>AOIC:</strong> {{ assessment.aoic_name }}</p>
+  <p><strong>Start Date:</strong> {{ assessment.start_date }}</p>
+  <p><strong>Planned Start:</strong> {{ assessment.planned_start }}</p>
+  <p><strong>Planned Completion:</strong> {{ assessment.planned_completion }}</p>
+  <p><strong>Actual Completion:</strong> {{ assessment.actual_completion }}</p>
+
+  <h3>Final Score</h3>
+  {% if assessment.final_score is not none %}
+    <p><strong>Score:</strong> {{ assessment.final_score }} out of 171</p>
+    <p><strong>Percentage:</strong> {{ assessment.final_percentage }}%</p>
+  {% else %}
+    <p>No final score computed yet.</p>
+  {% endif %}
+
+  <h3>Signatures</h3>
+  <p>OIC Signature:</p>
+  {% if assessment.signature_oic %}
+    <img src="data:image/png;base64,{{ assessment.signature_oic }}" class="signature">
+  {% else %}
+    <p>No OIC signature</p>
+  {% endif %}
+
+  <p>30 NCR Signature:</p>
+  {% if assessment.signature_ncr %}
+    <img src="data:image/png;base64,{{ assessment.signature_ncr }}" class="signature">
+  {% else %}
+    <p>No 30 NCR signature</p>
+  {% endif %}
+
+  <div class="page-break"></div>
+  <h3>Comments</h3>
+  <p>
+    Detailed item-by-item comments can be displayed here if you choose to persist them.
+    Currently, individual item comments are stored with the assessment record.
+  </p>
+
+</body>
+</html>
