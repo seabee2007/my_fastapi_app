@@ -155,8 +155,12 @@
         {% if assessment.comment_item29 %}<li>Item 29: {{ assessment.comment_item29 }}</li>{% endif %}
       </ul>
     {% endif %}
-
+  </div>
+ 
+    
     <h3>Signatures</h3>
+    <div class="signature-row">
+      <div class="signature-col">
     <p><strong>OIC Signature:</strong></p>
     {% if assessment.signature_oic %}
       <img src="data:image/png;base64,{{ assessment.signature_oic }}" alt="OIC Signature" class="signature">
@@ -166,8 +170,9 @@
       <canvas id="oic_canvas" class="signature" width="300" height="70"></canvas>
       <button id="oic_clear" type="button" class="no-print">Clear OIC Signature</button>
     {% endif %}
-    
-    <p><strong>30 NCR Signature:</strong></p>
+        </div>
+      <div class="signature-col">
+        <p><strong>30 NCR Signature:</strong></p>
     {% if assessment.signature_ncr %}
       <img src="data:image/png;base64,{{ assessment.signature_ncr }}" alt="30 NCR Signature" class="signature">
     {% else %}
@@ -176,11 +181,10 @@
       <canvas id="ncr_canvas" class="signature" width="300" height="70"></canvas>
       <button id="ncr_clear" type="button" class="no-print">Clear 30 NCR Signature</button>
     {% endif %}
-
-
-
+      
     <button onclick="window.print()" class="no-print">Print Report</button>
   </div>
+      </div>
 
   <!-- Include Signature Pad library -->
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
