@@ -27,7 +27,7 @@ class Assessment(Base):
     actual_completion = Column(String, nullable=True)
     final_score = Column(Integer, nullable=True)
     final_percentage = Column(Float, nullable=True)
-    # NEW: Store the maximum possible score for applicable items.
+    # NEW: Adjusted maximum total possible for applicable items.
     adjusted_total_max = Column(Integer, nullable=True)
     errors = Column(Text, nullable=True)
     signature_oic = Column(Text, nullable=True)
@@ -83,7 +83,7 @@ def parse_int(value, default=0):
     except Exception:
         return default
 
-# Define the perfect score for each item.
+# Perfect scores for each item.
 PERFECT_SCORES = {
     "item1": 2,
     "item2": 2,
@@ -116,10 +116,10 @@ PERFECT_SCORES = {
     "item29": 5,
 }
 
-# This function validates each item and calculates:
-# - score_sum: sum of earned scores for applicable items.
-# - max_possible: sum of perfect scores for only applicable items.
-# For items marked N/A (negative value), that item is excluded from max_possible.
+# Updated validation function.
+# For every item, if a score is provided (submitted >= 0) and it is less than the perfect score,
+# then a comment is required. (N/A items, with negative score, still require a comment.)
+# Also, every item must have a submitted value.
 def calculate_score_and_validate(form_data: dict):
     errors = []
     score_sum = 0
@@ -127,16 +127,25 @@ def calculate_score_and_validate(form_data: dict):
 
     def process_item(key, comment_key, perfect):
         nonlocal score_sum, max_possible
-        submitted = parse_int(form_data.get(key, "0"))
+        # Get the submitted value; assume it is always present (if not, default to empty string)
+        raw = form_data.get(key, "")
+        if raw == "":
+            errors.append(f"Item {key[-1]} is required.")
+            return
+        submitted = parse_int(raw)
         comment = form_data.get(comment_key, "").strip()
         if submitted < 0:
+            # N/A case
             if not comment:
                 errors.append(f"Item {key[-1]} requires a comment when N/A is selected.")
         else:
+            # If not perfect, a comment is required.
+            if submitted != perfect and not comment:
+                errors.append(f"Item {key[-1]} requires a comment if score is less than maximum ({perfect}).")
             score_sum += submitted
             max_possible += perfect
 
-    # Process items without deductions or special logic.
+    # Process items without deductions.
     for key in ["item1", "item2", "item3", "item5", "item6", "item78", "item9",
                 "item10", "item11", "item12", "item13", "item14", "item15", "item16",
                 "item17", "item18", "item19", "item20", "item21", "item22", "item23",
@@ -146,7 +155,12 @@ def calculate_score_and_validate(form_data: dict):
     # Process Item 4 separately.
     item4_option = form_data.get("item4_option", "calc")
     if item4_option == "calc":
-        item4_val = parse_int(form_data.get("item4_score", "16"))
+        raw4 = form_data.get("item4_score", "")
+        if raw4 == "":
+            errors.append("Item 4 score is required.")
+            item4_val = 0
+        else:
+            item4_val = parse_int(raw4)
     else:
         item4_val = parse_int(item4_option)
     comment_item4 = form_data.get("comment_item4", "").strip()
@@ -155,22 +169,29 @@ def calculate_score_and_validate(form_data: dict):
             errors.append("Item 4 requires a comment when N/A is selected.")
     else:
         if item4_val != PERFECT_SCORES["item4"] and not comment_item4:
-            errors.append("Item 4 requires a comment if the score is not perfect.")
+            errors.append("Item 4 requires a comment if the score is not perfect (16).")
         if item4_val >= 0:
             score_sum += item4_val
             max_possible += PERFECT_SCORES["item4"]
 
-    # Process items with manual deductions: 24, 28, 29.
+    # Process items with manual deductions (24, 28, 29).
     def process_deducted_item(key, deduction_key, comment_key, perfect):
         nonlocal score_sum, max_possible
-        submitted = parse_int(form_data.get(key, "0"))
+        raw = form_data.get(key, "")
+        if raw == "":
+            errors.append(f"Item {key[-1]} is required.")
+            return
+        submitted = parse_int(raw)
         deduction = parse_int(form_data.get(deduction_key, "0"))
         comment = form_data.get(comment_key, "").strip()
         if submitted < 0:
             if not comment:
                 errors.append(f"Item {key[-1]} requires a comment when N/A is selected.")
         else:
-            score_sum += (submitted - deduction)
+            computed = submitted - deduction
+            if computed != perfect and not comment:
+                errors.append(f"Item {key[-1]} requires a comment if score after deduction is less than maximum ({perfect}).")
+            score_sum += computed
             max_possible += perfect
 
     process_deducted_item("item24", "deduction24", "comment_item24", PERFECT_SCORES["item24"])
