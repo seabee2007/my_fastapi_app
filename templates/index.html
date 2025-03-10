@@ -252,147 +252,160 @@
 }
 
 
-    /* ---------- Calculator Modal Styles ---------- */
-    .calc-icon {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: var(--primary-color, #007bff);
-      color: #fff;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      text-align: center;
-      line-height: 50px;
-      cursor: pointer;
-      z-index: 1000;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      transition: background 0.3s;
-    }
-    .calc-icon:hover {
-      background: #0056b3;
-    }
-    .calc-modal {
-      display: none;
-      position: fixed;
-      z-index: 1001;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.4);
-    }
-    .calc-content {
-      background-color: #fff;
-      margin: 15% auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 90%;
-      max-width: 400px;
-      border-radius: 5px;
-      text-align: center;
-    }
-    .calc-close {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: color 0.3s;
-    }
-    .calc-close:hover,
-    .calc-close:focus {
-      color: black;
-      text-decoration: none;
-    }
+/* Modal trigger icon */
+.calc-icon {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--primary-color, #007bff);
+  color: #fff;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  line-height: 50px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+/* Modal overlay */
+.calc-modal {
+  display: none;
+  position: fixed;
+  z-index: 1001;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+/* Modal content container */
+.calc-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 10px;
+  border: 1px solid #888;
+  width: 90%;
+  max-width: 400px;
+  border-radius: 5px;
+  position: relative;
+}
+
+/* Close button */
+.calc-close {
+  color: #aaa;
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.calc-close:hover,
+.calc-close:focus {
+  color: black;
+  text-decoration: none;
+}
+
+/* Calculator styling */
 .calculator {
-    background: #1a1a1a;
-    border-radius: 15px;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-    animation: fadeIn 0.6s ease-in-out;
+  background: #1a1a1a;
+  border-radius: 15px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  animation: fadeIn 0.6s ease-in-out;
 }
 
 .display {
-    background: #333;
-    padding: 15px;
-    border-bottom: 1px solid #444;
-    color: #0f0;
-    user-select: none;
-    text-align: right;
-    height: 60px;
+  background: #333;
+  padding: 15px;
+  border-bottom: 1px solid #444;
+  color: #0f0;
+  user-select: none;
+  text-align: right;
+  height: 60px;
 }
 
 .previous-display {
-    font-size: 0.75em;
-    color: #999;
+  font-size: 0.75em;
+  color: #999;
 }
 
 .current-display {
-    font-size: 1.5em;
+  font-size: 1.5em;
 }
 
 .buttons {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-gap: 1px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 1px;
 }
 
 .button {
-    background: #222;
-    padding: 20px;
-    font-size: 1.5em;
-    border: none;
-    color: white;
-    cursor: pointer;
-    transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
-    position: relative;
-    overflow: hidden;
+  background: #222;
+  padding: 20px;
+  font-size: 1.5em;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
 }
 
 .button:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -75%;
-    width: 50%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.2);
-    transform: skewX(-45deg);
-    transition: left 0.5s;
-    z-index: 0;
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: skewX(-45deg);
+  transition: left 0.5s;
+  z-index: 0;
 }
+
 .button:hover:before {
-    left: 125%;
+  left: 125%;
 }
+
 .button:hover {
-    background: #333;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  background: #333;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
+
 .button:active {
-    transform: scale(0.98);
+  transform: scale(0.98);
 }
+
 .button.equal {
-    background: #ff9500;
-    color: white;
+  background: #ff9500;
+  color: white;
 }
+
 .button.equal:hover {
-    background: #ffa726;
+  background: #ffa726;
 }
+
 .button.zero {
-    grid-column: span 3;
+  grid-column: span 3;
 }
+
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  from {
+      opacity: 0;
+      transform: translateY(20px);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
 }
+
     @media (max-width: 600px) {
       .calc-content {
         width: 80%;
@@ -986,35 +999,46 @@
 
 
   
-  <!-- ---------- Calculator Modal ---------- -->
-  <div id="calc-modal" class="calc-modal">
-    <div class="calc-content">
-      <span id="calc-close" class="calc-close">&times;</span>
-      <h2>Calculator</h2>
-      <input type="text" id="calc-display" placeholder="0" readonly style="width:100%; padding:10px; margin-bottom:10px; font-size:1em; text-align:right;">
-      <div class="calc-buttons">
-        <button class="calc-btn" data-value="7">7</button>
-        <button class="calc-btn" data-value="8">8</button>
-        <button class="calc-btn" data-value="9">9</button>
-        <button class="calc-btn" data-value="/">/</button>
-        <button class="calc-btn" data-value="4">4</button>
-        <button class="calc-btn" data-value="5">5</button>
-        <button class="calc-btn" data-value="6">6</button>
-        <button class="calc-btn" data-value="*">*</button>
-        <button class="calc-btn" data-value="1">1</button>
-        <button class="calc-btn" data-value="2">2</button>
-        <button class="calc-btn" data-value="3">3</button>
-        <button class="calc-btn" data-value="-">-</button>
-        <button class="calc-btn" data-value="0">0</button>
-        <button class="calc-btn" data-value=".">.</button>
-        <button class="calc-btn" data-value="%">%</button>
-        <button class="calc-btn" data-value="+">+</button>
-        <button class="calc-btn" id="calc-clear" style="grid-column: span 2;">C</button>
-        <button class="calc-btn" id="calc-equals" style="grid-column: span 2;">=</button>
+<!-- Calculator Modal Trigger -->
+<div id="calc-icon" class="calc-icon">Calc</div>
+
+<!-- Calculator Modal -->
+<div id="calc-modal" class="calc-modal">
+  <div class="calc-content">
+    <span id="calc-close" class="calc-close">&times;</span>
+    <div class="calculator">
+      <div class="display">
+        <div id="previous-display" class="previous-display"></div>
+        <div id="current-display" class="current-display">0</div>
+      </div>
+      <div class="buttons">
+        <button class="button" onclick="clearDisplay()">C</button>
+        <button class="button" onclick="appendOperator('/')">÷</button>
+        <button class="button" onclick="appendOperator('*')">×</button>
+        <button class="button" onclick="backspace()">⌫</button>
+
+        <button class="button" onclick="appendNumber(7)">7</button>
+        <button class="button" onclick="appendNumber(8)">8</button>
+        <button class="button" onclick="appendNumber(9)">9</button>
+        <button class="button" onclick="appendOperator('-')">−</button>
+
+        <button class="button" onclick="appendNumber(4)">4</button>
+        <button class="button" onclick="appendNumber(5)">5</button>
+        <button class="button" onclick="appendNumber(6)">6</button>
+        <button class="button" onclick="appendOperator('+')">+</button>
+
+        <button class="button" onclick="appendNumber(1)">1</button>
+        <button class="button" onclick="appendNumber(2)">2</button>
+        <button class="button" onclick="appendNumber(3)">3</button>
+        <button class="button" onclick="appendNumber('.')">.</button>
+
+        <button class="button zero" onclick="appendNumber(0)">0</button>
+        <button class="button equal" onclick="calculate()">=</button>
       </div>
     </div>
   </div>
-  <div id="calc-icon" class="calc-icon">🖩</div>
+</div>
+
   
   <!-- ---------- JavaScript for Modals ---------- -->
   <script>
@@ -1031,16 +1055,9 @@ mandayIcon.onclick = function() {
   mandayModal.style.display = "block";
 };
 
-// Close modal when close button is clicked
+// Close manday modal when close button is clicked
 mandayClose.onclick = function() {
   mandayModal.style.display = "none";
-};
-
-// Close modal if clicked outside the content area
-window.onclick = function(event) {
-  if (event.target == mandayModal) {
-    mandayModal.style.display = "none";
-  }
 };
 
 // Calculation logic for MD Capability
@@ -1054,45 +1071,104 @@ mandayCalcButton.onclick = function() {
   mandayResult.textContent = "Result: " + capability.toFixed(2) + " MDs";
 };
 
-
     
-    /* ---------- Calculator Modal ---------- */
-    var calcModal = document.getElementById("calc-modal");
-    var calcIcon = document.getElementById("calc-icon");
-    var calcClose = document.getElementById("calc-close");
-    var calcDisplay = document.getElementById("calc-display");
-    calcIcon.addEventListener("click", function() {
-      calcModal.style.display = "block";
-    });
-    calcClose.addEventListener("click", function() {
-      calcModal.style.display = "none";
-      calcDisplay.value = "";
-    });
-    window.addEventListener("click", function(event) {
-      if (event.target == calcModal) {
-        calcModal.style.display = "none";
-        calcDisplay.value = "";
-      }
-    });
-    document.querySelectorAll(".calc-btn").forEach(function(button) {
-      button.addEventListener("click", function() {
-        if (this.id === "calc-clear" || this.id === "calc-equals") return;
-        var value = this.getAttribute("data-value");
-        calcDisplay.value += value;
-      });
-    });
-    document.getElementById("calc-clear").addEventListener("click", function() {
-      calcDisplay.value = "";
-    });
-    document.getElementById("calc-equals").addEventListener("click", function() {
-      try {
-        // Replace "%" with "/100" for percentage calculations
-        let expression = calcDisplay.value.replace(/%/g, '/100');
-        calcDisplay.value = eval(expression);
-      } catch (error) {
-        calcDisplay.value = "Error";
-      }
-    });
+/* ---------- Calculator Modal ---------- */
+var calcModal = document.getElementById("calc-modal");
+var calcIcon = document.getElementById("calc-icon");
+var calcClose = document.getElementById("calc-close");
+
+calcIcon.onclick = function() {
+  calcModal.style.display = "block";
+};
+
+calcClose.onclick = function() {
+  calcModal.style.display = "none";
+};
+
+// Combined window click handler for closing both modals if clicked outside
+window.addEventListener('click', function(event) {
+  if (event.target == mandayModal) {
+    mandayModal.style.display = "none";
+  }
+  if (event.target == calcModal) {
+    calcModal.style.display = "none";
+  }
+});
+
+// Calculator functionality
+let currentDisplay = document.getElementById('current-display');
+let previousDisplay = document.getElementById('previous-display');
+let currentInput = '';
+let operator = null;
+let previousInput = '';
+
+function clearDisplay() {
+    currentInput = '';
+    operator = null;
+    previousInput = '';
+    updateDisplay('0', '');
+}
+
+function appendNumber(number) {
+    if (currentInput.includes('.') && number === '.') return;
+    currentInput += number;
+    updateDisplay(currentInput, previousInput !== '' ? `${previousInput} ${operator}` : '');
+}
+
+function appendOperator(op) {
+    if (currentInput === '' && op === '-') {
+        currentInput = '-';
+        updateDisplay(currentInput, `${previousInput} ${operator}`);
+        return;
+    }
+    if (currentInput === '') return;
+    if (operator !== null) calculate();
+    operator = op;
+    previousInput = currentInput;
+    currentInput = '';
+    updateDisplay('', `${previousInput} ${operator}`);
+}
+
+function calculate() {
+    if (operator === null || currentInput === '') return;
+    let result;
+    const prev = parseFloat(previousInput);
+    const curr = parseFloat(currentInput);
+    switch (operator) {
+        case '+':
+            result = prev + curr;
+            break;
+        case '-':
+            result = prev - curr;
+            break;
+        case '*':
+            result = prev * curr;
+            break;
+        case '/':
+            result = prev / curr;
+            break;
+        default:
+            return;
+    }
+    currentInput = result.toString();
+    operator = null;
+    previousInput = '';
+    updateDisplay(currentInput, '');
+}
+
+function backspace() {
+    currentInput = currentInput.slice(0, -1);
+    updateDisplay(currentInput || '0', previousInput !== '' ? `${previousInput} ${operator}` : '');
+}
+
+function updateDisplay(current, previous = '') {
+    currentDisplay.textContent = current;
+    previousDisplay.textContent = previous;
+}
+
+clearDisplay();
+
+
   </script>
     
 </body>
