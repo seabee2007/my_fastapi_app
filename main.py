@@ -144,8 +144,8 @@ LABELS = {
     "item26": "Item 26 – Submittals",
     "item27a": "Item 27a – QC Inspection Plan",
     "item27b": "Item 27b – QC Inspection",
-    "item28": "Item 28 – Job Box Review (QC)",
-    "item29": "Item 29 – Job Box Review (Safety)"
+    "item28_option": "Item 28 – Job Box Review (QC)",
+    "item29_option": "Item 29 – Job Box Review (Safety)"
 }
 
 # Updated validation function.
