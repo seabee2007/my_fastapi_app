@@ -896,9 +896,27 @@
   </div>
 
   <!-- ---------- Calculator Modal ---------- -->
-  <!-- Calculator Modal Trigger -->
-  <div id="calc-icon" class="calc-icon">🖩</div>
-  <!-- Calculator Modal Structure -->
+<!-- ---------- Manday Modal ---------- -->
+  <div id="manday-modal" class="manday-modal">
+    <div class="manday-content">
+      <span id="manday-close" class="manday-close">&times;</span>
+      <h2>Manday Capability Calculator</h2>
+      <p>Calculate MD Capability: MC = DL × WD × ME × AF</p>
+      <label for="dl_input">Direct Labor (DL):</label>
+      <input type="number" id="dl_input" placeholder="Enter DL" step="1" min="0">
+      <label for="wd_input">Available Workdays (WD):</label>
+      <input type="number" id="wd_input" placeholder="Enter WD" step="1" min="0">
+      <label for="me_input">Man-day Equivalent (ME):</label>
+      <input type="number" id="me_input" placeholder="Enter ME" step="0.1" min="0">
+      <label for="af_input">Availability Factor (AF):</label>
+      <input type="number" id="af_input" placeholder="Enter AF (0-1)" step="0.01" min="0" max="1">
+      <button id="manday-calc-button">Calculate MD Capability</button>
+      <p id="manday-result">Result: </p>
+    </div>
+  </div>
+  <div id="manday-icon" class="manday-icon">MC</div>
+  
+  <!-- ---------- Calculator Modal ---------- -->
   <div id="calc-modal" class="calc-modal">
     <div class="calc-content">
       <span id="calc-close" class="calc-close">&times;</span>
@@ -926,14 +944,14 @@
       </div>
     </div>
   </div>
-
+  <div id="calc-icon" class="calc-icon">🖩</div>
+  
   <!-- ---------- JavaScript for Modals ---------- -->
   <script>
     /* ---------- PDF Modal ---------- */
     var pdfModal = document.getElementById("pdf-ref-modal");
     var pdfIcon = document.getElementById("pdf-ref-icon");
     var pdfClose = document.getElementById("pdf-ref-close");
-
     pdfIcon.addEventListener("click", function() {
       pdfModal.style.display = "block";
     });
@@ -945,23 +963,32 @@
         pdfModal.style.display = "none";
       }
     });
-
+    
     /* ---------- Manday Modal ---------- */
     var mandayModal = document.getElementById("manday-modal");
     var mandayIcon = document.getElementById("manday-icon");
     var mandayClose = document.getElementById("manday-close");
     var mandayCalcButton = document.getElementById("manday-calc-button");
     var mandayResult = document.getElementById("manday-result");
-
     mandayIcon.addEventListener("click", function() {
       mandayModal.style.display = "block";
     });
     mandayClose.addEventListener("click", function() {
       mandayModal.style.display = "none";
+      document.getElementById("dl_input").value = "";
+      document.getElementById("wd_input").value = "";
+      document.getElementById("me_input").value = "";
+      document.getElementById("af_input").value = "";
+      mandayResult.textContent = "Result: ";
     });
     window.addEventListener("click", function(event) {
       if (event.target == mandayModal) {
         mandayModal.style.display = "none";
+        document.getElementById("dl_input").value = "";
+        document.getElementById("wd_input").value = "";
+        document.getElementById("me_input").value = "";
+        document.getElementById("af_input").value = "";
+        mandayResult.textContent = "Result: ";
       }
     });
     mandayCalcButton.addEventListener("click", function() {
@@ -972,13 +999,12 @@
       var capability = dl * wd * me * af;
       mandayResult.textContent = "Result: " + capability.toFixed(2) + " MDs";
     });
-
+    
     /* ---------- Calculator Modal ---------- */
     var calcModal = document.getElementById("calc-modal");
     var calcIcon = document.getElementById("calc-icon");
     var calcClose = document.getElementById("calc-close");
     var calcDisplay = document.getElementById("calc-display");
-
     calcIcon.addEventListener("click", function() {
       calcModal.style.display = "block";
     });
@@ -1004,7 +1030,9 @@
     });
     document.getElementById("calc-equals").addEventListener("click", function() {
       try {
-        calcDisplay.value = eval(calcDisplay.value);
+        // Replace "%" with "/100" for percentage calculations
+        let expression = calcDisplay.value.replace(/%/g, '/100');
+        calcDisplay.value = eval(expression);
       } catch (error) {
         calcDisplay.value = "Error";
       }
