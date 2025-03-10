@@ -572,10 +572,310 @@
         <label>Comment (required if N/A):</label>
         <textarea name="comment_item29">{{ form_data.comment_item29 if form_data and form_data.comment_item29 is defined else '' }}</textarea>
       </div>
+      
+      <!-- Hidden input for final score -->
+      <input type="hidden" name="final_score" id="final_score_input">
+      <button type="submit">Submit Assessment</button>
+    </form>
+    <button type="button" onclick="calculateFinalScore()">Calculate Final Score</button>
+    <div id="final_score_display"></div>
+  </div>
+  <script>
+    function decrement(id) {
+      var input = document.getElementById(id);
+      input.value = parseInt(input.value) - 1;
+      input.dispatchEvent(new Event('input'));
+    }
+    function increment(id) {
+      var input = document.getElementById(id);
+      input.value = parseInt(input.value) + 1;
+      input.dispatchEvent(new Event('input'));
+    }
+    function calculateItem4Score() {
+      var total_md = parseFloat(document.getElementById('total_md').value);
+      var planned_wip = parseFloat(document.getElementById('planned_wip').value);
+      var actual_wip = parseFloat(document.getElementById('actual_wip').value);
+      var calcScore = 16; // Default for exact match
+      if(total_md && planned_wip && actual_wip){
+         var deviation = Math.abs(planned_wip - actual_wip);
+         if(deviation === 0) {
+           calcScore = 16;
+         } else if(deviation <= 10) {
+           calcScore = 12;
+         } else {
+           calcScore = 4;
+         }
+      }
+      document.getElementById('item4_score_display').innerText = "Calculated Score for Item 4: " + calcScore;
+      document.getElementById('item4_score').value = calcScore;
+    }
+    function calculateFinalScore() {
+      var total = 0;
+      function getRadioValue(name) {
+        var radio = document.querySelector('input[name="'+name+'"]:checked');
+        return radio ? parseFloat(radio.value) : 0;
+      }
+      function getSelectValue(name) {
+        var select = document.querySelector('select[name="'+name+'"]');
+        return select ? parseFloat(select.value) : 0;
+      }
+      function getHiddenValue(id) {
+        var elem = document.getElementById(id);
+        return elem ? parseFloat(elem.value) : 0;
+      }
+      // Radio button items
+      total += getRadioValue("item1");
+      total += getRadioValue("item2");
+      total += getRadioValue("item3");
+      // For Item 4, use the calculated score or N/A option
+      var item4Option = document.querySelector('input[name="item4_option"]:checked').value;
+      if(item4Option === "calc") {
+        total += getHiddenValue("item4_score");
+      } else {
+        total += parseFloat(item4Option);
+      }
+      total += getRadioValue("item5");
+      // Select items
+      total += getSelectValue("item6");
+      total += getSelectValue("item78");
+      total += getSelectValue("item9");
+      total += getSelectValue("item10");
+      total += getRadioValue("item11");
+      total += getSelectValue("item12");
+      total += getSelectValue("item13");
+      total += getSelectValue("item14");
+      total += getRadioValue("item15");
+      total += getSelectValue("item16");
+      total += getRadioValue("item17");
+      total += getRadioValue("item18");
+      total += getSelectValue("item19");
+      total += getSelectValue("item20");
+      total += getSelectValue("item21");
+      total += getSelectValue("item22");
+      total += getSelectValue("item23");
+      total += getSelectValue("item24");
+      // Apply manual deduction for Item 24
+      total -= parseFloat(document.getElementById('deduction24').value || 0);
+      total += getSelectValue("item25");
+      total += getSelectValue("item26");
+      total += getSelectValue("item27a");
+      total += getSelectValue("item27b");
+      // Items 28 and 29 (radio buttons with extra deductions)
+      total += getRadioValue("item28_option");
+      total -= parseFloat(document.getElementById('deduction28').value || 0);
+      total += getRadioValue("item29_option");
+      total -= parseFloat(document.getElementById('deduction29').value || 0);
+      
+      document.getElementById('final_score_input').value = total;
+      document.getElementById('final_score_display').innerText = "Final Score: " + total;
+    }
+  </script>
 
-      <div id="pdf-ref-icon" class="pdf-ref-icon">
+  <style>
+    /* ---------- PDF Modal Styles ---------- */
+    .pdf-ref-icon {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: var(--primary-color, #007bff);
+      color: #fff;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      line-height: 50px;
+      cursor: pointer;
+      z-index: 1000;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      transition: background 0.3s;
+    }
+    .pdf-ref-icon:hover {
+      background: #0056b3;
+    }
+    .pdf-ref-modal {
+      display: none;
+      position: fixed;
+      z-index: 1001;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+    .pdf-ref-content {
+      background-color: #fff;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 90%;
+      max-width: 800px;
+      border-radius: 5px;
+      text-align: center;
+    }
+    .pdf-ref-close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    .pdf-ref-close:hover,
+    .pdf-ref-close:focus {
+      color: black;
+      text-decoration: none;
+    }
+
+    /* ---------- Manday Modal Styles ---------- */
+    .manday-icon {
+      position: fixed;
+      bottom: 90px; /* Adjust to appear above the PDF icon */
+      right: 20px;
+      background: var(--primary-color, #007bff);
+      color: #fff;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      line-height: 50px;
+      cursor: pointer;
+      z-index: 1001;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      transition: background 0.3s;
+    }
+    .manday-icon:hover {
+      background: #0056b3;
+    }
+    .manday-modal {
+      display: none;
+      position: fixed;
+      z-index: 1002;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+    .manday-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 5px;
+      text-align: center;
+    }
+    .manday-close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    .manday-close:hover,
+    .manday-close:focus {
+      color: black;
+      text-decoration: none;
+    }
+    .manday-content input[type="number"] {
+      width: 90%;
+      padding: 5px;
+      margin: 5px 0 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1em;
+    }
+
+    /* ---------- Calculator Modal Styles ---------- */
+    .calc-icon {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--primary-color, #007bff);
+      color: #fff;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      line-height: 50px;
+      cursor: pointer;
+      z-index: 1000;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      transition: background 0.3s;
+    }
+    .calc-icon:hover {
+      background: #0056b3;
+    }
+    .calc-modal {
+      display: none;
+      position: fixed;
+      z-index: 1001;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+    .calc-content {
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 5px;
+      text-align: center;
+    }
+    .calc-close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    .calc-close:hover,
+    .calc-close:focus {
+      color: black;
+      text-decoration: none;
+    }
+    .calc-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .calc-btn {
+      padding: 15px;
+      font-size: 1.2em;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      background: #808080;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .calc-btn:hover {
+      background: #a0a0a0;
+    }
+    @media (max-width: 600px) {
+      .calc-content {
+        width: 80%;
+        margin: 20% auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="pdf-ref-icon" class="pdf-ref-icon">
   <a href="https://www.marines.mil/portals/1/mcrp%203-17.7f%20z.pdf" target="_blank" style="color: inherit; text-decoration: none;">PDF</a>
 </div>
+
 
   <!-- ---------- Manday Modal ---------- -->
   <!-- Manday Capability Modal Trigger -->
@@ -719,103 +1019,6 @@
     });
   </script>
 
-      
-      <!-- Hidden input for final score -->
-      <input type="hidden" name="final_score" id="final_score_input">
-      <button type="submit">Submit Assessment</button>
-    </form>
-    <button type="button" onclick="calculateFinalScore()">Calculate Final Score</button>
-    <div id="final_score_display"></div>
-  </div>
-  <script>
-    function decrement(id) {
-      var input = document.getElementById(id);
-      input.value = parseInt(input.value) - 1;
-      input.dispatchEvent(new Event('input'));
-    }
-    function increment(id) {
-      var input = document.getElementById(id);
-      input.value = parseInt(input.value) + 1;
-      input.dispatchEvent(new Event('input'));
-    }
-    function calculateItem4Score() {
-      var total_md = parseFloat(document.getElementById('total_md').value);
-      var planned_wip = parseFloat(document.getElementById('planned_wip').value);
-      var actual_wip = parseFloat(document.getElementById('actual_wip').value);
-      var calcScore = 16; // Default for exact match
-      if(total_md && planned_wip && actual_wip){
-         var deviation = Math.abs(planned_wip - actual_wip);
-         if(deviation === 0) {
-           calcScore = 16;
-         } else if(deviation <= 10) {
-           calcScore = 12;
-         } else {
-           calcScore = 4;
-         }
-      }
-      document.getElementById('item4_score_display').innerText = "Calculated Score for Item 4: " + calcScore;
-      document.getElementById('item4_score').value = calcScore;
-    }
-    function calculateFinalScore() {
-      var total = 0;
-      function getRadioValue(name) {
-        var radio = document.querySelector('input[name="'+name+'"]:checked');
-        return radio ? parseFloat(radio.value) : 0;
-      }
-      function getSelectValue(name) {
-        var select = document.querySelector('select[name="'+name+'"]');
-        return select ? parseFloat(select.value) : 0;
-      }
-      function getHiddenValue(id) {
-        var elem = document.getElementById(id);
-        return elem ? parseFloat(elem.value) : 0;
-      }
-      // Radio button items
-      total += getRadioValue("item1");
-      total += getRadioValue("item2");
-      total += getRadioValue("item3");
-      // For Item 4, use the calculated score or N/A option
-      var item4Option = document.querySelector('input[name="item4_option"]:checked').value;
-      if(item4Option === "calc") {
-        total += getHiddenValue("item4_score");
-      } else {
-        total += parseFloat(item4Option);
-      }
-      total += getRadioValue("item5");
-      // Select items
-      total += getSelectValue("item6");
-      total += getSelectValue("item78");
-      total += getSelectValue("item9");
-      total += getSelectValue("item10");
-      total += getRadioValue("item11");
-      total += getSelectValue("item12");
-      total += getSelectValue("item13");
-      total += getSelectValue("item14");
-      total += getRadioValue("item15");
-      total += getSelectValue("item16");
-      total += getRadioValue("item17");
-      total += getRadioValue("item18");
-      total += getSelectValue("item19");
-      total += getSelectValue("item20");
-      total += getSelectValue("item21");
-      total += getSelectValue("item22");
-      total += getSelectValue("item23");
-      total += getSelectValue("item24");
-      // Apply manual deduction for Item 24
-      total -= parseFloat(document.getElementById('deduction24').value || 0);
-      total += getSelectValue("item25");
-      total += getSelectValue("item26");
-      total += getSelectValue("item27a");
-      total += getSelectValue("item27b");
-      // Items 28 and 29 (radio buttons with extra deductions)
-      total += getRadioValue("item28_option");
-      total -= parseFloat(document.getElementById('deduction28').value || 0);
-      total += getRadioValue("item29_option");
-      total -= parseFloat(document.getElementById('deduction29').value || 0);
-      
-      document.getElementById('final_score_input').value = total;
-      document.getElementById('final_score_display').innerText = "Final Score: " + total;
-    }
-  </script>
+    
 </body>
 </html>
