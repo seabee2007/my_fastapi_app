@@ -1,11 +1,10 @@
 from fastapi import FastAPI, Request, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from typing import Optional, Tuple, List
-from datetime import datetime
 from sqlalchemy import create_engine, Column, Integer, String, Float, Text, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
+from datetime import datetime
 from fastapi.staticfiles import StaticFiles
 
 # Database configuration using SQLite.
@@ -80,23 +79,16 @@ def get_db():
 def parse_int(value, default=0):
     try:
         return int(value)
-    except:
+    except Exception:
         return default
 
-def calculate_score_and_validate(form_data: dict) -> Tuple[List[str], Optional[int], Optional[float]]:
+# This function validates the form and computes the total score.
+# For radio/select inputs we assume that a negative value indicates an "N/A" selection.
+# A comment is required only when an "N/A" (negative value) is chosen (except for Item 4,
+# where a comment is required if the score is not perfect).
+def calculate_score_and_validate(form_data: dict):
     errors = []
-    # Extract project information.
-    project_name = form_data.get("project_name", "N/A")
-    battalion = form_data.get("battalion", "N/A")
-    oic_name = form_data.get("oic_name", "N/A")
-    aoic_name = form_data.get("aoic_name", "N/A")
-    start_date = form_data.get("start_date", "")
-    planned_start = form_data.get("planned_start", "")
-    planned_completion = form_data.get("planned_completion", "")
-    actual_completion = form_data.get("actual_completion", "")
 
-    # For radio/select items, we expect positive values for normal selections
-    # and negative values to indicate N/A. Comments are required only when N/A is selected.
     item1 = parse_int(form_data.get("item1", "0"))
     comment_item1 = form_data.get("comment_item1", "").strip()
     if item1 < 0 and not comment_item1:
@@ -112,16 +104,15 @@ def calculate_score_and_validate(form_data: dict) -> Tuple[List[str], Optional[i
     if item3 < 0 and not comment_item3:
         errors.append("Item 3 requires a comment when N/A is selected.")
 
-    # Item 4: if using calculation, use the calculated score; otherwise use the provided option.
+    # Item 4: if "calc" is used, take the calculated score; otherwise use the provided option.
     item4_option = form_data.get("item4_option", "calc")
     if item4_option == "calc":
         item4 = parse_int(form_data.get("item4_score", "16"))
     else:
         item4 = parse_int(item4_option)
     comment_item4 = form_data.get("comment_item4", "").strip()
-    # For item 4, a comment is required if the score is not perfect (16)
     if item4 != 16 and not comment_item4:
-        errors.append("Item 4 requires a comment if score is not perfect.")
+        errors.append("Item 4 requires a comment if the score is not perfect.")
 
     item5 = parse_int(form_data.get("item5", "0"))
     comment_item5 = form_data.get("comment_item5", "").strip()
@@ -216,7 +207,6 @@ def calculate_score_and_validate(form_data: dict) -> Tuple[List[str], Optional[i
     item24 = parse_int(form_data.get("item24", "0"))
     deduction24 = parse_int(form_data.get("deduction24", "0"))
     comment_item24 = form_data.get("comment_item24", "").strip()
-    # For Item 24, if a deduction is applied (i.e. deduction > 0) then comment is required.
     if deduction24 > 0 and not comment_item24:
         errors.append("Item 24 requires a comment when a deduction is applied.")
 
@@ -255,7 +245,6 @@ def calculate_score_and_validate(form_data: dict) -> Tuple[List[str], Optional[i
     if errors:
         return errors, None, None
 
-    # Calculate total score (manual deductions for items 24, 28, and 29 are applied)
     total_score = (
         item1 + item2 + item3 + item4 + item5 + item6 + item78 +
         item9 + item10 + item11 + item12 + item13 + item14 + item15 +
@@ -266,4 +255,59 @@ def calculate_score_and_validate(form_data: dict) -> Tuple[List[str], Optional[i
     final_percentage = round(total_score / 171 * 100, 1)
     return [], total_score, final_percentage
 
-@app.get("/", respo
+@app.get("/", response_class=HTMLResponse)
+def show_form(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+@app.post("/submit_assessment", response_class=HTMLResponse)
+async def submit_assessment(request: Request, db: Session = Depends(get_db)):
+    form_data = await request.form()
+    data_dict = dict(form_data)
+    errors, final_score, final_percentage = calculate_score_and_validate(data_dict)
+    if errors:
+        return templates.TemplateResponse("index.html", {"request": request, "errors": errors, "form_data": data_dict})
+    assessment = Assessment(
+        project_name=data_dict.get("project_name", "N/A"),
+        battalion=data_dict.get("battalion", "N/A"),
+        oic_name=data_dict.get("oic_name", "N/A"),
+        aoic_name=data_dict.get("aoic_name", "N/A"),
+        start_date=data_dict.get("start_date", ""),
+        planned_start=data_dict.get("planned_start", ""),
+        planned_completion=data_dict.get("planned_completion", ""),
+        actual_completion=data_dict.get("actual_completion", ""),
+        final_score=final_score,
+        final_percentage=final_percentage,
+        comment_item1=data_dict.get("comment_item1", "").strip(),
+        comment_item2=data_dict.get("comment_item2", "").strip(),
+        comment_item3=data_dict.get("comment_item3", "").strip(),
+        comment_item4=data_dict.get("comment_item4", "").strip(),
+        comment_item5=data_dict.get("comment_item5", "").strip(),
+        comment_item6=data_dict.get("comment_item6", "").strip(),
+        comment_item78=data_dict.get("comment_item78", "").strip(),
+        comment_item9=data_dict.get("comment_item9", "").strip(),
+        comment_item10=data_dict.get("comment_item10", "").strip(),
+        comment_item11=data_dict.get("comment_item11", "").strip(),
+        comment_item12=data_dict.get("comment_item12", "").strip(),
+        comment_item13=data_dict.get("comment_item13", "").strip(),
+        comment_item14=data_dict.get("comment_item14", "").strip(),
+        comment_item15=data_dict.get("comment_item15", "").strip(),
+        comment_item16=data_dict.get("comment_item16", "").strip(),
+        comment_item17=data_dict.get("comment_item17", "").strip(),
+        comment_item18=data_dict.get("comment_item18", "").strip(),
+        comment_item19=data_dict.get("comment_item19", "").strip(),
+        comment_item20=data_dict.get("comment_item20", "").strip(),
+        comment_item21=data_dict.get("comment_item21", "").strip(),
+        comment_item22=data_dict.get("comment_item22", "").strip(),
+        comment_item23=data_dict.get("comment_item23", "").strip(),
+        comment_item24=data_dict.get("comment_item24", "").strip(),
+        comment_item25=data_dict.get("comment_item25", "").strip(),
+        comment_item26=data_dict.get("comment_item26", "").strip(),
+        comment_item27a=data_dict.get("comment_item27a", "").strip(),
+        comment_item27b=data_dict.get("comment_item27b", "").strip(),
+        comment_item28=data_dict.get("comment_item28", "").strip(),
+        comment_item29=data_dict.get("comment_item29", "").strip()
+    )
+    db.add(assessment)
+    db.commit()
+    db.refresh(assessment)
+    return templates.TemplateResponse("report.html", {"request": request, "assessment": assessment})
