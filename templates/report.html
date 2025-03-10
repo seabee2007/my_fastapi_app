@@ -51,6 +51,17 @@
       word-wrap: break-word;
       overflow-wrap: break-word;
     }
+    .signature-row {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+    }
+    .signature-col {
+      flex: 1;
+      min-width: 300px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
     .signature {
       border: 1px solid var(--border-color);
       width: 50%;
@@ -107,6 +118,7 @@
   <div class="container">
     <h2>Construction Quality Inspection Report</h2>
     <p><strong>Date of Inspection:</strong> <span id="inspection_date"></span></p>
+    
     <h3>Project Information</h3>
     <p><strong>Project Name:</strong> {{ assessment.project_name }}</p>
     <p><strong>Battalion:</strong> {{ assessment.battalion }}</p>
@@ -158,7 +170,7 @@
         {% if assessment.comment_item29 %}<li>Item 29: {{ assessment.comment_item29 }}</li>{% endif %}
       </ul>
     {% endif %}
-
+    
     <div class="signature-row">
       <div class="signature-col">
         <p><strong>OIC Signature:</strong></p>
@@ -185,6 +197,7 @@
   </div>
 
   <script>
+    // Set inspection date dynamically
     var options = { day: '2-digit', month: 'short', year: 'numeric' };
     var inspectionDate = new Date().toLocaleDateString('en-US', options);
     document.getElementById('inspection_date').innerText = inspectionDate;
