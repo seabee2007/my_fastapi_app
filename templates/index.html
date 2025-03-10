@@ -577,6 +577,149 @@
   <a href="https://www.marines.mil/portals/1/mcrp%203-17.7f%20z.pdf" target="_blank" style="color: inherit; text-decoration: none;">PDF</a>
 </div>
 
+  <!-- ---------- Manday Modal ---------- -->
+  <!-- Manday Capability Modal Trigger -->
+  <div id="manday-icon" class="manday-icon">MC</div>
+  <!-- Manday Capability Modal Structure -->
+  <div id="manday-modal" class="manday-modal">
+    <div class="manday-content">
+      <span id="manday-close" class="manday-close">&times;</span>
+      <h2>Manday Capability Calculator</h2>
+      <p>Calculate MD Capability: MC = DL × WD × ME × AF</p>
+      <label for="dl_input">Direct Labor (DL):</label>
+      <input type="number" id="dl_input" placeholder="Enter DL" step="1" min="0">
+      
+      <label for="wd_input">Available Workdays (WD):</label>
+      <input type="number" id="wd_input" placeholder="Enter WD" step="1" min="0">
+      
+      <label for="me_input">Man-day Equivalent (ME):</label>
+      <input type="number" id="me_input" placeholder="Enter ME" step="0.1" min="0">
+      
+      <label for="af_input">Availability Factor (AF):</label>
+      <input type="number" id="af_input" placeholder="Enter AF (0-1)" step="0.01" min="0" max="1">
+      
+      <button id="manday-calc-button">Calculate MD Capability</button>
+      <p id="manday-result">Result: </p>
+    </div>
+  </div>
+
+  <!-- ---------- Calculator Modal ---------- -->
+  <!-- Calculator Modal Trigger -->
+  <div id="calc-icon" class="calc-icon">🖩</div>
+  <!-- Calculator Modal Structure -->
+  <div id="calc-modal" class="calc-modal">
+    <div class="calc-content">
+      <span id="calc-close" class="calc-close">&times;</span>
+      <h2>Calculator</h2>
+      <input type="text" id="calc-display" placeholder="0" readonly style="width:100%; padding:10px; margin-bottom:10px; font-size:1em; text-align:right;">
+      <div class="calc-buttons">
+        <button class="calc-btn" data-value="7">7</button>
+        <button class="calc-btn" data-value="8">8</button>
+        <button class="calc-btn" data-value="9">9</button>
+        <button class="calc-btn" data-value="/">/</button>
+        <button class="calc-btn" data-value="4">4</button>
+        <button class="calc-btn" data-value="5">5</button>
+        <button class="calc-btn" data-value="6">6</button>
+        <button class="calc-btn" data-value="*">*</button>
+        <button class="calc-btn" data-value="1">1</button>
+        <button class="calc-btn" data-value="2">2</button>
+        <button class="calc-btn" data-value="3">3</button>
+        <button class="calc-btn" data-value="-">-</button>
+        <button class="calc-btn" data-value="0">0</button>
+        <button class="calc-btn" data-value=".">.</button>
+        <button class="calc-btn" data-value="%">%</button>
+        <button class="calc-btn" data-value="+">+</button>
+        <button class="calc-btn" id="calc-clear" style="grid-column: span 2;">C</button>
+        <button class="calc-btn" id="calc-equals" style="grid-column: span 2;">=</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------- JavaScript for Modals ---------- -->
+  <script>
+    /* ---------- PDF Modal ---------- */
+    var pdfModal = document.getElementById("pdf-ref-modal");
+    var pdfIcon = document.getElementById("pdf-ref-icon");
+    var pdfClose = document.getElementById("pdf-ref-close");
+
+    pdfIcon.addEventListener("click", function() {
+      pdfModal.style.display = "block";
+    });
+    pdfClose.addEventListener("click", function() {
+      pdfModal.style.display = "none";
+    });
+    window.addEventListener("click", function(event) {
+      if (event.target == pdfModal) {
+        pdfModal.style.display = "none";
+      }
+    });
+
+    /* ---------- Manday Modal ---------- */
+    var mandayModal = document.getElementById("manday-modal");
+    var mandayIcon = document.getElementById("manday-icon");
+    var mandayClose = document.getElementById("manday-close");
+    var mandayCalcButton = document.getElementById("manday-calc-button");
+    var mandayResult = document.getElementById("manday-result");
+
+    mandayIcon.addEventListener("click", function() {
+      mandayModal.style.display = "block";
+    });
+    mandayClose.addEventListener("click", function() {
+      mandayModal.style.display = "none";
+    });
+    window.addEventListener("click", function(event) {
+      if (event.target == mandayModal) {
+        mandayModal.style.display = "none";
+      }
+    });
+    mandayCalcButton.addEventListener("click", function() {
+      var dl = parseFloat(document.getElementById("dl_input").value) || 0;
+      var wd = parseFloat(document.getElementById("wd_input").value) || 0;
+      var me = parseFloat(document.getElementById("me_input").value) || 0;
+      var af = parseFloat(document.getElementById("af_input").value) || 0;
+      var capability = dl * wd * me * af;
+      mandayResult.textContent = "Result: " + capability.toFixed(2) + " MDs";
+    });
+
+    /* ---------- Calculator Modal ---------- */
+    var calcModal = document.getElementById("calc-modal");
+    var calcIcon = document.getElementById("calc-icon");
+    var calcClose = document.getElementById("calc-close");
+    var calcDisplay = document.getElementById("calc-display");
+
+    calcIcon.addEventListener("click", function() {
+      calcModal.style.display = "block";
+    });
+    calcClose.addEventListener("click", function() {
+      calcModal.style.display = "none";
+      calcDisplay.value = "";
+    });
+    window.addEventListener("click", function(event) {
+      if (event.target == calcModal) {
+        calcModal.style.display = "none";
+        calcDisplay.value = "";
+      }
+    });
+    document.querySelectorAll(".calc-btn").forEach(function(button) {
+      button.addEventListener("click", function() {
+        if (this.id === "calc-clear" || this.id === "calc-equals") return;
+        var value = this.getAttribute("data-value");
+        calcDisplay.value += value;
+      });
+    });
+    document.getElementById("calc-clear").addEventListener("click", function() {
+      calcDisplay.value = "";
+    });
+    document.getElementById("calc-equals").addEventListener("click", function() {
+      try {
+        calcDisplay.value = eval(calcDisplay.value);
+      } catch (error) {
+        calcDisplay.value = "Error";
+      }
+    });
+  </script>
+
+      
       <!-- Hidden input for final score -->
       <input type="hidden" name="final_score" id="final_score_input">
       <button type="submit">Submit Assessment</button>
