@@ -185,67 +185,72 @@
     }
 
     /* ---------- Manday Modal Styles ---------- */
-    .manday-icon {
-      position: fixed;
-      bottom: 90px; /* Adjust to appear above the PDF icon */
-      right: 20px;
-      background: var(--primary-color, #007bff);
-      color: #fff;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      text-align: center;
-      line-height: 50px;
-      cursor: pointer;
-      z-index: 1001;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      transition: background 0.3s;
-    }
-    .manday-icon:hover {
-      background: #0056b3;
-    }
-    .manday-modal {
-      display: none;
-      position: fixed;
-      z-index: 1002;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.4);
-    }
-    .manday-content {
-      background-color: #fff;
-      margin: 10% auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 90%;
-      max-width: 400px;
-      border-radius: 5px;
-      text-align: center;
-    }
-    .manday-close {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: color 0.3s;
-    }
-    .manday-close:hover,
-    .manday-close:focus {
-      color: black;
-      text-decoration: none;
-    }
-    .manday-content input[type="number"] {
-      width: 90%;
-      padding: 5px;
-      margin: 5px 0 15px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 1em;
-    }
+/* Manday Calculator Icon (positioned above the existing calculator modal) */
+.manday-icon {
+  position: fixed;
+  bottom: 90px; /* Adjust this value so it appears above your existing calculator modal */
+  right: 20px;
+  background: var(--primary-color, #007bff);
+  color: #fff;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  line-height: 50px;
+  cursor: pointer;
+  z-index: 1001;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+/* Manday Modal Overlay */
+.manday-modal {
+  display: none;
+  position: fixed;
+  z-index: 1002;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+/* Manday Modal Content */
+.manday-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 90%;
+  max-width: 400px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+/* Close Button */
+.manday-close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.manday-close:hover,
+.manday-close:focus {
+  color: black;
+  text-decoration: none;
+}
+
+/* Input Field Styling */
+.manday-content input[type="number"] {
+  width: 90%;
+  padding: 5px;
+  margin: 5px 0 15px;
+  border: 1px solid var(--border-color, #ccc);
+  border-radius: 5px;
+  font-size: 1em;
+}
+
 
     /* ---------- Calculator Modal Styles ---------- */
     .calc-icon {
