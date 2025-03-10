@@ -27,7 +27,6 @@ class Assessment(Base):
     actual_completion = Column(String, nullable=True)
     final_score = Column(Integer, nullable=True)
     final_percentage = Column(Float, nullable=True)
-    # NEW: Adjusted maximum total possible for applicable items.
     adjusted_total_max = Column(Integer, nullable=True)
     errors = Column(Text, nullable=True)
     signature_oic = Column(Text, nullable=True)
@@ -116,10 +115,43 @@ PERFECT_SCORES = {
     "item29": 5,
 }
 
+# Create a mapping of form keys to friendly labels.
+LABELS = {
+    "item1": "Item 1 – Self Assessment",
+    "item2": "Item 2 – Self Assessment Submission",
+    "item3": "Item 3 – Notice to Proceed (NTP)",
+    "item4": "Item 4 – Project Schedule",
+    "item5": "Item 5 – Project Management",
+    "item6": "Item 6 – QA for 30 NCR Detail Sites",
+    "item78": "Items 7 & 8 – FAR/RFI",
+    "item9": "Item 9 – DFOW Sheet",
+    "item10": "Item 10 – Turnover Projects",
+    "item11": "Item 11 – Funds Provided",
+    "item12": "Item 12 – Estimate at Completion Cost (EAC)",
+    "item13": "Item 13 – Current Expenditures",
+    "item14": "Item 14 – Project Material Status Report (PMSR)",
+    "item15": "Item 15 – Report Submission",
+    "item16": "Item 16 – Materials On-Hand",
+    "item17": "Item 17 – DD Form 200",
+    "item18": "Item 18 – Borrowed Material Tickler File",
+    "item19": "Item 19 – Project Brief",
+    "item20": "Item 20 – Calculate Manday Capability",
+    "item21": "Item 21 – Equipment",
+    "item22": "Item 22 – CASS Spot Check",
+    "item23": "Item 23 – Designation Letters",
+    "item24": "Item 24 – Job Box Review",
+    "item25": "Item 25 – Review QC Package",
+    "item26": "Item 26 – Submittals",
+    "item27a": "Item 27a – QC Inspection Plan",
+    "item27b": "Item 27b – QC Inspection",
+    "item28": "Item 28 – Job Box Review (QC)",
+    "item29": "Item 29 – Job Box Review (Safety)"
+}
+
 # Updated validation function.
-# For every item, if a score is provided (submitted >= 0) and it is less than the perfect score,
-# then a comment is required. (N/A items, with negative score, still require a comment.)
-# Also, every item must have a submitted value.
+# Every item must have a submitted value.
+# For applicable items (score >= 0), if the score is less than the perfect score then a comment is required.
+# For N/A items (score < 0), a comment is required.
 def calculate_score_and_validate(form_data: dict):
     errors = []
     score_sum = 0
@@ -127,21 +159,18 @@ def calculate_score_and_validate(form_data: dict):
 
     def process_item(key, comment_key, perfect):
         nonlocal score_sum, max_possible
-        # Get the submitted value; assume it is always present (if not, default to empty string)
         raw = form_data.get(key, "")
         if raw == "":
-            errors.append(f"Item {key[-1]} is required.")
+            errors.append(f"{LABELS[key]} is required.")
             return
         submitted = parse_int(raw)
         comment = form_data.get(comment_key, "").strip()
         if submitted < 0:
-            # N/A case
             if not comment:
-                errors.append(f"Item {key[-1]} requires a comment when N/A is selected.")
+                errors.append(f"{LABELS[key]} requires a comment when N/A is selected.")
         else:
-            # If not perfect, a comment is required.
             if submitted != perfect and not comment:
-                errors.append(f"Item {key[-1]} requires a comment if score is less than maximum ({perfect}).")
+                errors.append(f"{LABELS[key]} requires a comment if the score is less than the maximum ({perfect}).")
             score_sum += submitted
             max_possible += perfect
 
@@ -166,31 +195,31 @@ def calculate_score_and_validate(form_data: dict):
     comment_item4 = form_data.get("comment_item4", "").strip()
     if item4_option != "calc" and item4_val < 0:
         if not comment_item4:
-            errors.append("Item 4 requires a comment when N/A is selected.")
+            errors.append(f"{LABELS['item4']} requires a comment when N/A is selected.")
     else:
         if item4_val != PERFECT_SCORES["item4"] and not comment_item4:
-            errors.append("Item 4 requires a comment if the score is not perfect (16).")
+            errors.append(f"{LABELS['item4']} requires a comment if the score is not perfect ({PERFECT_SCORES['item4']}).")
         if item4_val >= 0:
             score_sum += item4_val
             max_possible += PERFECT_SCORES["item4"]
 
-    # Process items with manual deductions (24, 28, 29).
+    # Process items with manual deductions (Items 24, 28, 29).
     def process_deducted_item(key, deduction_key, comment_key, perfect):
         nonlocal score_sum, max_possible
         raw = form_data.get(key, "")
         if raw == "":
-            errors.append(f"Item {key[-1]} is required.")
+            errors.append(f"{LABELS[key]} is required.")
             return
         submitted = parse_int(raw)
         deduction = parse_int(form_data.get(deduction_key, "0"))
         comment = form_data.get(comment_key, "").strip()
         if submitted < 0:
             if not comment:
-                errors.append(f"Item {key[-1]} requires a comment when N/A is selected.")
+                errors.append(f"{LABELS[key]} requires a comment when N/A is selected.")
         else:
             computed = submitted - deduction
             if computed != perfect and not comment:
-                errors.append(f"Item {key[-1]} requires a comment if score after deduction is less than maximum ({perfect}).")
+                errors.append(f"{LABELS[key]} requires a comment if score after deduction is less than the maximum ({perfect}).")
             score_sum += computed
             max_possible += perfect
 
