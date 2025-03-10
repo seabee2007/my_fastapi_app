@@ -6,7 +6,6 @@ from datetime import datetime
 from sqlalchemy import create_engine, Column, Integer, String, Float, Text, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
-from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 
 # Database configuration using SQLite.
@@ -64,26 +63,11 @@ class Assessment(Base):
     comment_item28 = Column(Text, nullable=True)
     comment_item29 = Column(Text, nullable=True)
 
-
-app = FastAPI()
-
-# Serve static files from the "static" directory
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-# Set up templates directory
-templates = Jinja2Templates(directory="templates")
-
-@app.get("/")
-async def read_index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
-
-
-
-
 # Create the database tables.
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 def get_db():
@@ -95,7 +79,7 @@ def get_db():
 
 def calculate_score_and_validate(form_data: dict) -> Tuple[List[str], Optional[int], Optional[float]]:
     errors = []
-    # Extract project info.
+    # Extract project information
     project_name = form_data.get("project_name", "N/A")
     battalion = form_data.get("battalion", "N/A")
     oic_name = form_data.get("oic_name", "N/A")
@@ -105,223 +89,177 @@ def calculate_score_and_validate(form_data: dict) -> Tuple[List[str], Optional[i
     planned_completion = form_data.get("planned_completion", "")
     actual_completion = form_data.get("actual_completion", "")
 
-    def parse_int_or_str(val):
+    def parse_int(value, default=0):
         try:
-            return int(val)
+            return int(value)
         except:
-            return val
+            return default
 
-    # Parse form items and their comments.
-    item1 = form_data.get("item1", "No")
+    # Parse numeric values and corresponding comments.
+    item1 = parse_int(form_data.get("item1", "0"))
     comment_item1 = form_data.get("comment_item1", "").strip()
-
-    item2 = form_data.get("item2", "No")
-    comment_item2 = form_data.get("comment_item2", "").strip()
-
-    item3 = form_data.get("item3", "No")
-    comment_item3 = form_data.get("comment_item3", "").strip()
-
-    item4_score_str = form_data.get("item4_score", "16")
-    item4_score = parse_int_or_str(item4_score_str)
-    comment_item4 = form_data.get("comment_item4", "").strip()
-
-    item5 = form_data.get("item5", "No")
-    comment_item5 = form_data.get("comment_item5", "").strip()
-
-    item6_str = form_data.get("item6", "4")
-    item6 = parse_int_or_str(item6_str)
-    comment_item6 = form_data.get("comment_item6", "").strip()
-
-    item78_str = form_data.get("item78", "4")
-    item78 = parse_int_or_str(item78_str)
-    comment_item78 = form_data.get("comment_item78", "").strip()
-
-    item9_str = form_data.get("item9", "4")
-    item9 = parse_int_or_str(item9_str)
-    comment_item9 = form_data.get("comment_item9", "").strip()
-
-    item10 = form_data.get("item10", "N/A")
-    comment_item10 = form_data.get("comment_item10", "").strip()
-
-    item11 = form_data.get("item11", "No")
-    comment_item11 = form_data.get("comment_item11", "").strip()
-
-    item12_str = form_data.get("item12", "4")
-    item12 = parse_int_or_str(item12_str)
-    comment_item12 = form_data.get("comment_item12", "").strip()
-
-    item13_str = form_data.get("item13", "4")
-    item13 = parse_int_or_str(item13_str)
-    comment_item13 = form_data.get("comment_item13", "").strip()
-
-    item14_str = form_data.get("item14", "10")
-    item14 = parse_int_or_str(item14_str)
-    comment_item14 = form_data.get("comment_item14", "").strip()
-
-    item15 = form_data.get("item15", "No")
-    comment_item15 = form_data.get("comment_item15", "").strip()
-
-    item16_str = form_data.get("item16", "10")
-    item16 = parse_int_or_str(item16_str)
-    comment_item16 = form_data.get("comment_item16", "").strip()
-
-    item17 = form_data.get("item17", "No")
-    comment_item17 = form_data.get("comment_item17", "").strip()
-
-    item18 = form_data.get("item18", "No")
-    comment_item18 = form_data.get("comment_item18", "").strip()
-
-    item19_str = form_data.get("item19", "5")
-    item19 = parse_int_or_str(item19_str)
-    comment_item19 = form_data.get("comment_item19", "").strip()
-
-    item20_str = form_data.get("item20", "6")
-    item20 = parse_int_or_str(item20_str)
-    comment_item20 = form_data.get("comment_item20", "").strip()
-
-    item21_str = form_data.get("item21", "6")
-    item21 = parse_int_or_str(item21_str)
-    comment_item21 = form_data.get("comment_item21", "").strip()
-
-    item22_str = form_data.get("item22", "12")
-    item22 = parse_int_or_str(item22_str)
-    comment_item22 = form_data.get("comment_item22", "").strip()
-
-    item23_str = form_data.get("item23", "5")
-    item23 = parse_int_or_str(item23_str)
-    comment_item23 = form_data.get("comment_item23", "").strip()
-
-    item24_str = form_data.get("item24", "20")
-    deduction24_str = form_data.get("deduction24", "0")
-    item24 = parse_int_or_str(item24_str)
-    deduction24 = parse_int_or_str(deduction24_str)
-    comment_item24 = form_data.get("comment_item24", "").strip()
-
-    item25_str = form_data.get("item25", "8")
-    item25 = parse_int_or_str(item25_str)
-    comment_item25 = form_data.get("comment_item25", "").strip()
-
-    item26_str = form_data.get("item26", "4")
-    item26 = parse_int_or_str(item26_str)
-    comment_item26 = form_data.get("comment_item26", "").strip()
-
-    item27a_str = form_data.get("item27a", "10")
-    item27a = parse_int_or_str(item27a_str)
-    comment_item27a = form_data.get("comment_item27a", "").strip()
-
-    item27b_str = form_data.get("item27b", "5")
-    item27b = parse_int_or_str(item27b_str)
-    comment_item27b = form_data.get("comment_item27b", "").strip()
-
-    deduction28_str = form_data.get("deduction28", "0")
-    deduction28 = parse_int_or_str(deduction28_str)
-    comment_item28 = form_data.get("comment_item28", "").strip()
-
-    deduction29_str = form_data.get("deduction29", "0")
-    deduction29 = parse_int_or_str(deduction29_str)
-    comment_item29 = form_data.get("comment_item29", "").strip()
-
-    # Validate that a comment is provided when an item is not perfect.
-    if item1 != "Yes" and not comment_item1:
+    if item1 != 2 and not comment_item1:
         errors.append("Item 1 requires a comment if not perfect.")
-    if item2 != "Yes" and not comment_item2:
+
+    item2 = parse_int(form_data.get("item2", "0"))
+    comment_item2 = form_data.get("comment_item2", "").strip()
+    if item2 != 2 and not comment_item2:
         errors.append("Item 2 requires a comment if not perfect.")
-    if item3 != "Yes" and not comment_item3:
+
+    item3 = parse_int(form_data.get("item3", "0"))
+    comment_item3 = form_data.get("comment_item3", "").strip()
+    if item3 != 4 and not comment_item3:
         errors.append("Item 3 requires a comment if not perfect.")
-    if item4_score != 16 and not comment_item4:
-        errors.append("Item 4 requires a comment if score is not 16.")
-    if item5 != "Yes" and not comment_item5:
+
+    # For Item 4, check if calculation option was used.
+    item4_option = form_data.get("item4_option", "calc")
+    if item4_option == "calc":
+        item4 = parse_int(form_data.get("item4_score", "16"))
+    else:
+        item4 = parse_int(item4_option)
+    comment_item4 = form_data.get("comment_item4", "").strip()
+    if item4 != 16 and not comment_item4:
+        errors.append("Item 4 requires a comment if score is not perfect.")
+
+    item5 = parse_int(form_data.get("item5", "0"))
+    comment_item5 = form_data.get("comment_item5", "").strip()
+    if item5 != 2 and not comment_item5:
         errors.append("Item 5 requires a comment if not perfect.")
+
+    item6 = parse_int(form_data.get("item6", "0"))
+    comment_item6 = form_data.get("comment_item6", "").strip()
     if item6 != 4 and not comment_item6:
-        errors.append("Item 6 requires a comment if score is not 4.")
+        errors.append("Item 6 requires a comment if score is not perfect.")
+
+    item78 = parse_int(form_data.get("item78", "0"))
+    comment_item78 = form_data.get("comment_item78", "").strip()
     if item78 != 4 and not comment_item78:
-        errors.append("Items 7 & 8 require a comment if score is not 4.")
+        errors.append("Items 7 & 8 require a comment if score is not perfect.")
+
+    item9 = parse_int(form_data.get("item9", "0"))
+    comment_item9 = form_data.get("comment_item9", "").strip()
     if item9 != 4 and not comment_item9:
-        errors.append("Item 9 requires a comment if score is not 4.")
-    if item10 not in ["N/A", "4"] and not comment_item10:
+        errors.append("Item 9 requires a comment if score is not perfect.")
+
+    item10 = parse_int(form_data.get("item10", "0"))
+    comment_item10 = form_data.get("comment_item10", "").strip()
+    if item10 != 4 and not comment_item10:
         errors.append("Item 10 requires a comment if score is not perfect.")
-    if item11 != "Yes" and not comment_item11:
+
+    item11 = parse_int(form_data.get("item11", "0"))
+    comment_item11 = form_data.get("comment_item11", "").strip()
+    if item11 != 4 and not comment_item11:
         errors.append("Item 11 requires a comment if not perfect.")
+
+    item12 = parse_int(form_data.get("item12", "0"))
+    comment_item12 = form_data.get("comment_item12", "").strip()
     if item12 != 4 and not comment_item12:
-        errors.append("Item 12 requires a comment if score is not 4.")
+        errors.append("Item 12 requires a comment if score is not perfect.")
+
+    item13 = parse_int(form_data.get("item13", "0"))
+    comment_item13 = form_data.get("comment_item13", "").strip()
     if item13 != 4 and not comment_item13:
-        errors.append("Item 13 requires a comment if score is not 4.")
+        errors.append("Item 13 requires a comment if score is not perfect.")
+
+    item14 = parse_int(form_data.get("item14", "0"))
+    comment_item14 = form_data.get("comment_item14", "").strip()
     if item14 != 10 and not comment_item14:
-        errors.append("Item 14 requires a comment if score is not 10.")
-    if item15 != "Yes" and not comment_item15:
+        errors.append("Item 14 requires a comment if score is not perfect.")
+
+    item15 = parse_int(form_data.get("item15", "0"))
+    comment_item15 = form_data.get("comment_item15", "").strip()
+    if item15 != 2 and not comment_item15:
         errors.append("Item 15 requires a comment if not perfect.")
+
+    item16 = parse_int(form_data.get("item16", "0"))
+    comment_item16 = form_data.get("comment_item16", "").strip()
     if item16 != 10 and not comment_item16:
-        errors.append("Item 16 requires a comment if score is not 10.")
-    if item17 != "Yes" and not comment_item17:
+        errors.append("Item 16 requires a comment if score is not perfect.")
+
+    item17 = parse_int(form_data.get("item17", "0"))
+    comment_item17 = form_data.get("comment_item17", "").strip()
+    if item17 != 2 and not comment_item17:
         errors.append("Item 17 requires a comment if not perfect.")
-    if item18 != "Yes" and not comment_item18:
+
+    item18 = parse_int(form_data.get("item18", "0"))
+    comment_item18 = form_data.get("comment_item18", "").strip()
+    if item18 != 2 and not comment_item18:
         errors.append("Item 18 requires a comment if not perfect.")
+
+    item19 = parse_int(form_data.get("item19", "0"))
+    comment_item19 = form_data.get("comment_item19", "").strip()
     if item19 != 5 and not comment_item19:
-        errors.append("Item 19 requires a comment if score is not 5.")
+        errors.append("Item 19 requires a comment if score is not perfect.")
+
+    item20 = parse_int(form_data.get("item20", "0"))
+    comment_item20 = form_data.get("comment_item20", "").strip()
     if item20 != 6 and not comment_item20:
-        errors.append("Item 20 requires a comment if score is not 6.")
+        errors.append("Item 20 requires a comment if score is not perfect.")
+
+    item21 = parse_int(form_data.get("item21", "0"))
+    comment_item21 = form_data.get("comment_item21", "").strip()
     if item21 != 6 and not comment_item21:
-        errors.append("Item 21 requires a comment if score is not 6.")
+        errors.append("Item 21 requires a comment if score is not perfect.")
+
+    item22 = parse_int(form_data.get("item22", "0"))
+    comment_item22 = form_data.get("comment_item22", "").strip()
     if item22 != 12 and not comment_item22:
-        errors.append("Item 22 requires a comment if score is not 12.")
+        errors.append("Item 22 requires a comment if score is not perfect.")
+
+    item23 = parse_int(form_data.get("item23", "0"))
+    comment_item23 = form_data.get("comment_item23", "").strip()
     if item23 != 5 and not comment_item23:
-        errors.append("Item 23 requires a comment if score is not 5.")
+        errors.append("Item 23 requires a comment if score is not perfect.")
+
+    item24 = parse_int(form_data.get("item24", "0"))
+    deduction24 = parse_int(form_data.get("deduction24", "0"))
+    comment_item24 = form_data.get("comment_item24", "").strip()
     if deduction24 != 0 and not comment_item24:
         errors.append("Item 24 requires a comment if a deduction is applied.")
+
+    item25 = parse_int(form_data.get("item25", "0"))
+    comment_item25 = form_data.get("comment_item25", "").strip()
     if item25 != 8 and not comment_item25:
-        errors.append("Item 25 requires a comment if score is not 8.")
+        errors.append("Item 25 requires a comment if score is not perfect.")
+
+    item26 = parse_int(form_data.get("item26", "0"))
+    comment_item26 = form_data.get("comment_item26", "").strip()
     if item26 != 4 and not comment_item26:
-        errors.append("Item 26 requires a comment if score is not 4.")
+        errors.append("Item 26 requires a comment if score is not perfect.")
+
+    item27a = parse_int(form_data.get("item27a", "0"))
+    comment_item27a = form_data.get("comment_item27a", "").strip()
     if item27a != 10 and not comment_item27a:
-        errors.append("Item 27a requires a comment if score is not 10.")
+        errors.append("Item 27a requires a comment if score is not perfect.")
+
+    item27b = parse_int(form_data.get("item27b", "0"))
+    comment_item27b = form_data.get("comment_item27b", "").strip()
     if item27b != 5 and not comment_item27b:
-        errors.append("Item 27b requires a comment if score is not 5.")
+        errors.append("Item 27b requires a comment if score is not perfect.")
+
+    item28 = parse_int(form_data.get("item28_option", "0"))
+    deduction28 = parse_int(form_data.get("deduction28", "0"))
+    comment_item28 = form_data.get("comment_item28", "").strip()
     if deduction28 != 0 and not comment_item28:
         errors.append("Item 28 requires a comment if a deduction is applied.")
+
+    item29 = parse_int(form_data.get("item29_option", "0"))
+    deduction29 = parse_int(form_data.get("deduction29", "0"))
+    comment_item29 = form_data.get("comment_item29", "").strip()
     if deduction29 != 0 and not comment_item29:
         errors.append("Item 29 requires a comment if a deduction is applied.")
 
     if errors:
         return errors, None, None
 
-    # Calculate numeric scores.
-    score1   = 2 if item1  == "Yes" else 0
-    score2   = 2 if item2  == "Yes" else 0
-    score3   = 4 if item3  == "Yes" else 0
-    score4   = item4_score
-    score5   = 2 if item5  == "Yes" else 0
-    score6   = item6
-    score7_8 = item78
-    score9   = item9
-    score10  = 4 if item10 == "4" else 0
-    score11  = 4 if item11 == "Yes" else 0
-    score12  = item12
-    score13  = item13
-    score14  = item14
-    score15  = 2 if item15 == "Yes" else 0
-    score16  = item16
-    score17  = 2 if item17 == "Yes" else 0
-    score18  = 2 if item18 == "Yes" else 0
-    score19  = item19
-    score20  = item20
-    score21  = item21
-    score22  = item22
-    score23  = item23
-    score24  = (20 - deduction24)
-    score25  = item25
-    score26  = item26
-    score27a = item27a
-    score27b = item27b
-    score28  = (5 - deduction28)
-    score29  = (5 - deduction29)
-
-    total_score = (score1 + score2 + score3 + score4 + score5 +
-                   score6 + score7_8 + score9 + score10 + score11 +
-                   score12 + score13 + score14 + score15 + score16 +
-                   score17 + score18 + score19 + score20 + score21 +
-                   score22 + score23 + score24 + score25 + score26 +
-                   score27a + score27b + score28 + score29)
-
+    # Calculate total score by summing all items (including manual deductions)
+    total_score = (
+        item1 + item2 + item3 + item4 + item5 + item6 + item78 +
+        item9 + item10 + item11 + item12 + item13 + item14 + item15 +
+        item16 + item17 + item18 + item19 + item20 + item21 +
+        item22 + item23 + (item24 - deduction24) + item25 + item26 +
+        item27a + item27b + (item28 - deduction28) + (item29 - deduction29)
+    )
     final_percentage = round(total_score / 171 * 100, 1)
     return [], total_score, final_percentage
 
@@ -349,61 +287,37 @@ async def submit_assessment(request: Request, db: Session = Depends(get_db)):
             actual_completion=data_dict.get("actual_completion", ""),
             final_score=final_score,
             final_percentage=final_percentage,
-            comment_item1 = data_dict.get("comment_item1", "").strip(),
-            comment_item2 = data_dict.get("comment_item2", "").strip(),
-            comment_item3 = data_dict.get("comment_item3", "").strip(),
-            comment_item4 = data_dict.get("comment_item4", "").strip(),
-            comment_item5 = data_dict.get("comment_item5", "").strip(),
-            comment_item6 = data_dict.get("comment_item6", "").strip(),
-            comment_item78 = data_dict.get("comment_item78", "").strip(),
-            comment_item9 = data_dict.get("comment_item9", "").strip(),
-            comment_item10 = data_dict.get("comment_item10", "").strip(),
-            comment_item11 = data_dict.get("comment_item11", "").strip(),
-            comment_item12 = data_dict.get("comment_item12", "").strip(),
-            comment_item13 = data_dict.get("comment_item13", "").strip(),
-            comment_item14 = data_dict.get("comment_item14", "").strip(),
-            comment_item15 = data_dict.get("comment_item15", "").strip(),
-            comment_item16 = data_dict.get("comment_item16", "").strip(),
-            comment_item17 = data_dict.get("comment_item17", "").strip(),
-            comment_item18 = data_dict.get("comment_item18", "").strip(),
-            comment_item19 = data_dict.get("comment_item19", "").strip(),
-            comment_item20 = data_dict.get("comment_item20", "").strip(),
-            comment_item21 = data_dict.get("comment_item21", "").strip(),
-            comment_item22 = data_dict.get("comment_item22", "").strip(),
-            comment_item23 = data_dict.get("comment_item23", "").strip(),
-            comment_item24 = data_dict.get("comment_item24", "").strip(),
-            comment_item25 = data_dict.get("comment_item25", "").strip(),
-            comment_item26 = data_dict.get("comment_item26", "").strip(),
-            comment_item27a = data_dict.get("comment_item27a", "").strip(),
-            comment_item27b = data_dict.get("comment_item27b", "").strip(),
-            comment_item28 = data_dict.get("comment_item28", "").strip(),
-            comment_item29 = data_dict.get("comment_item29", "").strip(),
+            comment_item1=data_dict.get("comment_item1", "").strip(),
+            comment_item2=data_dict.get("comment_item2", "").strip(),
+            comment_item3=data_dict.get("comment_item3", "").strip(),
+            comment_item4=data_dict.get("comment_item4", "").strip(),
+            comment_item5=data_dict.get("comment_item5", "").strip(),
+            comment_item6=data_dict.get("comment_item6", "").strip(),
+            comment_item78=data_dict.get("comment_item78", "").strip(),
+            comment_item9=data_dict.get("comment_item9", "").strip(),
+            comment_item10=data_dict.get("comment_item10", "").strip(),
+            comment_item11=data_dict.get("comment_item11", "").strip(),
+            comment_item12=data_dict.get("comment_item12", "").strip(),
+            comment_item13=data_dict.get("comment_item13", "").strip(),
+            comment_item14=data_dict.get("comment_item14", "").strip(),
+            comment_item15=data_dict.get("comment_item15", "").strip(),
+            comment_item16=data_dict.get("comment_item16", "").strip(),
+            comment_item17=data_dict.get("comment_item17", "").strip(),
+            comment_item18=data_dict.get("comment_item18", "").strip(),
+            comment_item19=data_dict.get("comment_item19", "").strip(),
+            comment_item20=data_dict.get("comment_item20", "").strip(),
+            comment_item21=data_dict.get("comment_item21", "").strip(),
+            comment_item22=data_dict.get("comment_item22", "").strip(),
+            comment_item23=data_dict.get("comment_item23", "").strip(),
+            comment_item24=data_dict.get("comment_item24", "").strip(),
+            comment_item25=data_dict.get("comment_item25", "").strip(),
+            comment_item26=data_dict.get("comment_item26", "").strip(),
+            comment_item27a=data_dict.get("comment_item27a", "").strip(),
+            comment_item27b=data_dict.get("comment_item27b", "").strip(),
+            comment_item28=data_dict.get("comment_item28", "").strip(),
+            comment_item29=data_dict.get("comment_item29", "").strip()
         )
         db.add(assessment)
         db.commit()
         db.refresh(assessment)
-        return RedirectResponse(url=f"/report/{assessment.id}", status_code=303)
-
-@app.post("/save_signatures/{assessment_id}")
-async def save_signatures(assessment_id: int,
-                          oic_signature: Optional[str] = Form(None),
-                          ncr_signature: Optional[str] = Form(None),
-                          db: Session = Depends(get_db)):
-    assessment = db.query(Assessment).get(assessment_id)
-    if not assessment:
-        return HTMLResponse("Assessment not found", status_code=404)
-    assessment.signature_oic = oic_signature
-    assessment.signature_ncr = ncr_signature
-    db.commit()
-    return RedirectResponse(url=f"/report/{assessment.id}", status_code=303)
-
-@app.get("/report/{assessment_id}", response_class=HTMLResponse)
-def print_report(assessment_id: int, request: Request, db: Session = Depends(get_db)):
-    assessment = db.query(Assessment).get(assessment_id)
-    if not assessment:
-        return HTMLResponse("Assessment not found", status_code=404)
-    return templates.TemplateResponse("report.html", {"request": request, "assessment": assessment})
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+        return templates.TemplateResponse("report.html", {"request": request, "assessment": assessment})
