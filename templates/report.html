@@ -48,7 +48,6 @@
       padding: 8px;
       border: 1px solid #eee;
       border-radius: var(--border-radius);
-      /* Ensure long text wraps in print */
       word-wrap: break-word;
       overflow-wrap: break-word;
     }
@@ -60,27 +59,17 @@
       margin: 0 auto 20px;
       border-radius: var(--border-radius);
     }
-    .signature-pad-container {
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .page-break {
-      margin-top: 30px;
-    }
     @media print {
-      /* Remove interactive elements and unnecessary styling for print */
       .no-print, button {
         display: none !important;
       }
-      /* Adjust layout for print */
       body, .container {
         width: 100%;
         margin: 0;
         padding: 10px;
         box-shadow: none;
-        font-size: 16pt; /* Increase font size for readability */
+        font-size: 16pt;
       }
-      /* Ensure the signature area and list items display nicely */
       li {
         word-wrap: break-word;
         overflow-wrap: break-word;
@@ -117,9 +106,7 @@
 <body>
   <div class="container">
     <h2>Construction Quality Inspection Report</h2>
-
     <p><strong>Date of Inspection:</strong> <span id="inspection_date"></span></p>
-
     <h3>Project Information</h3>
     <p><strong>Project Name:</strong> {{ assessment.project_name }}</p>
     <p><strong>Battalion:</strong> {{ assessment.battalion }}</p>
@@ -131,14 +118,13 @@
 
     <h3>Final Score</h3>
     {% if assessment.final_score is not none %}
-      <!-- Use the adjusted total if available; otherwise default to 171 -->
-      <p><strong>Score:</strong> {{ assessment.final_score }} out of {{ assessment.adjusted_total_max or 171 }}</p>
+      <p><strong>Score:</strong> {{ assessment.final_score }} out of 171</p>
       <p><strong>Percentage:</strong> {{ assessment.final_percentage }}%</p>
     {% else %}
       <p>No final score computed yet.</p>
     {% endif %}
 
-    {% if assessment.final_score is not none and assessment.final_score < (assessment.adjusted_total_max or 171) %}
+    {% if assessment.final_score is not none and assessment.final_score < 171 %}
       <h3>Comments</h3>
       <ul>
         {% if assessment.comment_item1 %}<li>Item 1: {{ assessment.comment_item1 }}</li>{% endif %}
@@ -172,7 +158,7 @@
         {% if assessment.comment_item29 %}<li>Item 29: {{ assessment.comment_item29 }}</li>{% endif %}
       </ul>
     {% endif %}
-    
+
     <div class="signature-row">
       <div class="signature-col">
         <p><strong>OIC Signature:</strong></p>
@@ -184,7 +170,6 @@
           <button id="oic_clear" type="button" class="no-print">Clear OIC Signature</button>
         {% endif %}
       </div>
-
       <div class="signature-col">
         <p><strong>30 NCR Signature:</strong></p>
         {% if assessment.signature_ncr %}
@@ -200,7 +185,6 @@
   </div>
 
   <script>
-    // Format the current date as "DD MMM YYYY"
     var options = { day: '2-digit', month: 'short', year: 'numeric' };
     var inspectionDate = new Date().toLocaleDateString('en-US', options);
     document.getElementById('inspection_date').innerText = inspectionDate;
