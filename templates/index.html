@@ -948,22 +948,7 @@
   
   <!-- ---------- JavaScript for Modals ---------- -->
   <script>
-    /* ---------- PDF Modal ---------- */
-    var pdfModal = document.getElementById("pdf-ref-modal");
-    var pdfIcon = document.getElementById("pdf-ref-icon");
-    var pdfClose = document.getElementById("pdf-ref-close");
-    pdfIcon.addEventListener("click", function() {
-      pdfModal.style.display = "block";
-    });
-    pdfClose.addEventListener("click", function() {
-      pdfModal.style.display = "none";
-    });
-    window.addEventListener("click", function(event) {
-      if (event.target == pdfModal) {
-        pdfModal.style.display = "none";
-      }
-    });
-    
+  
     /* ---------- Manday Modal ---------- */
     var mandayModal = document.getElementById("manday-modal");
     var mandayIcon = document.getElementById("manday-icon");
