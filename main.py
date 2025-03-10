@@ -27,6 +27,8 @@ class Assessment(Base):
     actual_completion = Column(String, nullable=True)
     final_score = Column(Integer, nullable=True)
     final_percentage = Column(Float, nullable=True)
+    # NEW: Store the maximum possible score for applicable items.
+    adjusted_total_max = Column(Integer, nullable=True)
     errors = Column(Text, nullable=True)
     signature_oic = Column(Text, nullable=True)
     signature_ncr = Column(Text, nullable=True)
@@ -114,8 +116,10 @@ PERFECT_SCORES = {
     "item29": 5,
 }
 
-# This function validates each item and calculates the total earned score and the maximum possible score.
-# For an item marked N/A (indicated by a negative value), that item is not counted in the maximum.
+# This function validates each item and calculates:
+# - score_sum: sum of earned scores for applicable items.
+# - max_possible: sum of perfect scores for only applicable items.
+# For items marked N/A (negative value), that item is excluded from max_possible.
 def calculate_score_and_validate(form_data: dict):
     errors = []
     score_sum = 0
@@ -125,7 +129,6 @@ def calculate_score_and_validate(form_data: dict):
         nonlocal score_sum, max_possible
         submitted = parse_int(form_data.get(key, "0"))
         comment = form_data.get(comment_key, "").strip()
-        # If N/A (negative) then do not add its perfect score
         if submitted < 0:
             if not comment:
                 errors.append(f"Item {key[-1]} requires a comment when N/A is selected.")
@@ -133,7 +136,7 @@ def calculate_score_and_validate(form_data: dict):
             score_sum += submitted
             max_possible += perfect
 
-    # Process items that do not involve deductions or special logic.
+    # Process items without deductions or special logic.
     for key in ["item1", "item2", "item3", "item5", "item6", "item78", "item9",
                 "item10", "item11", "item12", "item13", "item14", "item15", "item16",
                 "item17", "item18", "item19", "item20", "item21", "item22", "item23",
@@ -157,7 +160,7 @@ def calculate_score_and_validate(form_data: dict):
             score_sum += item4_val
             max_possible += PERFECT_SCORES["item4"]
 
-    # Process items with manual deductions (24, 28, 29).
+    # Process items with manual deductions: 24, 28, 29.
     def process_deducted_item(key, deduction_key, comment_key, perfect):
         nonlocal score_sum, max_possible
         submitted = parse_int(form_data.get(key, "0"))
@@ -175,24 +178,21 @@ def calculate_score_and_validate(form_data: dict):
     process_deducted_item("item29_option", "deduction29", "comment_item29", PERFECT_SCORES["item29"])
 
     if errors:
-        return errors, None, None
+        return errors, None, None, None
 
-    # To avoid division by zero if all items are N/A.
     final_percentage = round(score_sum / max_possible * 100, 1) if max_possible > 0 else 0
-    return [], score_sum, final_percentage
+    return [], score_sum, final_percentage, max_possible
 
 @app.get("/", response_class=HTMLResponse)
 def show_form(request: Request):
-    # Pass an empty form_data by default so the form fields can be repopulated.
     return templates.TemplateResponse("index.html", {"request": request, "form_data": {}})
 
 @app.post("/submit_assessment", response_class=HTMLResponse)
 async def submit_assessment(request: Request, db: Session = Depends(get_db)):
     form_data = await request.form()
     data_dict = dict(form_data)
-    errors, final_score, final_percentage = calculate_score_and_validate(data_dict)
+    errors, final_score, final_percentage, max_possible = calculate_score_and_validate(data_dict)
     if errors:
-        # Re-render the form with errors and the submitted values.
         return templates.TemplateResponse("index.html", {"request": request, "errors": errors, "form_data": data_dict})
     assessment = Assessment(
         project_name=data_dict.get("project_name", "N/A"),
@@ -205,6 +205,7 @@ async def submit_assessment(request: Request, db: Session = Depends(get_db)):
         actual_completion=data_dict.get("actual_completion", ""),
         final_score=final_score,
         final_percentage=final_percentage,
+        adjusted_total_max=max_possible,
         comment_item1=data_dict.get("comment_item1", "").strip(),
         comment_item2=data_dict.get("comment_item2", "").strip(),
         comment_item3=data_dict.get("comment_item3", "").strip(),
