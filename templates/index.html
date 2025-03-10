@@ -832,17 +832,19 @@
 </head>
 <body>
 
-  <!-- ---------- PDF Modal ---------- -->
-  <!-- PDF Reference Modal Trigger -->
-  <div id="pdf-ref-icon" class="pdf-ref-icon">PDF</div>
-  <!-- PDF Reference Modal Structure -->
-  <div id="pdf-ref-modal" class="pdf-ref-modal">
-    <div class="pdf-ref-content">
-      <span id="pdf-ref-close" class="pdf-ref-close">&times;</span>
-      <h2>PDF Reference Document</h2>
-      <iframe src="static/pdf/NTRP.pdf" width="100%" height="500px" style="border: none;"></iframe>
-    </div>
+<!-- PDF Modal Trigger (Icon as Link) -->
+<div id="pdf-ref-icon" class="pdf-ref-icon">PDF</div>
+
+<!-- PDF Modal Structure -->
+<div id="pdf-ref-modal" class="pdf-ref-modal">
+  <div class="pdf-ref-content">
+    <span id="pdf-ref-close" class="pdf-ref-close">&times;</span>
+    <h2>PDF Reference Document</h2>
+    <!-- Updated iframe to load external PDF -->
+    <iframe src="https://www.marines.mil/portals/1/mcrp%203-17.7f%20z.pdf" width="100%" height="500px" style="border: none;"></iframe>
   </div>
+</div>
+
 
   <!-- ---------- Manday Modal ---------- -->
   <!-- Manday Capability Modal Trigger -->
