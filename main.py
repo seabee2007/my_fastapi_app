@@ -82,178 +82,145 @@ def parse_int(value, default=0):
     except Exception:
         return default
 
-# This function validates the form and computes the total score.
-# For radio/select inputs we assume that a negative value indicates an "N/A" selection.
-# A comment is required only when an "N/A" (negative value) is chosen (except for Item 4,
-# where a comment is required if the score is not perfect).
+# Define the perfect score for each item.
+# For items with deductions, the perfect score remains constant.
+PERFECT_SCORES = {
+    "item1": 2,
+    "item2": 2,
+    "item3": 4,
+    "item4": 16,
+    "item5": 2,
+    "item6": 4,
+    "item78": 4,
+    "item9": 4,
+    "item10": 4,
+    "item11": 4,
+    "item12": 4,
+    "item13": 4,
+    "item14": 10,
+    "item15": 2,
+    "item16": 10,
+    "item17": 2,
+    "item18": 2,
+    "item19": 5,
+    "item20": 6,
+    "item21": 6,
+    "item22": 12,
+    "item23": 5,
+    "item24": 20,
+    "item25": 8,
+    "item26": 4,
+    "item27a": 10,
+    "item27b": 5,
+    "item28": 5,
+    "item29": 5,
+}
+
+# This function validates the form and computes two sums:
+# - score_sum: the sum of points earned for applicable items.
+# - max_possible: the sum of perfect scores for applicable items.
+# For each item, if the submitted value is negative (i.e. N/A), then that item is
+# not applicable and its perfect score is removed from the maximum.
+# (Item 4 uses a calculated value if the "calc" option is used.)
 def calculate_score_and_validate(form_data: dict):
     errors = []
+    score_sum = 0
+    max_possible = 0
 
-    item1 = parse_int(form_data.get("item1", "0"))
-    comment_item1 = form_data.get("comment_item1", "").strip()
-    if item1 < 0 and not comment_item1:
-        errors.append("Item 1 requires a comment when N/A is selected.")
+    # Helper to process an individual item.
+    # key: the key name for the form value.
+    # perfect: perfect score for the item.
+    # comment_key: key for the comment field.
+    # extra: an optional function to modify the submitted value (e.g. for deductions)
+    def process_item(key, perfect, comment_key, extra=lambda x: x):
+        nonlocal score_sum, max_possible
+        submitted = parse_int(form_data.get(key, "0"))
+        comment = form_data.get(comment_key, "").strip()
+        # If the item is marked as N/A (negative), require a comment and do not add to denominator.
+        if submitted < 0:
+            if not comment:
+                errors.append(f"{key.capitalize()} requires a comment when N/A is selected.")
+            # Do not add to score_sum or max_possible.
+        else:
+            val = extra(submitted)
+            score_sum += val
+            max_possible += perfect
 
-    item2 = parse_int(form_data.get("item2", "0"))
-    comment_item2 = form_data.get("comment_item2", "").strip()
-    if item2 < 0 and not comment_item2:
-        errors.append("Item 2 requires a comment when N/A is selected.")
+    # Process items 1,2,3,5,6,7/8 (item78),9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,25,26,27a,27b.
+    for key, perfect in {
+        "item1": PERFECT_SCORES["item1"],
+        "item2": PERFECT_SCORES["item2"],
+        "item3": PERFECT_SCORES["item3"],
+        "item5": PERFECT_SCORES["item5"],
+        "item6": PERFECT_SCORES["item6"],
+        "item78": PERFECT_SCORES["item78"],
+        "item9": PERFECT_SCORES["item9"],
+        "item10": PERFECT_SCORES["item10"],
+        "item11": PERFECT_SCORES["item11"],
+        "item12": PERFECT_SCORES["item12"],
+        "item13": PERFECT_SCORES["item13"],
+        "item14": PERFECT_SCORES["item14"],
+        "item15": PERFECT_SCORES["item15"],
+        "item16": PERFECT_SCORES["item16"],
+        "item17": PERFECT_SCORES["item17"],
+        "item18": PERFECT_SCORES["item18"],
+        "item19": PERFECT_SCORES["item19"],
+        "item20": PERFECT_SCORES["item20"],
+        "item21": PERFECT_SCORES["item21"],
+        "item22": PERFECT_SCORES["item22"],
+        "item23": PERFECT_SCORES["item23"],
+        "item25": PERFECT_SCORES["item25"],
+        "item26": PERFECT_SCORES["item26"],
+        "item27a": PERFECT_SCORES["item27a"],
+        "item27b": PERFECT_SCORES["item27b"],
+    }.items():
+        process_item(key, perfect, f"comment_{key}")
 
-    item3 = parse_int(form_data.get("item3", "0"))
-    comment_item3 = form_data.get("comment_item3", "").strip()
-    if item3 < 0 and not comment_item3:
-        errors.append("Item 3 requires a comment when N/A is selected.")
-
-    # Item 4: if "calc" is used, take the calculated score; otherwise use the provided option.
+    # Process Item 4 separately (it can use a calculation or an N/A option)
     item4_option = form_data.get("item4_option", "calc")
     if item4_option == "calc":
-        item4 = parse_int(form_data.get("item4_score", "16"))
+        item4_val = parse_int(form_data.get("item4_score", "16"))
     else:
-        item4 = parse_int(item4_option)
+        item4_val = parse_int(item4_option)
     comment_item4 = form_data.get("comment_item4", "").strip()
-    if item4 != 16 and not comment_item4:
-        errors.append("Item 4 requires a comment if the score is not perfect.")
+    if item4_option != "calc" and item4_val < 0:
+        if not comment_item4:
+            errors.append("Item 4 requires a comment when N/A is selected.")
+    else:
+        # Even if using calculation, if score is less than perfect, require comment.
+        if item4_val != PERFECT_SCORES["item4"] and not comment_item4:
+            errors.append("Item 4 requires a comment if the score is not perfect.")
+        # Only count item 4 if it is applicable (i.e. non-negative)
+        if item4_val >= 0:
+            score_sum += item4_val
+            max_possible += PERFECT_SCORES["item4"]
 
-    item5 = parse_int(form_data.get("item5", "0"))
-    comment_item5 = form_data.get("comment_item5", "").strip()
-    if item5 < 0 and not comment_item5:
-        errors.append("Item 5 requires a comment when N/A is selected.")
+    # Process items with manual deductions: 24, 28, 29.
+    # For each, if the select value is negative then the item is N/A.
+    # Otherwise, subtract the deduction from the submitted value.
+    def process_deducted_item(key, deduction_key, perfect, comment_key):
+        nonlocal score_sum, max_possible
+        submitted = parse_int(form_data.get(key, "0"))
+        deduction = parse_int(form_data.get(deduction_key, "0"))
+        comment = form_data.get(comment_key, "").strip()
+        if submitted < 0:
+            if not comment:
+                errors.append(f"{key.capitalize()} requires a comment when N/A is selected.")
+        else:
+            val = submitted - deduction
+            score_sum += val
+            max_possible += perfect
 
-    item6 = parse_int(form_data.get("item6", "0"))
-    comment_item6 = form_data.get("comment_item6", "").strip()
-    if item6 < 0 and not comment_item6:
-        errors.append("Item 6 requires a comment when N/A is selected.")
-
-    item78 = parse_int(form_data.get("item78", "0"))
-    comment_item78 = form_data.get("comment_item78", "").strip()
-    if item78 < 0 and not comment_item78:
-        errors.append("Items 7 & 8 require a comment when N/A is selected.")
-
-    item9 = parse_int(form_data.get("item9", "0"))
-    comment_item9 = form_data.get("comment_item9", "").strip()
-    if item9 < 0 and not comment_item9:
-        errors.append("Item 9 requires a comment when N/A is selected.")
-
-    item10 = parse_int(form_data.get("item10", "0"))
-    comment_item10 = form_data.get("comment_item10", "").strip()
-    if item10 < 0 and not comment_item10:
-        errors.append("Item 10 requires a comment when N/A is selected.")
-
-    item11 = parse_int(form_data.get("item11", "0"))
-    comment_item11 = form_data.get("comment_item11", "").strip()
-    if item11 < 0 and not comment_item11:
-        errors.append("Item 11 requires a comment when N/A is selected.")
-
-    item12 = parse_int(form_data.get("item12", "0"))
-    comment_item12 = form_data.get("comment_item12", "").strip()
-    if item12 < 0 and not comment_item12:
-        errors.append("Item 12 requires a comment when N/A is selected.")
-
-    item13 = parse_int(form_data.get("item13", "0"))
-    comment_item13 = form_data.get("comment_item13", "").strip()
-    if item13 < 0 and not comment_item13:
-        errors.append("Item 13 requires a comment when N/A is selected.")
-
-    item14 = parse_int(form_data.get("item14", "0"))
-    comment_item14 = form_data.get("comment_item14", "").strip()
-    if item14 < 0 and not comment_item14:
-        errors.append("Item 14 requires a comment when N/A is selected.")
-
-    item15 = parse_int(form_data.get("item15", "0"))
-    comment_item15 = form_data.get("comment_item15", "").strip()
-    if item15 < 0 and not comment_item15:
-        errors.append("Item 15 requires a comment when N/A is selected.")
-
-    item16 = parse_int(form_data.get("item16", "0"))
-    comment_item16 = form_data.get("comment_item16", "").strip()
-    if item16 < 0 and not comment_item16:
-        errors.append("Item 16 requires a comment when N/A is selected.")
-
-    item17 = parse_int(form_data.get("item17", "0"))
-    comment_item17 = form_data.get("comment_item17", "").strip()
-    if item17 < 0 and not comment_item17:
-        errors.append("Item 17 requires a comment when N/A is selected.")
-
-    item18 = parse_int(form_data.get("item18", "0"))
-    comment_item18 = form_data.get("comment_item18", "").strip()
-    if item18 < 0 and not comment_item18:
-        errors.append("Item 18 requires a comment when N/A is selected.")
-
-    item19 = parse_int(form_data.get("item19", "0"))
-    comment_item19 = form_data.get("comment_item19", "").strip()
-    if item19 < 0 and not comment_item19:
-        errors.append("Item 19 requires a comment when N/A is selected.")
-
-    item20 = parse_int(form_data.get("item20", "0"))
-    comment_item20 = form_data.get("comment_item20", "").strip()
-    if item20 < 0 and not comment_item20:
-        errors.append("Item 20 requires a comment when N/A is selected.")
-
-    item21 = parse_int(form_data.get("item21", "0"))
-    comment_item21 = form_data.get("comment_item21", "").strip()
-    if item21 < 0 and not comment_item21:
-        errors.append("Item 21 requires a comment when N/A is selected.")
-
-    item22 = parse_int(form_data.get("item22", "0"))
-    comment_item22 = form_data.get("comment_item22", "").strip()
-    if item22 < 0 and not comment_item22:
-        errors.append("Item 22 requires a comment when N/A is selected.")
-
-    item23 = parse_int(form_data.get("item23", "0"))
-    comment_item23 = form_data.get("comment_item23", "").strip()
-    if item23 < 0 and not comment_item23:
-        errors.append("Item 23 requires a comment when N/A is selected.")
-
-    item24 = parse_int(form_data.get("item24", "0"))
-    deduction24 = parse_int(form_data.get("deduction24", "0"))
-    comment_item24 = form_data.get("comment_item24", "").strip()
-    if deduction24 > 0 and not comment_item24:
-        errors.append("Item 24 requires a comment when a deduction is applied.")
-
-    item25 = parse_int(form_data.get("item25", "0"))
-    comment_item25 = form_data.get("comment_item25", "").strip()
-    if item25 < 0 and not comment_item25:
-        errors.append("Item 25 requires a comment when N/A is selected.")
-
-    item26 = parse_int(form_data.get("item26", "0"))
-    comment_item26 = form_data.get("comment_item26", "").strip()
-    if item26 < 0 and not comment_item26:
-        errors.append("Item 26 requires a comment when N/A is selected.")
-
-    item27a = parse_int(form_data.get("item27a", "0"))
-    comment_item27a = form_data.get("comment_item27a", "").strip()
-    if item27a < 0 and not comment_item27a:
-        errors.append("Item 27a requires a comment when N/A is selected.")
-
-    item27b = parse_int(form_data.get("item27b", "0"))
-    comment_item27b = form_data.get("comment_item27b", "").strip()
-    if item27b < 0 and not comment_item27b:
-        errors.append("Item 27b requires a comment when N/A is selected.")
-
-    item28 = parse_int(form_data.get("item28_option", "0"))
-    deduction28 = parse_int(form_data.get("deduction28", "0"))
-    comment_item28 = form_data.get("comment_item28", "").strip()
-    if deduction28 > 0 and not comment_item28:
-        errors.append("Item 28 requires a comment when a deduction is applied.")
-
-    item29 = parse_int(form_data.get("item29_option", "0"))
-    deduction29 = parse_int(form_data.get("deduction29", "0"))
-    comment_item29 = form_data.get("comment_item29", "").strip()
-    if deduction29 > 0 and not comment_item29:
-        errors.append("Item 29 requires a comment when a deduction is applied.")
+    process_deducted_item("item24", "deduction24", PERFECT_SCORES["item24"], "comment_item24")
+    process_deducted_item("item28_option", "deduction28", PERFECT_SCORES["item28"], "comment_item28")
+    process_deducted_item("item29_option", "deduction29", PERFECT_SCORES["item29"], "comment_item29")
 
     if errors:
         return errors, None, None
 
-    total_score = (
-        item1 + item2 + item3 + item4 + item5 + item6 + item78 +
-        item9 + item10 + item11 + item12 + item13 + item14 + item15 +
-        item16 + item17 + item18 + item19 + item20 + item21 +
-        item22 + item23 + (item24 - deduction24) + item25 + item26 +
-        item27a + item27b + (item28 - deduction28) + (item29 - deduction29)
-    )
-    final_percentage = round(total_score / 171 * 100, 1)
-    return [], total_score, final_percentage
+    # If no items were applicable, set maximum to 0 to avoid division by zero.
+    final_percentage = round(score_sum / max_possible * 100, 1) if max_possible > 0 else 0
+    return [], score_sum, final_percentage
 
 @app.get("/", response_class=HTMLResponse)
 def show_form(request: Request):
