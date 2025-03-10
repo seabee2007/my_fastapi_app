@@ -13,7 +13,7 @@ engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# Define the Assessment model to store form submissions.
+# Define the Assessment model.
 class Assessment(Base):
     __tablename__ = "assessments"
     id = Column(Integer, primary_key=True, index=True)
@@ -31,14 +31,14 @@ class Assessment(Base):
     signature_oic = Column(Text, nullable=True)
     signature_ncr = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
-    # Comment fields for each assessment item.
+    # Comments for items 1–29
     comment_item1 = Column(Text, nullable=True)
     comment_item2 = Column(Text, nullable=True)
     comment_item3 = Column(Text, nullable=True)
     comment_item4 = Column(Text, nullable=True)
     comment_item5 = Column(Text, nullable=True)
     comment_item6 = Column(Text, nullable=True)
-    comment_item78 = Column(Text, nullable=True)  # Combined comments for Items 7 & 8.
+    comment_item78 = Column(Text, nullable=True)  # Items 7 & 8 combined
     comment_item9 = Column(Text, nullable=True)
     comment_item10 = Column(Text, nullable=True)
     comment_item11 = Column(Text, nullable=True)
@@ -62,7 +62,6 @@ class Assessment(Base):
     comment_item28 = Column(Text, nullable=True)
     comment_item29 = Column(Text, nullable=True)
 
-# Create the database tables.
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -83,7 +82,6 @@ def parse_int(value, default=0):
         return default
 
 # Define the perfect score for each item.
-# For items with deductions, the perfect score remains constant.
 PERFECT_SCORES = {
     "item1": 2,
     "item2": 2,
@@ -116,67 +114,33 @@ PERFECT_SCORES = {
     "item29": 5,
 }
 
-# This function validates the form and computes two sums:
-# - score_sum: the sum of points earned for applicable items.
-# - max_possible: the sum of perfect scores for applicable items.
-# For each item, if the submitted value is negative (i.e. N/A), then that item is
-# not applicable and its perfect score is removed from the maximum.
-# (Item 4 uses a calculated value if the "calc" option is used.)
+# This function validates each item and calculates the total earned score and the maximum possible score.
+# For an item marked N/A (indicated by a negative value), that item is not counted in the maximum.
 def calculate_score_and_validate(form_data: dict):
     errors = []
     score_sum = 0
     max_possible = 0
 
-    # Helper to process an individual item.
-    # key: the key name for the form value.
-    # perfect: perfect score for the item.
-    # comment_key: key for the comment field.
-    # extra: an optional function to modify the submitted value (e.g. for deductions)
-    def process_item(key, perfect, comment_key, extra=lambda x: x):
+    def process_item(key, comment_key, perfect):
         nonlocal score_sum, max_possible
         submitted = parse_int(form_data.get(key, "0"))
         comment = form_data.get(comment_key, "").strip()
-        # If the item is marked as N/A (negative), require a comment and do not add to denominator.
+        # If N/A (negative) then do not add its perfect score
         if submitted < 0:
             if not comment:
-                errors.append(f"{key.capitalize()} requires a comment when N/A is selected.")
-            # Do not add to score_sum or max_possible.
+                errors.append(f"Item {key[-1]} requires a comment when N/A is selected.")
         else:
-            val = extra(submitted)
-            score_sum += val
+            score_sum += submitted
             max_possible += perfect
 
-    # Process items 1,2,3,5,6,7/8 (item78),9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,25,26,27a,27b.
-    for key, perfect in {
-        "item1": PERFECT_SCORES["item1"],
-        "item2": PERFECT_SCORES["item2"],
-        "item3": PERFECT_SCORES["item3"],
-        "item5": PERFECT_SCORES["item5"],
-        "item6": PERFECT_SCORES["item6"],
-        "item78": PERFECT_SCORES["item78"],
-        "item9": PERFECT_SCORES["item9"],
-        "item10": PERFECT_SCORES["item10"],
-        "item11": PERFECT_SCORES["item11"],
-        "item12": PERFECT_SCORES["item12"],
-        "item13": PERFECT_SCORES["item13"],
-        "item14": PERFECT_SCORES["item14"],
-        "item15": PERFECT_SCORES["item15"],
-        "item16": PERFECT_SCORES["item16"],
-        "item17": PERFECT_SCORES["item17"],
-        "item18": PERFECT_SCORES["item18"],
-        "item19": PERFECT_SCORES["item19"],
-        "item20": PERFECT_SCORES["item20"],
-        "item21": PERFECT_SCORES["item21"],
-        "item22": PERFECT_SCORES["item22"],
-        "item23": PERFECT_SCORES["item23"],
-        "item25": PERFECT_SCORES["item25"],
-        "item26": PERFECT_SCORES["item26"],
-        "item27a": PERFECT_SCORES["item27a"],
-        "item27b": PERFECT_SCORES["item27b"],
-    }.items():
-        process_item(key, perfect, f"comment_{key}")
+    # Process items that do not involve deductions or special logic.
+    for key in ["item1", "item2", "item3", "item5", "item6", "item78", "item9",
+                "item10", "item11", "item12", "item13", "item14", "item15", "item16",
+                "item17", "item18", "item19", "item20", "item21", "item22", "item23",
+                "item25", "item26", "item27a", "item27b"]:
+        process_item(key, f"comment_{key}", PERFECT_SCORES[key])
 
-    # Process Item 4 separately (it can use a calculation or an N/A option)
+    # Process Item 4 separately.
     item4_option = form_data.get("item4_option", "calc")
     if item4_option == "calc":
         item4_val = parse_int(form_data.get("item4_score", "16"))
@@ -187,44 +151,40 @@ def calculate_score_and_validate(form_data: dict):
         if not comment_item4:
             errors.append("Item 4 requires a comment when N/A is selected.")
     else:
-        # Even if using calculation, if score is less than perfect, require comment.
         if item4_val != PERFECT_SCORES["item4"] and not comment_item4:
             errors.append("Item 4 requires a comment if the score is not perfect.")
-        # Only count item 4 if it is applicable (i.e. non-negative)
         if item4_val >= 0:
             score_sum += item4_val
             max_possible += PERFECT_SCORES["item4"]
 
-    # Process items with manual deductions: 24, 28, 29.
-    # For each, if the select value is negative then the item is N/A.
-    # Otherwise, subtract the deduction from the submitted value.
-    def process_deducted_item(key, deduction_key, perfect, comment_key):
+    # Process items with manual deductions (24, 28, 29).
+    def process_deducted_item(key, deduction_key, comment_key, perfect):
         nonlocal score_sum, max_possible
         submitted = parse_int(form_data.get(key, "0"))
         deduction = parse_int(form_data.get(deduction_key, "0"))
         comment = form_data.get(comment_key, "").strip()
         if submitted < 0:
             if not comment:
-                errors.append(f"{key.capitalize()} requires a comment when N/A is selected.")
+                errors.append(f"Item {key[-1]} requires a comment when N/A is selected.")
         else:
-            val = submitted - deduction
-            score_sum += val
+            score_sum += (submitted - deduction)
             max_possible += perfect
 
-    process_deducted_item("item24", "deduction24", PERFECT_SCORES["item24"], "comment_item24")
-    process_deducted_item("item28_option", "deduction28", PERFECT_SCORES["item28"], "comment_item28")
-    process_deducted_item("item29_option", "deduction29", PERFECT_SCORES["item29"], "comment_item29")
+    process_deducted_item("item24", "deduction24", "comment_item24", PERFECT_SCORES["item24"])
+    process_deducted_item("item28_option", "deduction28", "comment_item28", PERFECT_SCORES["item28"])
+    process_deducted_item("item29_option", "deduction29", "comment_item29", PERFECT_SCORES["item29"])
 
     if errors:
         return errors, None, None
 
-    # If no items were applicable, set maximum to 0 to avoid division by zero.
+    # To avoid division by zero if all items are N/A.
     final_percentage = round(score_sum / max_possible * 100, 1) if max_possible > 0 else 0
     return [], score_sum, final_percentage
 
 @app.get("/", response_class=HTMLResponse)
 def show_form(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    # Pass an empty form_data by default so the form fields can be repopulated.
+    return templates.TemplateResponse("index.html", {"request": request, "form_data": {}})
 
 @app.post("/submit_assessment", response_class=HTMLResponse)
 async def submit_assessment(request: Request, db: Session = Depends(get_db)):
@@ -232,6 +192,7 @@ async def submit_assessment(request: Request, db: Session = Depends(get_db)):
     data_dict = dict(form_data)
     errors, final_score, final_percentage = calculate_score_and_validate(data_dict)
     if errors:
+        # Re-render the form with errors and the submitted values.
         return templates.TemplateResponse("index.html", {"request": request, "errors": errors, "form_data": data_dict})
     assessment = Assessment(
         project_name=data_dict.get("project_name", "N/A"),
