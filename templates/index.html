@@ -142,6 +142,48 @@
 
     <!-- The form now includes a hidden input for final_score -->
     <form method="post" action="/submit_assessment" id="assessmentForm">
+     
+      <!-- Project Information -->
+      <h2>Project Information</h2>
+      <div class="item-section">
+        <label>Project Name:</label>
+        <input type="text" name="project_name" value="{{ form_data.project_name if form_data and form_data.project_name is defined else '' }}">
+      </div>
+      <div class="item-section">
+        <label>Battalion:</label>
+        <select name="battalion">
+          <option value="NMCB ONE">NMCB ONE</option>
+          <option value="NMCB THREE">NMCB THREE</option>
+          <option value="NMCB FOUR">NMCB FOUR</option>
+          <option value="NMCB FIVE">NMCB FIVE</option>
+          <option value="NMCB ELEVEN">NMCB ELEVEN</option>
+          <option value="NMCB ONE THIRTY THREE">NMCB ONE THIRTY THREE</option>
+        </select>
+      </div>
+      <div class="item-section">
+        <label>OIC:</label>
+        <input type="text" name="oic_name" value="{{ form_data.oic_name if form_data and form_data.oic_name is defined else '' }}">
+      </div>
+      <div class="item-section">
+        <label>AOIC:</label>
+        <input type="text" name="aoic_name" value="{{ form_data.aoic_name if form_data and form_data.aoic_name is defined else '' }}">
+      </div>
+      <div class="item-section">
+        <label>Start Date:</label>
+        <input type="date" name="start_date" value="{{ form_data.start_date if form_data and form_data.start_date is defined else '' }}">
+      </div>
+      <div class="item-section">
+        <label>Planned Start Date:</label>
+        <input type="date" name="planned_start" value="{{ form_data.planned_start if form_data and form_data.planned_start is defined else '' }}">
+      </div>
+      <div class="item-section">
+        <label>Planned Completion Date:</label>
+        <input type="date" name="planned_completion" value="{{ form_data.planned_completion if form_data and form_data.planned_completion is defined else '' }}">
+      </div>
+      
+      <h2>Assessment Inputs</h2>      
+      
+      
       <!-- (Project Information and Items 1-29 go here; see full script above) -->
       <!-- ... [Items 1 through 29 as in your existing form] ... -->
 
