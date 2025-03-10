@@ -58,7 +58,7 @@
     }
     .signature-col {
       flex: 1;
-      min-width: 300px;
+      min-width: 400px;
       text-align: center;
       margin-bottom: 20px;
     }
@@ -178,7 +178,7 @@
           <img src="data:image/png;base64,{{ assessment.signature_oic }}" alt="OIC Signature" class="signature">
         {% else %}
           <input type="text" id="oic_signature_name" name="oic_signature_name" placeholder="Type your name here" class="signature-input-field">
-          <canvas id="oic_canvas" class="signature" width="300" height="70"></canvas>
+          <canvas id="oic_canvas" class="signature" width="40%" height="70"></canvas>
           <button id="oic_clear" type="button" class="no-print">Clear OIC Signature</button>
         {% endif %}
       </div>
@@ -188,7 +188,7 @@
           <img src="data:image/png;base64,{{ assessment.signature_ncr }}" alt="30 NCR Signature" class="signature">
         {% else %}
           <input type="text" id="ncr_signature_name" name="ncr_signature_name" placeholder="Type your name here" class="signature-input-field">
-          <canvas id="ncr_canvas" class="signature" width="300" height="70"></canvas>
+          <canvas id="ncr_canvas" class="signature" width="40%" height="70"></canvas>
           <button id="ncr_clear" type="button" class="no-print">Clear 30 NCR Signature</button>
         {% endif %}
       </div>
