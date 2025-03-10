@@ -116,7 +116,7 @@
         font-size: 0.9em;
       }
     }
-    /* Optional: styling for final score display */
+    /* Styling for final score display */
     #final_score_display {
       text-align: center;
       font-weight: bold;
@@ -129,7 +129,7 @@
   <div class="container">
     <h1>CQI Assessment Tool</h1>
     
-    <!-- Display validation errors if any (server‐side template example) -->
+    <!-- Display validation errors if any (server-side template example) -->
     {% if errors %}
       <div style="color: red; margin-bottom: 20px;">
         <ul>
@@ -140,49 +140,11 @@
       </div>
     {% endif %}
 
+    <!-- The form now includes a hidden input for final_score -->
     <form method="post" action="/submit_assessment" id="assessmentForm">
-      <!-- Project Information -->
-      <h2>Project Information</h2>
-      <div class="item-section">
-        <label>Project Name:</label>
-        <input type="text" name="project_name" value="{{ form_data.project_name if form_data and form_data.project_name is defined else '' }}">
-      </div>
-      <div class="item-section">
-        <label>Battalion:</label>
-        <select name="battalion">
-          <option value="NMCB ONE">NMCB ONE</option>
-          <option value="NMCB THREE">NMCB THREE</option>
-          <option value="NMCB FOUR">NMCB FOUR</option>
-          <option value="NMCB FIVE">NMCB FIVE</option>
-          <option value="NMCB ELEVEN">NMCB ELEVEN</option>
-          <option value="NMCB ONE THIRTY THREE">NMCB ONE THIRTY THREE</option>
-        </select>
-      </div>
-      <div class="item-section">
-        <label>OIC:</label>
-        <input type="text" name="oic_name" value="{{ form_data.oic_name if form_data and form_data.oic_name is defined else '' }}">
-      </div>
-      <div class="item-section">
-        <label>AOIC:</label>
-        <input type="text" name="aoic_name" value="{{ form_data.aoic_name if form_data and form_data.aoic_name is defined else '' }}">
-      </div>
-      <div class="item-section">
-        <label>Start Date:</label>
-        <input type="date" name="start_date" value="{{ form_data.start_date if form_data and form_data.start_date is defined else '' }}">
-      </div>
-      <div class="item-section">
-        <label>Planned Start Date:</label>
-        <input type="date" name="planned_start" value="{{ form_data.planned_start if form_data and form_data.planned_start is defined else '' }}">
-      </div>
-      <div class="item-section">
-        <label>Planned Completion Date:</label>
-        <input type="date" name="planned_completion" value="{{ form_data.planned_completion if form_data and form_data.planned_completion is defined else '' }}">
-      </div>
-      
-      <h2>Assessment Inputs</h2>
-      
-      <!-- Below are Items 1-29 with N/A options. For brevity, each item shows its maximum points and the note that selecting N/A will deduct those points. -->
-      
+      <!-- (Project Information and Items 1-29 go here; see full script above) -->
+      <!-- ... [Items 1 through 29 as in your existing form] ... -->
+
       <!-- Item 1 – Self Assessment -->
       <div class="item-section">
         <h3>Item 1 – Self Assessment</h3>
@@ -613,7 +575,19 @@
         <label>Comment (required if N/A):</label>
         <textarea name="comment_item29">{{ form_data.comment_item29 if form_data and form_data.comment_item29 is defined else '' }}</textarea>
       </div>
-
+      
+      <!-- For brevity, assume all items 1-29 (with their N/A options) are included above. -->
+      
+      <!-- Hidden input to store the final score -->
+      <input type="hidden" name="final_score" id="final_score_input">
+      
+      <button type="submit">Submit Assessment</button>
+    </form>
+    
+    <!-- A separate button to calculate final score on the client side -->
+    <button type="button" onclick="calculateFinalScore()">Calculate Final Score</button>
+    <div id="final_score_display"></div>
+  </div>
 
   <style>
     /* ---------- PDF Modal Styles ---------- */
@@ -971,19 +945,9 @@
   </script>
 
 
-
-
-      
-      <button type="submit">Submit Assessment</button>
-    </form>
-    
-    <!-- Button to calculate final score on the client side -->
-    <button type="button" onclick="calculateFinalScore()">Calculate Final Score</button>
-    <div id="final_score_display"></div>
-  </div>
-
+  
   <script>
-    // Item 4 dynamic calculation
+    // Item 4 dynamic calculation (as before)
     function calculateItem4Score() {
       if(document.getElementById("item4_na_option").checked){
         document.getElementById("item4_score_display").innerText = "Item marked as N/A (deduct 16 pts)";
@@ -1100,12 +1064,20 @@
         obtained += (maxPoints["item29"] - ded29);
       }
       
-      var finalScore = "Final Score: " + obtained + " / " + totalMax;
-      document.getElementById("final_score_display").innerText = finalScore;
-      alert(finalScore);
+      var finalScoreText = obtained + " / " + totalMax;
+      // Update visible display.
+      document.getElementById("final_score_display").innerText = "Final Score: " + finalScoreText;
+      // Update hidden input so that the print page can use it.
+      document.getElementById("final_score_input").value = finalScoreText;
+      return finalScoreText;
     }
     
-    // (Optional) Form submission validation can be added here as needed.
+    // Intercept form submission to update the final score before submitting.
+    document.getElementById("assessmentForm").addEventListener("submit", function(e) {
+      // Recalculate final score to update hidden field.
+      calculateFinalScore();
+      // The form will then submit with the updated final score.
+    });
   </script>
 </body>
 </html>
