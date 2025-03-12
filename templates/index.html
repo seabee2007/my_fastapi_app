@@ -1000,7 +1000,7 @@ Original Modal Triggers (commented out):
   </div>
 </div>
 
-<!-- Calculator Modal Structure -->
+<!-- Calculator Modal -->
 <div id="calc-modal" class="calc-modal">
   <div class="calc-content">
     <span id="calc-close" class="calc-close">&times;</span>
@@ -1046,25 +1046,47 @@ Original Modal Triggers (commented out):
     position: fixed;
     bottom: 20px;
     right: 20px;
-    z-index: 1000;
+    z-index: 1100;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-end;
   }
-  /* Container for modal icons, initially hidden */
+  /* Container for modal icons (always present for transitions) */
   .tools-icons {
-    display: none;
-    margin-bottom: 10px;
-    gap: 10px;
-    flex-direction: row;
-  }
-  /* Show icons when active */
-  .tools-icons.active {
     display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
   }
-  /* Optional: additional styling for the icons wrapper if needed */
+  /* When active, make icons visible and clickable */
+  .tools-icons.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  /* Styling for each modal icon trigger */
   .tools-icons > div {
-    /* You can add padding or adjust sizing here if needed */
+    width: 40px;
+    height: 40px;
+    background-color: #ddd;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s;
+    font-size: 12px;
+    text-align: center;
+    padding: 5px;
+  }
+  .tools-icons > div:hover {
+    background-color: #ccc;
   }
   /* Styling for the Tools button */
   .tools-button {
@@ -1085,28 +1107,35 @@ Original Modal Triggers (commented out):
   }
 </style>
 
-<!-- Tools container: wraps the three modal triggers and the Tools button -->
+<!-- Tools container: wraps the modal triggers and the Tools button -->
 <div class="tools-container">
-  <!-- Container for the modal icons (triggers) -->
+  <!-- Container for the modal triggers (icons) -->
   <div id="toolsIcons" class="tools-icons">
-    <!-- Existing PDF trigger -->
+    <!-- Reordered: MC first, then Calc, then PDF (aligned right) -->
+    <div id="manday-icon" class="manday-icon">MC</div>
+    <div id="calc-icon" class="calc-icon">Calc</div>
     <div id="pdf-ref-icon" class="pdf-ref-icon">
       <a href="https://www.marines.mil/portals/1/mcrp%203-17.7f%20z.pdf" target="_blank" style="color: inherit; text-decoration: none;">PDF</a>
     </div>
-    <!-- Existing Manday Calc trigger -->
-    <div id="manday-icon" class="manday-icon">MC</div>
-    <!-- Existing Calculator trigger -->
-    <div id="calc-icon" class="calc-icon">Calc</div>
   </div>
   <!-- Single Tools button -->
   <div id="toolsButton" class="tools-button">Tools</div>
 </div>
 
 <script>
-  // When the Tools button is clicked, toggle the visibility of the icons container.
-  document.getElementById('toolsButton').addEventListener('click', function() {
+  // Toggle the visibility of the icons container when the Tools button is clicked.
+  document.getElementById('toolsButton').addEventListener('click', function(e) {
+    e.stopPropagation(); // Prevent event bubbling to document
     var iconsContainer = document.getElementById('toolsIcons');
     iconsContainer.classList.toggle('active');
+  });
+
+  // Hide the icons if clicking outside the tools container.
+  document.addEventListener('click', function(e) {
+    var toolsContainer = document.querySelector('.tools-container');
+    if (!toolsContainer.contains(e.target)) {
+      document.getElementById('toolsIcons').classList.remove('active');
+    }
   });
 </script>
 
@@ -1236,6 +1265,7 @@ Original Modal Triggers (commented out):
 
   clearDisplay();
 </script>
+
 
     
 </body>
