@@ -1030,6 +1030,7 @@ Original Modal Triggers (commented out):
 <!-- Turnkey Tools Modal Snippet with Additional Concrete Calculator -->
 
 <!-- Styles for the Tools container and icons -->
+<!-- Styles for Tools container and icons -->
 <style>
   /* Ensure links inside icons inherit white text */
   .tools-container .pdf-ref-icon a,
@@ -1079,7 +1080,7 @@ Original Modal Triggers (commented out):
   .tools-button:hover {
     background: var(--primary-color-hover);
   }
-  /* Override icon styles inside the Tools container */
+  /* Icon styles for each tool */
   .tools-container .pdf-ref-icon,
   .tools-container .manday-icon,
   .tools-container .calc-icon,
@@ -1096,6 +1097,11 @@ Original Modal Triggers (commented out):
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     transition: background 0.3s;
     margin: 0;
+    cursor: pointer;
+  }
+  /* Hover effect for the concrete icon */
+  .tools-container .concrete-icon:hover {
+    background: var(--primary-color-hover) !important;
   }
 </style>
 
@@ -1125,7 +1131,6 @@ Original Modal Triggers (commented out):
     var iconsContainer = document.getElementById('toolsIcons');
     iconsContainer.classList.toggle('active');
   });
-
   // Hide the icons if clicking outside the tools container.
   document.addEventListener('click', function(e) {
     var toolsContainer = document.querySelector('.tools-container');
@@ -1135,7 +1140,7 @@ Original Modal Triggers (commented out):
   });
 </script>
 
-<!-- Concrete Calculator Modal -->
+<!-- Concrete Calculator Modal Styles and Markup -->
 <style>
   .concrete-modal {
     display: none;
@@ -1171,6 +1176,25 @@ Original Modal Triggers (commented out):
     color: black;
     text-decoration: none;
   }
+  .concrete-content input {
+    width: 90%;
+    padding: 8px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  .concrete-content button {
+    background-color: #BE05C1;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  .concrete-content button:hover {
+    background-color: #6314E6;
+  }
 </style>
 
 <div id="concrete-modal" class="concrete-modal">
@@ -1190,20 +1214,25 @@ Original Modal Triggers (commented out):
 </div>
 
 <script>
+  // Get concrete modal elements
   var concreteModal = document.getElementById("concrete-modal");
   var concreteIcon = document.getElementById("concrete-icon");
   var concreteClose = document.getElementById("concrete-close");
   var concreteCalcButton = document.getElementById("concrete-calc-button");
   var concreteResult = document.getElementById("concrete-result");
 
-  concreteIcon.onclick = function() {
+  // When the concrete icon is clicked, open the modal
+  concreteIcon.onclick = function(e) {
+    e.stopPropagation(); // Prevent the click from affecting the tools container toggle
     concreteModal.style.display = "block";
   };
 
+  // Close the modal when the close icon is clicked
   concreteClose.onclick = function() {
     concreteModal.style.display = "none";
   };
 
+  // Calculate the concrete volume when the button is clicked
   concreteCalcButton.onclick = function() {
     var length = parseFloat(document.getElementById("length").value) || 0;
     var width = parseFloat(document.getElementById("width").value) || 0;
@@ -1212,6 +1241,13 @@ Original Modal Triggers (commented out):
     var cubicYards = (length * width * thicknessFeet) / 27;
     concreteResult.textContent = "Cubic Yards: " + cubicYards.toFixed(2);
   };
+
+  // Close modal if clicking outside the content area
+  window.addEventListener('click', function(event) {
+    if (event.target == concreteModal) {
+      concreteModal.style.display = "none";
+    }
+  });
 </script>
 
 
