@@ -971,8 +971,11 @@
   <a href="https://www.marines.mil/portals/1/mcrp%203-17.7f%20z.pdf" target="_blank" style="color: inherit; text-decoration: none;">PDF</a>
 </div>
 
-<!-- Manday Capability Modal Trigger (placed above the existing calculator modal) -->
+<!-- 
+Original Modal Triggers (commented out):
 <div id="manday-icon" class="manday-icon">MC</div>
+<div id="calc-icon" class="calc-icon">Calc</div>
+-->
 
 <!-- Manday Capability Modal Structure -->
 <div id="manday-modal" class="manday-modal">
@@ -997,12 +1000,7 @@
   </div>
 </div>
 
-
-  
-<!-- Calculator Modal Trigger -->
-<div id="calc-icon" class="calc-icon">Calc</div>
-
-<!-- Calculator Modal -->
+<!-- Calculator Modal Structure -->
 <div id="calc-modal" class="calc-modal">
   <div class="calc-content">
     <span id="calc-close" class="calc-close">&times;</span>
@@ -1038,7 +1036,6 @@
     </div>
   </div>
 </div>
-
 
 <!-- Turnkey Tools Modal Snippet -->
 
@@ -1113,139 +1110,133 @@
   });
 </script>
 
+<!-- ---------- JavaScript for Modals ---------- -->
+<script>
+  // Manday Modal Script
+  var mandayModal = document.getElementById("manday-modal");
+  var mandayIcon = document.getElementById("manday-icon");
+  var mandayClose = document.getElementById("manday-close");
+  var mandayCalcButton = document.getElementById("manday-calc-button");
+  var mandayResult = document.getElementById("manday-result");
 
+  // Open manday modal when icon is clicked
+  mandayIcon.onclick = function() {
+    mandayModal.style.display = "block";
+  };
 
-    
-  <!-- ---------- JavaScript for Modals ---------- -->
-  <script>
-  
-// Manday Modal Script
-var mandayModal = document.getElementById("manday-modal");
-var mandayIcon = document.getElementById("manday-icon");
-var mandayClose = document.getElementById("manday-close");
-var mandayCalcButton = document.getElementById("manday-calc-button");
-var mandayResult = document.getElementById("manday-result");
-
-// Open manday modal when icon is clicked
-mandayIcon.onclick = function() {
-  mandayModal.style.display = "block";
-};
-
-// Close manday modal when close button is clicked
-mandayClose.onclick = function() {
-  mandayModal.style.display = "none";
-};
-
-// Calculation logic for MD Capability
-mandayCalcButton.onclick = function() {
-  var dl = parseFloat(document.getElementById("dl_input").value) || 0;
-  var wd = parseFloat(document.getElementById("wd_input").value) || 0;
-  var me = parseFloat(document.getElementById("me_input").value) || 0;
-  var af = parseFloat(document.getElementById("af_input").value) || 0;
-  
-  var capability = dl * wd * me * af;
-  mandayResult.textContent = "Result: " + capability.toFixed(2) + " MDs";
-};
-
-    
-/* ---------- Calculator Modal ---------- */
-var calcModal = document.getElementById("calc-modal");
-var calcIcon = document.getElementById("calc-icon");
-var calcClose = document.getElementById("calc-close");
-
-calcIcon.onclick = function() {
-  calcModal.style.display = "block";
-};
-
-calcClose.onclick = function() {
-  calcModal.style.display = "none";
-};
-
-// Combined window click handler for closing both modals if clicked outside
-window.addEventListener('click', function(event) {
-  if (event.target == mandayModal) {
+  // Close manday modal when close button is clicked
+  mandayClose.onclick = function() {
     mandayModal.style.display = "none";
-  }
-  if (event.target == calcModal) {
+  };
+
+  // Calculation logic for MD Capability
+  mandayCalcButton.onclick = function() {
+    var dl = parseFloat(document.getElementById("dl_input").value) || 0;
+    var wd = parseFloat(document.getElementById("wd_input").value) || 0;
+    var me = parseFloat(document.getElementById("me_input").value) || 0;
+    var af = parseFloat(document.getElementById("af_input").value) || 0;
+    
+    var capability = dl * wd * me * af;
+    mandayResult.textContent = "Result: " + capability.toFixed(2) + " MDs";
+  };
+
+  /* ---------- Calculator Modal ---------- */
+  var calcModal = document.getElementById("calc-modal");
+  var calcIcon = document.getElementById("calc-icon");
+  var calcClose = document.getElementById("calc-close");
+
+  calcIcon.onclick = function() {
+    calcModal.style.display = "block";
+  };
+
+  calcClose.onclick = function() {
     calcModal.style.display = "none";
+  };
+
+  // Combined window click handler for closing both modals if clicked outside
+  window.addEventListener('click', function(event) {
+    if (event.target == mandayModal) {
+      mandayModal.style.display = "none";
+    }
+    if (event.target == calcModal) {
+      calcModal.style.display = "none";
+    }
+  });
+
+  // Calculator functionality
+  let currentDisplay = document.getElementById('current-display');
+  let previousDisplay = document.getElementById('previous-display');
+  let currentInput = '';
+  let operator = null;
+  let previousInput = '';
+
+  function clearDisplay() {
+      currentInput = '';
+      operator = null;
+      previousInput = '';
+      updateDisplay('0', '');
   }
-});
 
-// Calculator functionality
-let currentDisplay = document.getElementById('current-display');
-let previousDisplay = document.getElementById('previous-display');
-let currentInput = '';
-let operator = null;
-let previousInput = '';
+  function appendNumber(number) {
+      if (currentInput.includes('.') && number === '.') return;
+      currentInput += number;
+      updateDisplay(currentInput, previousInput !== '' ? `${previousInput} ${operator}` : '');
+  }
 
-function clearDisplay() {
-    currentInput = '';
-    operator = null;
-    previousInput = '';
-    updateDisplay('0', '');
-}
+  function appendOperator(op) {
+      if (currentInput === '' && op === '-') {
+          currentInput = '-';
+          updateDisplay(currentInput, `${previousInput} ${operator}`);
+          return;
+      }
+      if (currentInput === '') return;
+      if (operator !== null) calculate();
+      operator = op;
+      previousInput = currentInput;
+      currentInput = '';
+      updateDisplay('', `${previousInput} ${operator}`);
+  }
 
-function appendNumber(number) {
-    if (currentInput.includes('.') && number === '.') return;
-    currentInput += number;
-    updateDisplay(currentInput, previousInput !== '' ? `${previousInput} ${operator}` : '');
-}
+  function calculate() {
+      if (operator === null || currentInput === '') return;
+      let result;
+      const prev = parseFloat(previousInput);
+      const curr = parseFloat(currentInput);
+      switch (operator) {
+          case '+':
+              result = prev + curr;
+              break;
+          case '-':
+              result = prev - curr;
+              break;
+          case '*':
+              result = prev * curr;
+              break;
+          case '/':
+              result = prev / curr;
+              break;
+          default:
+              return;
+      }
+      currentInput = result.toString();
+      operator = null;
+      previousInput = '';
+      updateDisplay(currentInput, '');
+  }
 
-function appendOperator(op) {
-    if (currentInput === '' && op === '-') {
-        currentInput = '-';
-        updateDisplay(currentInput, `${previousInput} ${operator}`);
-        return;
-    }
-    if (currentInput === '') return;
-    if (operator !== null) calculate();
-    operator = op;
-    previousInput = currentInput;
-    currentInput = '';
-    updateDisplay('', `${previousInput} ${operator}`);
-}
+  function backspace() {
+      currentInput = currentInput.slice(0, -1);
+      updateDisplay(currentInput || '0', previousInput !== '' ? `${previousInput} ${operator}` : '');
+  }
 
-function calculate() {
-    if (operator === null || currentInput === '') return;
-    let result;
-    const prev = parseFloat(previousInput);
-    const curr = parseFloat(currentInput);
-    switch (operator) {
-        case '+':
-            result = prev + curr;
-            break;
-        case '-':
-            result = prev - curr;
-            break;
-        case '*':
-            result = prev * curr;
-            break;
-        case '/':
-            result = prev / curr;
-            break;
-        default:
-            return;
-    }
-    currentInput = result.toString();
-    operator = null;
-    previousInput = '';
-    updateDisplay(currentInput, '');
-}
+  function updateDisplay(current, previous = '') {
+      currentDisplay.textContent = current;
+      previousDisplay.textContent = previous;
+  }
 
-function backspace() {
-    currentInput = currentInput.slice(0, -1);
-    updateDisplay(currentInput || '0', previousInput !== '' ? `${previousInput} ${operator}` : '');
-}
+  clearDisplay();
+</script>
 
-function updateDisplay(current, previous = '') {
-    currentDisplay.textContent = current;
-    previousDisplay.textContent = previous;
-}
-
-clearDisplay();
-
-
-  </script>
     
 </body>
 </html>
