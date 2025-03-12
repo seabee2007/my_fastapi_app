@@ -1040,9 +1040,11 @@
 </div>
 
 
-    <!-- Modal Tools snippet -->
+<!-- Turnkey Tools Modal Snippet -->
+
+<!-- Styles for the Tools container and icons -->
 <style>
-  /* Tools container fixed at bottom-right */
+  /* Container fixed at bottom-right */
   .tools-container {
     position: fixed;
     bottom: 20px;
@@ -1052,75 +1054,65 @@
     flex-direction: column;
     align-items: center;
   }
-  /* Modal icons container (hidden by default) */
-  .modal-icons {
+  /* Container for modal icons, initially hidden */
+  .tools-icons {
     display: none;
     margin-bottom: 10px;
     gap: 10px;
     flex-direction: row;
   }
-  /* When active, show the modal icons */
-  .modal-icons.active {
+  /* Show icons when active */
+  .tools-icons.active {
     display: flex;
   }
-  /* Styling for each modal icon */
-  .modal-icon {
-    width: 40px;
-    height: 40px;
-    background-color: #ddd;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s;
-    font-size: 12px;
-    text-align: center;
-    padding: 5px;
-  }
-  .modal-icon:hover {
-    background-color: #ccc;
+  /* Optional: additional styling for the icons wrapper if needed */
+  .tools-icons > div {
+    /* You can add padding or adjust sizing here if needed */
   }
   /* Styling for the Tools button */
   .tools-button {
     width: 50px;
     height: 50px;
     background-color: #007bff;
-    color: #fff;
+    color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     transition: background-color 0.3s;
-    font-size: 14px;
-    text-align: center;
   }
   .tools-button:hover {
     background-color: #0056b3;
   }
 </style>
 
+<!-- Tools container: wraps the three modal triggers and the Tools button -->
 <div class="tools-container">
-  <!-- Container for modal icons -->
-  <div id="modalIcons" class="modal-icons">
-    <div class="modal-icon" title="PDF">PDF</div>
-    <div class="modal-icon" title="Manday Calc">Manday Calc</div>
-    <div class="modal-icon" title="Calc">Calc</div>
+  <!-- Container for the modal icons (triggers) -->
+  <div id="toolsIcons" class="tools-icons">
+    <!-- Existing PDF trigger -->
+    <div id="pdf-ref-icon" class="pdf-ref-icon">
+      <a href="https://www.marines.mil/portals/1/mcrp%203-17.7f%20z.pdf" target="_blank" style="color: inherit; text-decoration: none;">PDF</a>
+    </div>
+    <!-- Existing Manday Calc trigger -->
+    <div id="manday-icon" class="manday-icon">MC</div>
+    <!-- Existing Calculator trigger -->
+    <div id="calc-icon" class="calc-icon">Calc</div>
   </div>
-  <!-- Tools button -->
+  <!-- Single Tools button -->
   <div id="toolsButton" class="tools-button">Tools</div>
 </div>
 
 <script>
-  // Toggle the visibility of modal icons when Tools button is clicked
-  document.getElementById('toolsButton').addEventListener('click', function () {
-    var iconsContainer = document.getElementById('modalIcons');
+  // When the Tools button is clicked, toggle the visibility of the icons container.
+  document.getElementById('toolsButton').addEventListener('click', function() {
+    var iconsContainer = document.getElementById('toolsIcons');
     iconsContainer.classList.toggle('active');
   });
 </script>
+
 
 
     
