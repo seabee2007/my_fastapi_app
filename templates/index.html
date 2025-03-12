@@ -7,190 +7,206 @@
   <!-- Google Font for a modern look -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --primary-color: #007bff;
-      --primary-color-hover: #0056b3;
-      --bg-color: #f4f4f4;
-      --container-bg: #ffffff;
-      --border-color: #ccc;
-      --border-radius: 5px;
-      --input-padding: 10px;
-      --max-container-width: 900px;
-      --font-color: #333;
-    }
-    body {
-      font-family: 'Roboto', sans-serif;
-      background-color: var(--bg-color);
-      margin: 0;
-      padding: 20px;
-      color: var(--font-color);
-    }
-    .container {
-      max-width: var(--max-container-width);
-      margin: 0 auto;
-      background: var(--container-bg);
-      padding: 30px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-      border-radius: var(--border-radius);
-    }
-    h1, h2, h3 {
-      text-align: center;
-      margin-bottom: 15px;
-    }
-    .error-messages {
-      background: #fdd;
-      border: 1px solid #f99;
-      padding: 10px;
-      margin-bottom: 20px;
-      border-radius: var(--border-radius);
-    }
-    .item-section {
-      margin-bottom: 20px;
-      padding: 15px;
-      background: #fafafa;
-      border: 1px solid #eee;
-      border-radius: var(--border-radius);
-    }
-    .number-input {
-      display: flex;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-    .number-input button {
-      background-color: var(--primary-color);
-      border: none;
-      color: #fff;
-      width: 30px;
-      height: 30px;
-      font-size: 1.2em;
-      cursor: pointer;
-      border-radius: var(--border-radius);
-      transition: background 0.3s;
-    }
-    .number-input button:hover {
-      background-color: var(--primary-color-hover);
-    }
-    .number-input input {
-      text-align: center;
-      width: 80px;
-      margin: 0 5px;
-      padding: 5px;
-      border: 1px solid var(--border-color);
-      border-radius: var(--border-radius);
-    }
-    label {
-      font-weight: 500;
-      display: block;
-      margin-bottom: 5px;
-    }
-    input[type="text"],
-    input[type="date"],
-    input[type="number"],
-    select,
-    textarea {
-      width: 100%;
-      padding: var(--input-padding);
-      margin-top: 5px;
-      margin-bottom: 15px;
-      border: 1px solid var(--border-color);
-      border-radius: var(--border-radius);
-      font-size: 1em;
-      box-sizing: border-box;
-    }
-    input[type="radio"] {
-      margin-right: 5px;
-    }
-    button {
-      background-color: var(--primary-color);
-      color: #fff;
-      border: none;
-      padding: 12px 20px;
-      border-radius: var(--border-radius);
-      cursor: pointer;
-      font-size: 1em;
-      transition: background-color 0.3s ease;
-      display: block;
-      margin: 20px auto;
-    }
-    button:hover {
-      background-color: var(--primary-color-hover);
-    }
-    #final_score_display {
-      text-align: center;
-      font-weight: bold;
-      font-size: 1.2em;
-      margin-top: 20px;
-    }
-    @media (max-width: 600px) {
-      .container {
-        padding: 20px;
-      }
-      input, select, textarea, button {
-        font-size: 0.9em;
-      }
-    }
-    /* ---------- PDF Modal Styles ---------- */
-    .pdf-ref-icon {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      background: var(--primary-color, #007bff);
-      color: #fff;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      text-align: center;
-      line-height: 50px;
-      cursor: pointer;
-      z-index: 1000;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      transition: background 0.3s;
-    }
-    .pdf-ref-icon:hover {
-      background: #0056b3;
-    }
-    .pdf-ref-modal {
-      display: none;
-      position: fixed;
-      z-index: 1001;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.4);
-    }
-    .pdf-ref-content {
-      background-color: #fff;
-      margin: 5% auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 90%;
-      max-width: 800px;
-      border-radius: 5px;
-      text-align: center;
-    }
-    .pdf-ref-close {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: color 0.3s;
-    }
-    .pdf-ref-close:hover,
-    .pdf-ref-close:focus {
-      color: black;
-      text-decoration: none;
-    }
+:root {
+  --primary-color: #007bff;
+  --primary-color-hover: #0056b3;
+  --bg-color: #f4f4f4;
+  --container-bg: #ffffff;
+  --border-color: #ccc;
+  --border-radius: 5px;
+  --input-padding: 10px;
+  --max-container-width: 900px;
+  --font-color: #333;
+}
 
-    /* ---------- Manday Modal Styles ---------- */
-/* Manday Calculator Icon (positioned above the existing calculator modal) */
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--bg-color);
+  margin: 0;
+  padding: 20px;
+  color: var(--font-color);
+}
+
+.container {
+  max-width: var(--max-container-width);
+  margin: 0 auto;
+  background: var(--container-bg);
+  padding: 30px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  border-radius: var(--border-radius);
+}
+
+h1, h2, h3 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.error-messages {
+  background: #fdd;
+  border: 1px solid #f99;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: var(--border-radius);
+}
+
+.item-section {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: var(--border-radius);
+}
+
+.number-input {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.number-input button {
+  background-color: var(--primary-color);
+  border: none;
+  color: #fff;
+  width: 30px;
+  height: 30px;
+  font-size: 1.2em;
+  cursor: pointer;
+  border-radius: var(--border-radius);
+  transition: background 0.3s;
+}
+
+.number-input button:hover {
+  background-color: var(--primary-color-hover);
+}
+
+.number-input input {
+  text-align: center;
+  width: 80px;
+  margin: 0 5px;
+  padding: 5px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+}
+
+label {
+  font-weight: 500;
+  display: block;
+  margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="number"],
+select,
+textarea {
+  width: 100%;
+  padding: var(--input-padding);
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 1em;
+  box-sizing: border-box;
+}
+
+input[type="radio"] {
+  margin-right: 5px;
+}
+
+button {
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
+  display: block;
+  margin: 20px auto;
+}
+
+button:hover {
+  background-color: var(--primary-color-hover);
+}
+
+#final_score_display {
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.2em;
+  margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 20px;
+  }
+  input, select, textarea, button {
+    font-size: 0.9em;
+  }
+}
+
+/* ---------- PDF Modal Styles ---------- */
+.pdf-ref-icon {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: var(--primary-color);
+  color: #fff;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  line-height: 50px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  transition: background 0.3s;
+}
+.pdf-ref-icon:hover {
+  background: var(--primary-color-hover);
+}
+.pdf-ref-modal {
+  display: none;
+  position: fixed;
+  z-index: 1001;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+.pdf-ref-content {
+  background-color: #fff;
+  margin: 5% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 90%;
+  max-width: 800px;
+  border-radius: 5px;
+  text-align: center;
+}
+.pdf-ref-close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+.pdf-ref-close:hover,
+.pdf-ref-close:focus {
+  color: black;
+  text-decoration: none;
+}
+
+/* ---------- Manday Modal Styles ---------- */
 .manday-icon {
   position: fixed;
-  bottom: 90px; /* Adjust this value so it appears above your existing calculator modal */
+  bottom: 90px;
   right: 20px;
-  background: var(--primary-color, #007bff);
+  background: var(--primary-color);
   color: #fff;
   border-radius: 50%;
   width: 50px;
@@ -201,8 +217,6 @@
   z-index: 1001;
   box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
-
-/* Manday Modal Overlay */
 .manday-modal {
   display: none;
   position: fixed;
@@ -214,8 +228,6 @@
   overflow: auto;
   background-color: rgba(0,0,0,0.4);
 }
-
-/* Manday Modal Content */
 .manday-content {
   background-color: #fff;
   margin: 10% auto;
@@ -226,8 +238,6 @@
   border-radius: 5px;
   text-align: center;
 }
-
-/* Close Button */
 .manday-close {
   color: #aaa;
   float: right;
@@ -240,24 +250,21 @@
   color: black;
   text-decoration: none;
 }
-
-/* Input Field Styling */
 .manday-content input[type="number"] {
   width: 90%;
   padding: 5px;
   margin: 5px 0 15px;
-  border: 1px solid var(--border-color, #ccc);
+  border: 1px solid var(--border-color);
   border-radius: 5px;
   font-size: 1em;
 }
 
-
-/* Modal trigger icon */
+/* ---------- Calculator Modal Styles ---------- */
 .calc-icon {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background: var(--primary-color, #007bff);
+  background: var(--primary-color);
   color: #fff;
   border-radius: 50%;
   width: 50px;
@@ -268,8 +275,6 @@
   z-index: 1000;
   box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
-
-/* Modal overlay */
 .calc-modal {
   display: none;
   position: fixed;
@@ -281,8 +286,6 @@
   overflow: auto;
   background-color: rgba(0,0,0,0.4);
 }
-
-/* Modal content container */
 .calc-content {
   background-color: #fff;
   margin: 10% auto;
@@ -293,8 +296,6 @@
   border-radius: 5px;
   position: relative;
 }
-
-/* Close button */
 .calc-close {
   color: #aaa;
   position: absolute;
@@ -309,8 +310,6 @@
   color: black;
   text-decoration: none;
 }
-
-/* Calculator styling */
 .calculator {
   background: #1a1a1a;
   border-radius: 15px;
@@ -318,7 +317,6 @@
   overflow: hidden;
   animation: fadeIn 0.6s ease-in-out;
 }
-
 .display {
   background: #333;
   padding: 15px;
@@ -328,22 +326,18 @@
   text-align: right;
   height: 60px;
 }
-
 .previous-display {
   font-size: 0.75em;
   color: #999;
 }
-
 .current-display {
   font-size: 1.5em;
 }
-
 .buttons {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 1px;
 }
-
 .button {
   background: #222;
   padding: 20px;
@@ -355,7 +349,6 @@
   position: relative;
   overflow: hidden;
 }
-
 .button:before {
   content: '';
   position: absolute;
@@ -368,33 +361,26 @@
   transition: left 0.5s;
   z-index: 0;
 }
-
 .button:hover:before {
   left: 125%;
 }
-
 .button:hover {
   background: #333;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
-
 .button:active {
   transform: scale(0.98);
 }
-
 .button.equal {
   background: #ff9500;
   color: white;
 }
-
 .button.equal:hover {
   background: #ffa726;
 }
-
 .button.zero {
   grid-column: span 3;
 }
-
 @keyframes fadeIn {
   from {
       opacity: 0;
@@ -405,13 +391,12 @@
       transform: translateY(0);
   }
 }
-
-    @media (max-width: 600px) {
-      .calc-content {
-        width: 80%;
-        margin: 20% auto;
-      }
-    }
+@media (max-width: 600px) {
+  .calc-content {
+    width: 80%;
+    margin: 20% auto;
+  }
+}
   </style>
 </head>
 <body>
@@ -1042,68 +1027,57 @@ Original Modal Triggers (commented out):
 <!-- Styles for the Tools container and icons -->
 <style>
   /* Container fixed at bottom-right */
-  .tools-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1100;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-  }
-  /* Container for modal icons (always present for transitions) */
-  .tools-icons {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    justify-content: flex-end;
-    margin-bottom: 10px;
-    opacity: 0;
-    transform: translateY(20px);
-    pointer-events: none;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-  }
-  /* When active, make icons visible and clickable */
-  .tools-icons.active {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
-  /* Styling for each modal icon trigger */
-  .tools-icons > div {
-    width: 40px;
-    height: 40px;
-    background-color: #ddd;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s;
-    font-size: 12px;
-    text-align: center;
-    padding: 5px;
-  }
-  .tools-icons > div:hover {
-    background-color: #ccc;
-  }
-  /* Styling for the Tools button */
-  .tools-button {
-    width: 50px;
-    height: 50px;
-    background-color: #007bff;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    transition: background-color 0.3s;
-  }
-  .tools-button:hover {
-    background-color: #0056b3;
+.tools-container .pdf-ref-icon a {
+  color: #fff !important;
+  text-decoration: none;
+}
+
+/* Tools Modal Container */
+.tools-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.tools-icons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 150px; /* Adjust as needed */
+  margin-bottom: 10px;
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.tools-icons.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.tools-button {
+  width: 50px;
+  height: 50px;
+  background: var(--primary-color);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  transition: background 0.3s;
+}
+.tools-button:hover {
+  background: var(--primary-color-hover);
+}
+  /* Ensure links inside icons inherit the white text */
+  .tools-icons a {
+    color: white !important;
+    text-decoration: none;
   }
 </style>
 
@@ -1111,11 +1085,13 @@ Original Modal Triggers (commented out):
 <div class="tools-container">
   <!-- Container for the modal triggers (icons) -->
   <div id="toolsIcons" class="tools-icons">
-    <!-- Reordered: MC first, then Calc, then PDF (aligned right) -->
+    <!-- Manday Calc trigger -->
     <div id="manday-icon" class="manday-icon">MC</div>
+    <!-- Calculator trigger -->
     <div id="calc-icon" class="calc-icon">Calc</div>
+    <!-- PDF trigger -->
     <div id="pdf-ref-icon" class="pdf-ref-icon">
-      <a href="https://www.marines.mil/portals/1/mcrp%203-17.7f%20z.pdf" target="_blank" style="color: inherit; text-decoration: none;">PDF</a>
+      <a href="https://www.marines.mil/portals/1/mcrp%203-17.7f%20z.pdf" target="_blank">PDF</a>
     </div>
   </div>
   <!-- Single Tools button -->
@@ -1265,6 +1241,7 @@ Original Modal Triggers (commented out):
 
   clearDisplay();
 </script>
+
 
 
     
