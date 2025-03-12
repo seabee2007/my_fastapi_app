@@ -1039,7 +1039,91 @@
   </div>
 </div>
 
-  
+
+    <!-- Modal Tools snippet -->
+<style>
+  /* Tools container fixed at bottom-right */
+  .tools-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  /* Modal icons container (hidden by default) */
+  .modal-icons {
+    display: none;
+    margin-bottom: 10px;
+    gap: 10px;
+    flex-direction: row;
+  }
+  /* When active, show the modal icons */
+  .modal-icons.active {
+    display: flex;
+  }
+  /* Styling for each modal icon */
+  .modal-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #ddd;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s;
+    font-size: 12px;
+    text-align: center;
+    padding: 5px;
+  }
+  .modal-icon:hover {
+    background-color: #ccc;
+  }
+  /* Styling for the Tools button */
+  .tools-button {
+    width: 50px;
+    height: 50px;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s;
+    font-size: 14px;
+    text-align: center;
+  }
+  .tools-button:hover {
+    background-color: #0056b3;
+  }
+</style>
+
+<div class="tools-container">
+  <!-- Container for modal icons -->
+  <div id="modalIcons" class="modal-icons">
+    <div class="modal-icon" title="PDF">PDF</div>
+    <div class="modal-icon" title="Manday Calc">Manday Calc</div>
+    <div class="modal-icon" title="Calc">Calc</div>
+  </div>
+  <!-- Tools button -->
+  <div id="toolsButton" class="tools-button">Tools</div>
+</div>
+
+<script>
+  // Toggle the visibility of modal icons when Tools button is clicked
+  document.getElementById('toolsButton').addEventListener('click', function () {
+    var iconsContainer = document.getElementById('modalIcons');
+    iconsContainer.classList.toggle('active');
+  });
+</script>
+
+
+    
   <!-- ---------- JavaScript for Modals ---------- -->
   <script>
   
