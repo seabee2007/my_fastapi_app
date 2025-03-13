@@ -637,6 +637,7 @@ button:hover {
       <!-- Item 14 – Project Material Status Report (PMSR) -->
       <div class="item-section">
         <h3>Item 14 – Project Material Status Report (PMSR)</h3>
+        <p>Inspect and ensure the PMSR is current and accurate in accordance with NCFINST 4400.1.</p>
         <p>(10 pts = 100% valid; 8 pts = Acceptable; 4 pts = Discrepancies; 2/0 pts otherwise; N/A = deduct 10 pts)</p>
         <select name="item14">
           <option value="10" {% if form_data and form_data.item14=='10' %}selected{% endif %}>10</option>
@@ -652,6 +653,7 @@ button:hover {
       <!-- Item 15 – Report Submission -->
       <div class="item-section">
         <h3>Item 15 – Report Submission</h3>
+        <p>Validate that the PMSR and EAC are being routed and sent to NMCB HQ Operations Department.</p>
         <p>(Yes = 2 pts, No = 0 pts, N/A = deduct 2 pts)</p>
         <label><input type="radio" name="item15" value="2" {% if form_data and form_data.item15=='2' %}checked{% endif %}> Yes</label>
         <label><input type="radio" name="item15" value="0" {% if form_data and form_data.item15=='0' %}checked{% endif %}> No</label>
@@ -662,6 +664,7 @@ button:hover {
       <!-- Item 16 – Materials On-Hand -->
       <div class="item-section">
         <h3>Item 16 – Materials On-Hand</h3>
+        <p>Ensure material is being managed in accordance with NCFINST 4400.1. Spot check a minimum of 10% materials on-hand and verify against PMSR. Inspect for quantity, labeling, and accuracy of location. Verify DD form’s 1250-1, 1114 and Open Purchase Request’s against PMSR for accuracy. A minimum of 5 line items must be inspected, if less-than 40 items are on-hand.</p>
         <p>(10 pts = Organized; 8 pts = Minor issues; 4 pts = Multiple issues; 0 pts = Unsatisfactory; N/A = deduct 10 pts)</p>
         <select name="item16">
           <option value="10" {% if form_data and form_data.item16=='10' %}selected{% endif %}>10</option>
@@ -676,6 +679,7 @@ button:hover {
       <!-- Item 17 – DD Form 200 -->
       <div class="item-section">
         <h3>Item 17 – DD Form 200</h3>
+        <p>Ensure material is being managed properly in accordance with NAVSUP P-485. Conduct a 100% inspection of DD Form 200’s (if any).</p>
         <p>(Yes = 2 pts, No = 0 pts, N/A = deduct 2 pts)</p>
         <label><input type="radio" name="item17" value="2" {% if form_data and form_data.item17=='2' %}checked{% endif %}> Yes</label>
         <label><input type="radio" name="item17" value="0" {% if form_data and form_data.item17=='0' %}checked{% endif %}> No</label>
@@ -686,6 +690,7 @@ button:hover {
       <!-- Item 18 – Borrowed Material Tickler File -->
       <div class="item-section">
         <h3>Item 18 – Borrowed Material Tickler File</h3>
+        <p>Conduct a 100% inspection of all borrows (if any) against other projects. Verify that all borrows have been approved by the S3 and the payback material is on-order. Inspect all associated DD Form 1250-1, 1114, and PMSRs for accuracy.</p>
         <p>(Yes = 2 pts, No = 0 pts, N/A = deduct 2 pts)</p>
         <label><input type="radio" name="item18" value="2" {% if form_data and form_data.item18=='2' %}checked{% endif %}> Yes</label>
         <label><input type="radio" name="item18" value="0" {% if form_data and form_data.item18=='0' %}checked{% endif %}> No</label>
@@ -696,6 +701,7 @@ button:hover {
       <!-- Item 19 – Project Brief -->
       <div class="item-section">
         <h3>Item 19 – Project Brief</h3>
+        <p>Receive a detailed project brief from the Project Manager.</p>
         <p>(5 pts = Detailed; 3 pts = Acceptable; 2 pts or 0 pts otherwise; N/A = deduct 5 pts)</p>
         <select name="item19">
           <option value="5" {% if form_data and form_data.item19=='5' %}selected{% endif %}>5</option>
@@ -710,6 +716,7 @@ button:hover {
       <!-- Item 20 – Calculate Manday Capability -->
       <div class="item-section">
         <h3>Item 20 – Calculate Manday Capability</h3>
+        <p>Verify Crew make-up (rate and rank), ensure it is appropriate/compatible for the level of construction being performed.</p>
         <p>(6 pts = Matches; 4/2/0 pts otherwise; N/A = deduct 6 pts)</p>
         <select name="item20">
           <option value="6" {% if form_data and form_data.item20=='6' %}selected{% endif %}>6</option>
@@ -724,6 +731,7 @@ button:hover {
       <!-- Item 21 – Equipment -->
       <div class="item-section">
         <h3>Item 21 – Equipment</h3>
+        <p>Validate that required augment/organic Civil Engineering Support Equipment (CESE) and non-CESE Table of Allowance (TOA) items are on-site to meet DEPORD tasking. Inspect future CASS / DFOW and verify equipment is identified and scheduled to be on-site at the required time.</p>
         <p>(6 pts = All onsite; 4 pts = Acceptable; 2 pts = Partial; 0 pts = None; N/A = deduct 6 pts)</p>
         <select name="item21">
           <option value="6" {% if form_data and form_data.item21=='6' %}selected{% endif %}>6</option>
@@ -738,6 +746,7 @@ button:hover {
       <!-- Item 22 – CASS Spot Check -->
       <div class="item-section">
         <h3>Item 22 – CASS Spot Check</h3>
+        <p>Inspect 100% of all opened CASS and 10% of unopened CASS per Master Activity. Examine that CASS are being followed to support the appropriate DFOW.</p>
         <p>(12 pts = 100% compliant; 8/4/0 pts otherwise; N/A = deduct 12 pts)</p>
         <select name="item22">
           <option value="12" {% if form_data and form_data.item22=='12' %}selected{% endif %}>12</option>
@@ -752,6 +761,12 @@ button:hover {
       <!-- Item 23 – Designation Letters -->
       <div class="item-section">
         <h3>Item 23 – Designation Letters</h3>
+        <p>Visually inspect and verify that the following designation letters are up-to-date and signed by the appropriate authority:</p>
+        <p>a. Project Supervisor</p>
+        <p>b. Crew Leader</p>
+        <p>c. Quality Control Representative</p>
+        <p>d. Safety Representative</p>
+        <p>e. Competent Person (if applicable)</p>
         <p>(5 pts = Current; 3 pts = Not up-to-date; 0 pts = Missing; N/A = deduct 5 pts)</p>
         <select name="item23">
           <option value="5" {% if form_data and form_data.item23=='5' %}selected{% endif %}>5</option>
@@ -765,6 +780,7 @@ button:hover {
       <!-- Item 24 – Job Box Review -->
       <div class="item-section" id="item24_section">
         <h3>Item 24 – Job Box Review</h3>
+        <p>Ensure the following items located on the jobsite information board is in accordance with NTRP 4-04.2.5, section 6.3.1.</p>
         <p>(20 pts maximum; deductions apply; N/A = deduct 20 pts)</p>
         <select name="item24" id="item24_select">
           <option value="20" {% if form_data and form_data.item24=='20' %}selected{% endif %}>20</option>
@@ -779,6 +795,7 @@ button:hover {
       <!-- Item 25 – Review QC Package -->
       <div class="item-section">
         <h3>Item 25 – Review QC Package</h3>
+        <p>Verify Preparatory, Initial phases of QC inspections are being performed and documented for project DFOWs.</p>
         <p>(8 pts = Comprehensive; 6/4/0 pts otherwise; N/A = deduct 8 pts)</p>
         <select name="item25">
           <option value="8" {% if form_data and form_data.item25=='8' %}selected{% endif %}>8</option>
@@ -793,6 +810,7 @@ button:hover {
       <!-- Item 26 – Submittals -->
       <div class="item-section">
         <h3>Item 26 – Submittals</h3>
+        <p>Validate that material submittals within the project specifications are logged and submitted IAW NTRP 4-04.2.7 section 3.7 to the appropriate Government or authorized representative.</p>
         <p>(4 pts = Current; 2 pts = Not current; 0 pts = Not submitted; N/A = deduct 4 pts)</p>
         <select name="item26">
           <option value="4" {% if form_data and form_data.item26=='4' %}selected{% endif %}>4</option>
@@ -806,6 +824,7 @@ button:hover {
       <!-- Item 27a – QC Inspection Plan -->
       <div class="item-section">
         <h3>Item 27a – QC Inspection Plan</h3>
+        <p>Validate each inspection check inputted on the BN QC inspection plan contains quantitative measurements or at least specifies the level of acceptable standards for work elements/phases of the project (i.e. phased inspections, material tests, utility tests, and standards of construction/workmanship of work-in-place IAW prints/specifications that will be conducted during deployment).</p>
         <p>(10 pts = 100% quantifiable; 7/3/0 pts otherwise; N/A = deduct 10 pts)</p>
         <select name="item27a">
           <option value="10" {% if form_data and form_data.item27a=='10' %}selected{% endif %}>10</option>
@@ -820,6 +839,7 @@ button:hover {
       <!-- Item 27b – QC Inspection -->
       <div class="item-section">
         <h3>Item 27b – QC Inspection</h3>
+        <p>On site validation of WIP verified against approved prints and specifications (updated redlines / shop drawings) are within tolerances.</p>
         <p>(5 pts = No discrepancies; 0 pts otherwise; N/A = deduct 5 pts)</p>
         <select name="item27b">
           <option value="5" {% if form_data and form_data.item27b=='5' %}selected{% endif %}>5</option>
@@ -832,6 +852,7 @@ button:hover {
       <!-- Item 28 – Job Box Review (QC) -->
       <div class="item-section" id="item28_section">
         <h3>Item 28 – Job Box Review (QC)</h3>
+        <p>Ensure the following items located on the jobsite information board is in accordance with NTRP 4-04.2.5, section 6.3.1. Confirm QC plan and daily QC reports are up-to-date and reflect the current project status.</p>         
         <p>(Maximum 5 pts; deductions apply; N/A = deduct 5 pts)</p>
         <label><input type="radio" name="item28_option" value="5" {% if not form_data or form_data.item28_option is not defined or form_data.item28_option=='5' %}checked{% endif %}> Applicable</label>
         <label><input type="radio" name="item28_option" value="-5" {% if form_data and form_data.item28_option=='-5' %}checked{% endif %}> N/A</label>
@@ -845,6 +866,7 @@ button:hover {
       <!-- Item 29 – Job Box Review (Safety) -->
       <div class="item-section" id="item29_section">
         <h3>Item 29 – Job Box Review (Safety)</h3>
+        <p>Ensure the following items located on the jobsite information board is in accordance with NTRP 4-04.2.5, section 6.3.1.</p>
         <p>(Maximum 5 pts; deductions apply; N/A = deduct 5 pts)</p>
         <label><input type="radio" name="item29_option" value="5" {% if not form_data or form_data.item29_option is not defined or form_data.item29_option=='5' %}checked{% endif %}> Applicable</label>
         <label><input type="radio" name="item29_option" value="-5" {% if form_data and form_data.item29_option=='-5' %}checked{% endif %}> N/A</label>
